@@ -41,6 +41,12 @@ struct ExpandedView: View {
                     DockerCompactView()
                 case .builtIn(.worldClock):
                     WorldClockExpandedView()
+                case .builtIn(.currency):
+                    CurrencyExpandedView()
+                case .builtIn(.countdown):
+                    CountdownExpandedView()
+                case .builtIn(.stocks):
+                    StocksExpandedView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .expanded)
                 }

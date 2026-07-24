@@ -149,6 +149,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if state.gitStatsEnabled { _ = GitStatsManager.shared }
         if state.dockerEnabled { _ = DockerManager.shared }
         if state.worldClockEnabled { _ = WorldClockManager.shared }
+        if state.currencyEnabled { _ = CurrencyManager.shared }
+        if state.countdownEnabled { _ = CountdownManager.shared }
+        if state.stocksEnabled { _ = StocksManager.shared }
 
         let extensions = ExtensionManager.shared
         extensions.discoverExtensions()
@@ -457,6 +460,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .gitStats: AppState.shared.gitStatsEnabled = newState
         case .docker: AppState.shared.dockerEnabled = newState
         case .worldClock: AppState.shared.worldClockEnabled = newState
+        case .currency: AppState.shared.currencyEnabled = newState
+        case .countdown: AppState.shared.countdownEnabled = newState
+        case .stocks: AppState.shared.stocksEnabled = newState
         }
         sender.state = newState ? .on : .off
         rebuildStatusMenu()

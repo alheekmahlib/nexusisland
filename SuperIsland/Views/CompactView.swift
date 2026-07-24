@@ -98,6 +98,12 @@ struct CompactView: View {
                     DockerCompactView()
                 case .builtIn(.worldClock):
                     WorldClockCompactView()
+                case .builtIn(.currency):
+                    CurrencyCompactView()
+                case .builtIn(.countdown):
+                    CountdownCompactView()
+                case .builtIn(.stocks):
+                    StocksCompactView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .compact)
                 }
