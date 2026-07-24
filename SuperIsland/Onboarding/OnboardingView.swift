@@ -294,7 +294,7 @@ private struct WelcomeScreen: View {
                 .padding(.bottom, 24)
 
             VStack(spacing: 8) {
-                Text("Welcome to SuperIsland")
+                Text(NSLocalizedString("Welcome to SuperIsland", comment: "Onboarding title"))
                     .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundStyle(OBColors.textPrimary)
 
@@ -309,7 +309,7 @@ private struct WelcomeScreen: View {
 
             Spacer(minLength: 20)
 
-            PrimaryButton(title: "Get Started", action: next)
+            PrimaryButton(title: NSLocalizedString("Get Started", comment: "Onboarding button"), action: next)
                 .opacity(showContent ? 1 : 0)
         }
         .frame(maxWidth: OnboardingMetrics.contentWidth)
@@ -343,11 +343,11 @@ private struct PermissionsScreen: View {
                 .padding(.bottom, 20)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("Permissions")
+                Text(NSLocalizedString("Permissions", comment: "Onboarding section title"))
                     .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundStyle(OBColors.textPrimary)
 
-                Text("SuperIsland needs a few permissions to work properly.")
+                Text(NSLocalizedString("SuperIsland needs a few permissions to work properly.", comment: "Onboarding section subtitle"))
                     .font(.system(size: 13, weight: .regular))
                     .foregroundStyle(OBColors.textSecondary)
             }
@@ -366,7 +366,7 @@ private struct PermissionsScreen: View {
 
             Spacer(minLength: 0)
 
-            PrimaryButton(title: "Continue", action: next)
+            PrimaryButton(title: NSLocalizedString("Continue", comment: "Onboarding button"), action: next)
         }
         .frame(maxWidth: OnboardingMetrics.contentWidth, maxHeight: .infinity, alignment: .top)
     }
@@ -395,7 +395,7 @@ private struct PermissionRow: View {
                         .foregroundStyle(OBColors.textPrimary)
 
                     if permission.isRequired {
-                        Text("Required")
+                        Text(NSLocalizedString("Required", comment: "Onboarding permission badge"))
                             .font(.system(size: 9, weight: .bold, design: .rounded))
                             .foregroundStyle(Color.white.opacity(0.4))
                             .padding(.horizontal, 5)
@@ -416,7 +416,7 @@ private struct PermissionRow: View {
                 GrantedBadge()
             } else {
                 Button(action: action) {
-                    Text(permission == .bluetooth ? "Open Settings" : "Grant")
+                    Text(permission == .bluetooth ? NSLocalizedString("Open Settings", comment: "Onboarding permission button") : NSLocalizedString("Grant", comment: "Onboarding permission button"))
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(Color.white.opacity(0.85))
                         .padding(.horizontal, 12)
@@ -441,7 +441,7 @@ private struct GrantedBadge: View {
         HStack(spacing: 4) {
             Image(systemName: "checkmark")
                 .font(.system(size: 8, weight: .bold))
-            Text("Granted")
+            Text(NSLocalizedString("Granted", comment: "Onboarding permission badge"))
                 .font(.system(size: 11, weight: .semibold))
         }
         .foregroundStyle(OBColors.accent)
@@ -489,7 +489,7 @@ private struct GesturesScreen: View {
 
             // Gesture instructions
             VStack(spacing: 6) {
-                Text("Swipe the island")
+                Text(NSLocalizedString("Swipe the island", comment: "Onboarding section title"))
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
                     .foregroundStyle(OBColors.textPrimary)
 
@@ -501,7 +501,7 @@ private struct GesturesScreen: View {
 
             Spacer(minLength: 0)
 
-            PrimaryButton(title: "Understood", action: next)
+            PrimaryButton(title: NSLocalizedString("Understood", comment: "Onboarding button"), action: next)
         }
         .frame(maxWidth: OnboardingMetrics.contentWidth, maxHeight: .infinity)
         .onAppear {
@@ -602,11 +602,11 @@ private struct ExtensionsScreen: View {
                 .padding(.bottom, 20)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("Extensions")
+                Text(NSLocalizedString("Extensions", comment: "Onboarding section title"))
                     .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundStyle(OBColors.textPrimary)
 
-                Text("Add extra capabilities to your island.")
+                Text(NSLocalizedString("Add extra capabilities to your island.", comment: "Onboarding section subtitle"))
                     .font(.system(size: 13, weight: .regular))
                     .foregroundStyle(OBColors.textSecondary)
             }
@@ -631,7 +631,7 @@ private struct ExtensionsScreen: View {
 
             Spacer(minLength: 0)
 
-            PrimaryButton(title: "Continue", action: next)
+            PrimaryButton(title: NSLocalizedString("Continue", comment: "Onboarding button"), action: next)
         }
         .frame(maxWidth: OnboardingMetrics.contentWidth, maxHeight: .infinity, alignment: .top)
     }
@@ -671,7 +671,7 @@ private struct ExtensionRow: View {
             Spacer(minLength: 4)
 
             Button(action: toggle) {
-                Text(isEnabled ? "Added" : "Add")
+                Text(isEnabled ? NSLocalizedString("Added", comment: "Onboarding extension button") : NSLocalizedString("Add", comment: "Onboarding extension button"))
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(isEnabled ? OBColors.accent : Color.white.opacity(0.85))
                     .padding(.horizontal, 14)
@@ -735,7 +735,7 @@ private struct ReadyScreen: View {
         let names = OnboardingExtensionInfo.available
             .filter { enabledExtensions.contains($0.id) }
             .map(\.name)
-        if names.isEmpty { return "None" }
+        if names.isEmpty { return NSLocalizedString("None", comment: "Onboarding summary empty extensions") }
         return names.joined(separator: ", ")
     }
 
@@ -750,11 +750,11 @@ private struct ReadyScreen: View {
                 .padding(.bottom, 20)
 
             VStack(spacing: 8) {
-                Text("You're all set")
+                Text(NSLocalizedString("You're all set", comment: "Onboarding section title"))
                     .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundStyle(OBColors.textPrimary)
 
-                Text("SuperIsland will run in the background.")
+                Text(NSLocalizedString("SuperIsland will run in the background.", comment: "Onboarding section subtitle"))
                     .font(.system(size: 14, weight: .regular))
                     .foregroundStyle(OBColors.textSecondary)
             }
@@ -764,13 +764,13 @@ private struct ReadyScreen: View {
             VStack(spacing: 1) {
                 SummaryRow(
                     icon: "checkmark.shield.fill",
-                    title: "Permissions",
+                    title: NSLocalizedString("Permissions", comment: "Onboarding summary label"),
                     detail: "\(grantedCount) of 4 granted",
                     isFirst: true
                 )
                 SummaryRow(
                     icon: "puzzlepiece.extension.fill",
-                    title: "Extensions",
+                    title: NSLocalizedString("Extensions", comment: "Onboarding summary label"),
                     detail: enabledNames,
                     isFirst: false
                 )
@@ -782,13 +782,13 @@ private struct ReadyScreen: View {
 
             VStack(spacing: 10) {
                 PrimaryButton(
-                    title: launching ? "Launching..." : "Get Started",
+                    title: launching ? "Launching..." : NSLocalizedString("Get Started", comment: "Onboarding button"),
                     isDisabled: launching,
                     action: getStarted
                 )
 
                 Button(action: openSettings) {
-                    Text("Open Settings Instead")
+                    Text(NSLocalizedString("Open Settings Instead", comment: "Onboarding button"))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(Color.white.opacity(0.35))
                 }
@@ -866,7 +866,7 @@ private struct NavBackButton: View {
             HStack(spacing: 4) {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 11, weight: .semibold))
-                Text("Back")
+                Text(NSLocalizedString("Back", comment: "Onboarding navigation button"))
                     .font(.system(size: 13, weight: .medium))
             }
             .foregroundStyle(Color.white.opacity(0.55))

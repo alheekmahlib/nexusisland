@@ -35,12 +35,12 @@ struct NotificationExpandedView: View {
                 .font(.system(size: 18))
                 .foregroundColor(.white.opacity(0.4))
 
-            Text("No Notifications")
+            Text(NSLocalizedString("No Notifications", comment: "Notification expanded empty state title"))
                 .font(.system(size: 13, weight: .medium))
                 .foregroundColor(.white.opacity(0.5))
 
             if appState.currentState == .fullExpanded {
-                Text("Supported sources will appear here")
+                Text(NSLocalizedString("Supported sources will appear here", comment: "Notification expanded empty state subtitle"))
                     .font(.system(size: 11))
                     .foregroundColor(.white.opacity(0.3))
             }
@@ -120,7 +120,7 @@ struct NotificationExpandedView: View {
             Spacer(minLength: 0)
 
             Button(action: { manager.clearAll() }) {
-                Text("Clear All")
+                Text(NSLocalizedString("Clear All", comment: "Notification clear all button"))
                     .font(.system(size: 9, weight: .semibold))
                     .foregroundColor(.white.opacity(0.58))
             }
@@ -331,7 +331,7 @@ struct NotificationExpandedView: View {
 
     private func timeAgo(_ date: Date) -> String {
         let interval = Date().timeIntervalSince(date)
-        if interval < 60 { return "just now" }
+        if interval < 60 { return NSLocalizedString("just now", comment: "Notification timestamp") }
         if interval < 3600 { return "\(Int(interval / 60))m ago" }
         return "\(Int(interval / 3600))h ago"
     }

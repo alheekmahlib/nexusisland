@@ -1,0 +1,27 @@
+{
+  "id": "superisland.prayer-times",
+  "name": "Prayer Times",
+  "version": "0.1.0",
+  "minAppVersion": "1.0.0",
+  "main": "index.js",
+  "author": {
+    "name": "Your Name"
+  },
+  "description": "Prayer Times extension for SuperIsland.",
+  "icon": "icon.svg",
+  "license": "MIT",
+  "categories": ["productivity"],
+  "permissions": ["network", "notifications"],
+  "capabilities": {
+    "compact": false,
+    "expanded": false,
+    "fullExpanded": false,
+    "minimalCompact": false,
+    "backgroundRefresh": true,
+    "settings": true,
+    "notificationFeed": true
+  },
+  "refreshInterval": 1.0,
+  "activationTriggers": ["timer"],
+  "defaultEnabled": false
+}

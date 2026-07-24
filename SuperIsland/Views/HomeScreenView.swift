@@ -12,8 +12,8 @@ struct HomeScreenView: View {
             case 0:
                 HomeEmptyState(
                     icon: "square.grid.2x2",
-                    title: "No home modules enabled",
-                    subtitle: "Enable modules in Settings to show them here.",
+                    title: NSLocalizedString("No home modules enabled", comment: "Home empty state title"),
+                    subtitle: NSLocalizedString("Enable modules in Settings to show them here.", comment: "Home empty state subtitle"),
                     fillsAvailableSpace: true
                 )
             case 3:
@@ -158,7 +158,7 @@ private struct HomeNowPlayingPanel: View {
             return "\(artist) • \(album)"
         }
 
-        return artist ?? album ?? "Media"
+        return artist ?? album ?? NSLocalizedString("Media", comment: "Home now playing fallback title")
     }
 
     private var durationLine: String {
@@ -241,6 +241,12 @@ private struct HomeCalendarPanel: View {
                     .foregroundStyle(HomeTypography.primaryText)
                     .lineLimit(2)
 
+                // Hijri date beside the Gregorian one — small caption line.
+                Text(hijriToday)
+                    .font(HomeTypography.secondaryFont)
+                    .foregroundStyle(HomeTypography.secondaryText.opacity(0.8))
+                    .environment(\.layoutDirection, .rightToLeft) // Arabic shaping only
+
                 Text(todaySubtitle)
                     .font(HomeTypography.secondaryFont)
                     .foregroundStyle(HomeTypography.secondaryText)
@@ -249,8 +255,8 @@ private struct HomeCalendarPanel: View {
             if upcomingEvents.isEmpty {
                 HomeEmptyState(
                     icon: "calendar",
-                    title: "Nothing coming up",
-                    subtitle: "Your schedule is clear for now."
+                    title: NSLocalizedString("Nothing coming up", comment: "Home calendar empty state title"),
+                    subtitle: NSLocalizedString("Your schedule is clear for now.", comment: "Home calendar empty state subtitle")
                 )
             } else {
                 VStack(alignment: .leading, spacing: 9) {
@@ -276,9 +282,14 @@ private struct HomeCalendarPanel: View {
         Self.todayTitleFormatter.string(from: Date())
     }
 
+    /// Today's Hijri date in Arabic, e.g. "15 محرم 1448".
+    private var hijriToday: String {
+        HijriDateFormatter.today() + " هـ"
+    }
+
     private var todaySubtitle: String {
         if upcomingEvents.isEmpty {
-            return "No events scheduled today"
+            return NSLocalizedString("No events scheduled today", comment: "Home calendar empty subtitle")
         }
         if upcomingEvents.count == 1 {
             return "1 event coming up"
@@ -318,8 +329,8 @@ private struct HomeWeatherPanel: View {
             if isWeatherUnavailable {
                 HomeEmptyState(
                     icon: "cloud.sun",
-                    title: manager.isLoading ? "Fetching weather" : "Weather unavailable",
-                    subtitle: manager.isLoading ? "Getting your local conditions." : "Current forecast will appear here."
+                    title: manager.isLoading ? NSLocalizedString("Fetching weather", comment: "Home weather loading title") : NSLocalizedString("Weather unavailable", comment: "Home weather unavailable title"),
+                    subtitle: manager.isLoading ? NSLocalizedString("Getting your local conditions.", comment: "Home weather loading subtitle") : NSLocalizedString("Current forecast will appear here.", comment: "Home weather unavailable subtitle")
                 )
             } else {
                 VStack(alignment: .leading, spacing: 10) {
@@ -415,7 +426,7 @@ private struct HomeEventRow: View {
                 .padding(.top, 5)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(event.title ?? "Upcoming event")
+                Text(event.title ?? NSLocalizedString("Upcoming event", comment: "Home event row fallback title"))
                     .font(HomeTypography.bodyTitleFont)
                     .foregroundStyle(HomeTypography.secondaryText)
                     .lineLimit(1)

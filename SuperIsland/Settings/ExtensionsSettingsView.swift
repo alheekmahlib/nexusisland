@@ -12,8 +12,8 @@ private enum ExtensionListFilter: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .all: return "All"
-        case .active: return "Active"
+        case .all: return NSLocalizedString("All", comment: "Extension filter")
+        case .active: return NSLocalizedString("Active", comment: "Extension filter")
         }
     }
 }
@@ -55,7 +55,7 @@ struct ExtensionsSettingsView: View {
 
     private var filterBar: some View {
         HStack(spacing: 10) {
-            Text("Filter")
+            Text(NSLocalizedString("Filter", comment: "Settings label"))
                 .font(.system(size: 13, weight: .semibold))
 
             Picker("", selection: $listFilter) {
@@ -89,7 +89,7 @@ struct ExtensionsSettingsView: View {
 
     private var leftPane: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Extensions")
+            Text(NSLocalizedString("Extensions", comment: "Settings section"))
                 .font(.headline.weight(.semibold))
 
             ScrollView {
@@ -119,46 +119,46 @@ struct ExtensionsSettingsView: View {
                     extensionHeaderCard(for: manifest)
 
                     if manifest.id == "superisland.whatsapp-web" {
-                        SettingsCard(title: "WhatsApp Web Login") {
+                        SettingsCard(title: NSLocalizedString("WhatsApp Web Login", comment: "Card title")) {
                             WhatsAppWebBridgeSettingsView()
                         }
                     }
 
                     if manifest.id == linearMentionsExtensionID {
-                        SettingsCard(title: "Linear Login") {
+                        SettingsCard(title: NSLocalizedString("Linear Login", comment: "Card title")) {
                             LinearOAuthSettingsView()
                         }
                     }
 
                     if manifest.id == lastFmScrobblerExtensionID {
-                        SettingsCard(title: "Last.fm Login") {
+                        SettingsCard(title: NSLocalizedString("Last.fm Login", comment: "Card title")) {
                             LastFmOAuthSettingsView()
                         }
                     }
 
-                    SettingsCard(title: "Details") {
+                    SettingsCard(title: NSLocalizedString("Details", comment: "Card title")) {
                         if let author = manifest.author?.name {
-                            metadataRow(label: "Author", value: author)
+                            metadataRow(label: NSLocalizedString("Author", comment: "Metadata label"), value: author)
                         }
                         if manifest.id != linearMentionsExtensionID {
-                            metadataRow(label: "Refresh", value: "\(String(format: "%.1f", manifest.refreshInterval))s")
+                            metadataRow(label: NSLocalizedString("Refresh", comment: "Metadata label"), value: "\(String(format: "%.1f", manifest.refreshInterval))s")
                         }
-                        metadataRow(label: "Triggers", value: manifest.activationTriggers.joined(separator: ", "))
+                        metadataRow(label: NSLocalizedString("Triggers", comment: "Metadata label"), value: manifest.activationTriggers.joined(separator: ", "))
 
                         if !manifest.permissions.isEmpty {
-                            metadataRow(label: "Permissions", value: manifest.permissions.joined(separator: ", "))
+                            metadataRow(label: NSLocalizedString("Permissions", comment: "Metadata label"), value: manifest.permissions.joined(separator: ", "))
                         }
                     }
 
                     if let schema = manager.settingsSchemas[manifest.id] {
-                        SettingsCard(title: "Settings") {
+                        SettingsCard(title: NSLocalizedString("Settings", comment: "Card title")) {
                             ExtensionSettingsRenderer(extensionID: manifest.id, schema: schema)
                         }
                     }
 
                     let logEntries = logger.entries(for: manifest.id)
                     if !logEntries.isEmpty {
-                        SettingsCard(title: "Recent Logs") {
+                        SettingsCard(title: NSLocalizedString("Recent Logs", comment: "Card title")) {
                             VStack(alignment: .leading, spacing: 7) {
                                 ForEach(logEntries.suffix(8)) { entry in
                                     HStack(alignment: .top, spacing: 8) {
@@ -184,9 +184,9 @@ struct ExtensionsSettingsView: View {
                 Image(systemName: "puzzlepiece.extension")
                     .font(.system(size: 28))
                     .foregroundColor(.secondary)
-                Text("Select an extension")
+                Text(NSLocalizedString("Select an extension", comment: "Settings label"))
                     .font(.headline)
-                Text("Choose an extension from the left panel.")
+                Text(NSLocalizedString("Choose an extension from the left panel.", comment: "Settings description"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -212,7 +212,7 @@ struct ExtensionsSettingsView: View {
 
                 Spacer()
 
-                Text(manager.runtimes[manifest.id] == nil ? "Inactive" : "Active")
+                Text(manager.runtimes[manifest.id] == nil ? NSLocalizedString("Inactive", comment: "Status label") : NSLocalizedString("Active", comment: "Status label"))
                     .font(.caption.weight(.semibold))
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
@@ -228,7 +228,7 @@ struct ExtensionsSettingsView: View {
                 .foregroundColor(.secondary)
 
             HStack(spacing: 10) {
-                Button(manager.runtimes[manifest.id] == nil ? "Activate" : "Reload") {
+                Button(manager.runtimes[manifest.id] == nil ? NSLocalizedString("Activate", comment: "Button") : NSLocalizedString("Reload", comment: "Button")) {
                     if manager.runtimes[manifest.id] == nil {
                         manager.activate(extensionID: manifest.id)
                     } else {
@@ -238,7 +238,7 @@ struct ExtensionsSettingsView: View {
                 .buttonStyle(.borderedProminent)
 
                 if manager.runtimes[manifest.id] != nil {
-                    Button("Deactivate") {
+                    Button(NSLocalizedString("Deactivate", comment: "Button")) {
                         manager.disableByUser(extensionID: manifest.id)
                     }
                     .buttonStyle(.bordered)
@@ -382,9 +382,9 @@ struct ExtensionsSettingsView: View {
 
     private func extensionSource(for manifest: ExtensionManifest) -> (label: String, color: Color) {
         if isInstalledExtension(manifest) {
-            return ("Installed", Color.accentColor)
+            return (NSLocalizedString("Installed", comment: "Extension source badge"), Color.accentColor)
         }
-        return ("Bundled", .secondary)
+        return (NSLocalizedString("Bundled", comment: "Extension source badge"), .secondary)
     }
 
     private func isInstalledExtension(_ manifest: ExtensionManifest) -> Bool {
@@ -455,7 +455,7 @@ private struct LinearOAuthSettingsView: View {
                 .buttonStyle(.borderedProminent)
 
                 if session != nil {
-                    Button("Disconnect") {
+                    Button(NSLocalizedString("Disconnect", comment: "Button")) {
                         disconnect()
                     }
                     .buttonStyle(.bordered)
@@ -489,9 +489,9 @@ private struct LinearOAuthSettingsView: View {
 
     private var statusTitle: String {
         if let session {
-            return session.isExpired ? "Expired" : "Logged in"
+            return session.isExpired ? NSLocalizedString("Expired", comment: "Status label") : NSLocalizedString("Logged in", comment: "Status label")
         }
-        return "Not logged in"
+        return NSLocalizedString("Not logged in", comment: "Status label")
     }
 
     private var statusColor: Color {
@@ -504,18 +504,18 @@ private struct LinearOAuthSettingsView: View {
     private var statusMessage: String {
         if let session {
             if session.isExpired {
-                return "Your Linear session has expired. Authenticate again to resume mention syncing."
+                return NSLocalizedString("Your Linear session has expired. Authenticate again to resume mention syncing.", comment: "Settings description")
             }
-            return "Linear is authenticated. New mentions will appear in the Super Island."
+            return NSLocalizedString("Linear is authenticated. New mentions will appear in the Super Island.", comment: "Settings description")
         }
-        return "Authenticate with Linear to start mention notifications and inline replies."
+        return NSLocalizedString("Authenticate with Linear to start mention notifications and inline replies.", comment: "Settings description")
     }
 
     private var primaryButtonTitle: String {
         if let session {
-            return session.isExpired ? "Log In Again" : "Reconnect"
+            return session.isExpired ? NSLocalizedString("Log In Again", comment: "Button") : NSLocalizedString("Reconnect", comment: "Button")
         }
-        return "Log In to Linear"
+        return NSLocalizedString("Log In to Linear", comment: "Button")
     }
 
     private func reloadSession() {
@@ -632,7 +632,7 @@ private struct LastFmOAuthSettingsView: View {
                 .buttonStyle(.borderedProminent)
 
                 if session != nil {
-                    Button("Disconnect") {
+                    Button(NSLocalizedString("Disconnect", comment: "Button")) {
                         disconnect()
                     }
                     .buttonStyle(.bordered)
@@ -672,9 +672,9 @@ private struct LastFmOAuthSettingsView: View {
 
     private var statusTitle: String {
         if let session {
-            return session.isExpired ? "Expired" : "Logged in"
+            return session.isExpired ? NSLocalizedString("Expired", comment: "Status label") : NSLocalizedString("Logged in", comment: "Status label")
         }
-        return "Not logged in"
+        return NSLocalizedString("Not logged in", comment: "Status label")
     }
 
     private var statusColor: Color {
@@ -687,21 +687,21 @@ private struct LastFmOAuthSettingsView: View {
     private var statusMessage: String {
         if let session {
             if session.isExpired {
-                return "Your Last.fm session has expired. Authenticate again to resume scrobbling."
+                return NSLocalizedString("Your Last.fm session has expired. Authenticate again to resume scrobbling.", comment: "Settings description")
             }
             if !session.username.isEmpty {
                 return "Last.fm is connected as \(session.username). New plays will scrobble automatically."
             }
-            return "Last.fm is connected. New plays will scrobble automatically."
+            return NSLocalizedString("Last.fm is connected. New plays will scrobble automatically.", comment: "Settings description")
         }
-        return "Authenticate with Last.fm to start scrobbling your listening history."
+        return NSLocalizedString("Authenticate with Last.fm to start scrobbling your listening history.", comment: "Settings description")
     }
 
     private var primaryButtonTitle: String {
         if let session {
-            return session.isExpired ? "Log In Again" : "Reconnect"
+            return session.isExpired ? NSLocalizedString("Log In Again", comment: "Button") : NSLocalizedString("Reconnect", comment: "Button")
         }
-        return "Log In to Last.fm"
+        return NSLocalizedString("Log In to Last.fm", comment: "Button")
     }
 
     private func reloadSession() {
@@ -812,18 +812,18 @@ private struct WhatsAppWebBridgeSettingsView: View {
 
             HStack(spacing: 8) {
                 if bridge.connectionState == .loggedIn {
-                    Button("Log Out") {
+                    Button(NSLocalizedString("Log Out", comment: "Button")) {
                         bridge.logout()
                     }
                     .buttonStyle(.bordered)
                     .tint(.red)
                 } else {
-                    Button("Start Login") {
+                    Button(NSLocalizedString("Start Login", comment: "Button")) {
                         bridge.start()
                     }
                     .buttonStyle(.borderedProminent)
 
-                    Button("Refresh QR") {
+                    Button(NSLocalizedString("Refresh QR", comment: "Button")) {
                         bridge.refreshQRCode()
                     }
                     .buttonStyle(.bordered)
@@ -831,12 +831,12 @@ private struct WhatsAppWebBridgeSettingsView: View {
             }
 
             if bridge.connectionState == .loggedIn {
-                Text("Connected. New messages will be synced from this login.")
+                Text(NSLocalizedString("Connected. New messages will be synced from this login.", comment: "Settings description"))
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
             } else if let image = qrImage {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Scan this QR with WhatsApp on your phone")
+                    Text(NSLocalizedString("Scan this QR with WhatsApp on your phone", comment: "Settings label"))
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundColor(.secondary)
 
@@ -855,7 +855,7 @@ private struct WhatsAppWebBridgeSettingsView: View {
                 HStack(spacing: 8) {
                     ProgressView()
                         .controlSize(.small)
-                    Text("Preparing secure login session...")
+                    Text(NSLocalizedString("Preparing secure login session...", comment: "Settings description"))
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
                 }
@@ -875,15 +875,15 @@ private struct WhatsAppWebBridgeSettingsView: View {
     private var stateTitle: String {
         switch bridge.connectionState {
         case .idle:
-            return "Idle"
+            return NSLocalizedString("Idle", comment: "Status label")
         case .loading:
-            return "Loading"
+            return NSLocalizedString("Loading", comment: "Status label")
         case .qrReady:
-            return "QR Ready"
+            return NSLocalizedString("QR Ready", comment: "Status label")
         case .loggedIn:
-            return "Connected"
+            return NSLocalizedString("Connected", comment: "Status label")
         case .error:
-            return "Error"
+            return NSLocalizedString("Error", comment: "Status label")
         }
     }
 

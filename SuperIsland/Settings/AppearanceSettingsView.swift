@@ -17,7 +17,7 @@ struct AppearanceSettingsView: View {
         VStack(alignment: .leading, spacing: 16) {
 
             section(
-                title: "Animation",
+                title: NSLocalizedString("Animation", comment: "Settings section"),
                 reset: {
                     appState.animationLevel = Defaults.animationLevel
                     appState.reduceMotion = Defaults.reduceMotion
@@ -26,8 +26,8 @@ struct AppearanceSettingsView: View {
             ) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Animation intensity").font(.system(size: 13))
-                        Text("Controls island motion and transition strength")
+                        Text(NSLocalizedString("Animation intensity", comment: "Settings label")).font(.system(size: 13))
+                        Text(NSLocalizedString("Controls island motion and transition strength", comment: "Settings description"))
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer(minLength: 12)
@@ -44,16 +44,16 @@ struct AppearanceSettingsView: View {
 
                 SettingRowDivider()
                 SettingToggleRow(
-                    title: "Reduce motion",
-                    description: "Simplify island transitions and content swaps",
+                    title: NSLocalizedString("Reduce motion", comment: "Settings label"),
+                    description: NSLocalizedString("Simplify island transitions and content swaps", comment: "Settings description"),
                     isOn: $appState.reduceMotion
                 )
 
                 SettingRowDivider()
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Bounce").font(.system(size: 13))
-                        Text("Spring bounce for compact ↔ expanded transitions")
+                        Text(NSLocalizedString("Bounce", comment: "Settings label")).font(.system(size: 13))
+                        Text(NSLocalizedString("Spring bounce for compact ↔ expanded transitions", comment: "Settings description"))
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer(minLength: 12)
@@ -67,15 +67,15 @@ struct AppearanceSettingsView: View {
             }
 
             section(
-                title: "Compact Island Size",
+                title: NSLocalizedString("Compact Island Size", comment: "Settings section"),
                 reset: {
                     appState.compactIslandWidth = Defaults.compactIslandWidth
                     appState.compactIslandHeight = Defaults.compactIslandHeight
                 }
             ) {
                 sizeRow(
-                    title: "Width",
-                    description: "Pill width on notched Macs",
+                    title: NSLocalizedString("Width", comment: "Settings label"),
+                    description: NSLocalizedString("Pill width on notched Macs", comment: "Settings description"),
                     value: $appState.compactIslandWidth,
                     step: 2,
                     range: 140...320,
@@ -83,8 +83,8 @@ struct AppearanceSettingsView: View {
                 )
                 SettingRowDivider()
                 sizeRow(
-                    title: "Height",
-                    description: "Pill height on notched Macs",
+                    title: NSLocalizedString("Height", comment: "Settings label"),
+                    description: NSLocalizedString("Pill height on notched Macs", comment: "Settings description"),
                     value: $appState.compactIslandHeight,
                     step: 1,
                     range: 28...60,
@@ -103,7 +103,7 @@ struct AppearanceSettingsView: View {
     ) -> some View {
         HStack(alignment: .firstTextBaseline) {
             SettingSectionLabel(title: title)
-            Button("Reset", action: reset)
+            Button(NSLocalizedString("Reset", comment: "Button"), action: reset)
                 .buttonStyle(.plain)
                 .font(.system(size: 11))
                 .foregroundColor(.accentColor)

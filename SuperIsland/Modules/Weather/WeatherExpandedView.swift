@@ -88,13 +88,13 @@ struct WeatherExpandedView: View {
     private var weatherDetailsGrid: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 16) {
-                weatherDetailCell(icon: "thermometer.medium", title: "Feels Like", value: temp(manager.weather.feelsLike))
-                weatherDetailCell(icon: "humidity.fill", title: "Humidity", value: "\(manager.weather.humidity)%")
-                weatherDetailCell(icon: "aqi.medium", title: "AQI", value: aqiLabel)
+                weatherDetailCell(icon: "thermometer.medium", title: NSLocalizedString("Feels Like", comment: "Weather detail label"), value: temp(manager.weather.feelsLike))
+                weatherDetailCell(icon: "humidity.fill", title: NSLocalizedString("Humidity", comment: "Weather detail label"), value: "\(manager.weather.humidity)%")
+                weatherDetailCell(icon: "aqi.medium", title: NSLocalizedString("AQI", comment: "Weather detail label"), value: aqiLabel)
             }
             HStack(spacing: 16) {
-                weatherDetailCell(icon: "wind", title: "Wind", value: "\(Int(manager.weather.windSpeed)) mph")
-                weatherDetailCell(icon: "sun.max.trianglebadge.exclamationmark.fill", title: "UV Index", value: uvLabel)
+                weatherDetailCell(icon: "wind", title: NSLocalizedString("Wind", comment: "Weather detail label"), value: "\(Int(manager.weather.windSpeed)) mph")
+                weatherDetailCell(icon: "sun.max.trianglebadge.exclamationmark.fill", title: NSLocalizedString("UV Index", comment: "Weather detail label"), value: uvLabel)
                 Spacer()
             }
         }

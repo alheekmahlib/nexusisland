@@ -372,7 +372,7 @@ struct IslandContainerView: View {
         .onHover { hovering in
             setCycleButtonHover(hovering, forward: forward)
         }
-        .help(forward ? "Next module" : "Previous module")
+        .help(forward ? NSLocalizedString("Next module", comment: "Module cycler help") : NSLocalizedString("Previous module", comment: "Module cycler help"))
     }
 
     // MARK: - Hover

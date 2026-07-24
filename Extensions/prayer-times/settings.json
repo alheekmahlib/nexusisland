@@ -1,0 +1,47 @@
+{
+  "fields": [
+    {
+      "key": "latitude",
+      "label": "Latitude (خط العرض)",
+      "type": "text",
+      "default": "24.7136",
+      "placeholder": "e.g. 24.7136 for Riyadh"
+    },
+    {
+      "key": "longitude",
+      "label": "Longitude (خط الطول)",
+      "type": "text",
+      "default": "46.6753",
+      "placeholder": "e.g. 46.6753 for Riyadh"
+    },
+    {
+      "key": "calcMethod",
+      "label": "Calculation method (طريقة الحساب)",
+      "type": "picker",
+      "default": "4",
+      "options": [
+        { "value": "3", "label": "Muslim World League" },
+        { "value": "4", "label": "Umm Al-Qura (Makkah)" },
+        { "value": "5", "label": "Egyptian Authority" },
+        { "value": "8", "label": "Gulf Region" },
+        { "value": "1", "label": "Karachi" },
+        { "value": "2", "label": "ISNA (North America)" }
+      ]
+    },
+    {
+      "key": "notifyBefore",
+      "label": "Notify minutes before (تنبيه قبل، بالدقائق)",
+      "type": "slider",
+      "default": 10,
+      "min": 0,
+      "max": 30,
+      "step": 5
+    },
+    {
+      "key": "adhanEnabled",
+      "label": "Play adhan sound at prayer time (تشغيل الأذان)",
+      "type": "toggle",
+      "default": false
+    }
+  ]
+}

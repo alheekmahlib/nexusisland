@@ -6,7 +6,7 @@ struct CalendarCompactView: View {
     var body: some View {
         HStack(spacing: 6) {
             if let event = manager.nextEvent, let countdown = manager.nextEventCountdown {
-                Text(event.title ?? "Event")
+                Text(event.title ?? NSLocalizedString("Event", comment: "Calendar compact fallback title"))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(.white)
                     .lineLimit(1)
@@ -15,7 +15,7 @@ struct CalendarCompactView: View {
                     .font(.system(size: 10))
                     .foregroundColor(.white.opacity(0.6))
             } else {
-                Text("No events")
+                Text(NSLocalizedString("No events", comment: "Calendar compact empty state"))
                     .font(.system(size: 11))
                     .foregroundColor(.white.opacity(0.5))
             }

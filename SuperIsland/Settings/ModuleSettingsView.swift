@@ -18,14 +18,14 @@ struct ModuleSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
 
-            SettingSectionLabel(title: "Media & HUD")
+            SettingSectionLabel(title: NSLocalizedString("Media & HUD", comment: "Settings section"))
             SettingGroup {
-                SettingToggleRow(title: "Now Playing", isOn: $appState.nowPlayingEnabled)
+                SettingToggleRow(title: NSLocalizedString("Now Playing", comment: "Settings label"), isOn: $appState.nowPlayingEnabled)
                 if appState.nowPlayingEnabled {
                     SettingRowDivider()
                     SettingToggleRow(
-                        title: "Browser media detection",
-                        description: "Use macOS automation to detect media in allowed browsers.",
+                        title: NSLocalizedString("Browser media detection", comment: "Settings label"),
+                        description: NSLocalizedString("Use macOS automation to detect media in allowed browsers.", comment: "Settings description"),
                         isOn: $nowPlayingManager.browserDetectionEnabled
                     )
                     if nowPlayingManager.browserDetectionEnabled {
@@ -33,52 +33,52 @@ struct ModuleSettingsView: View {
                     }
                 }
                 SettingRowDivider()
-                SettingToggleRow(title: "Volume HUD", isOn: $appState.volumeHUDEnabled)
+                SettingToggleRow(title: NSLocalizedString("Volume HUD", comment: "Settings label"), isOn: $appState.volumeHUDEnabled)
             }
 
-            SettingSectionLabel(title: "Home")
+            SettingSectionLabel(title: NSLocalizedString("Home", comment: "Settings section"))
             SettingGroup {
-                homeSlotRow(title: "Left slot", selection: $appState.homeLeadingPanelRaw)
+                homeSlotRow(title: NSLocalizedString("Left slot", comment: "Settings label"), selection: $appState.homeLeadingPanelRaw)
                 SettingRowDivider()
-                homeSlotRow(title: "Center slot", selection: $appState.homeCenterPanelRaw)
+                homeSlotRow(title: NSLocalizedString("Center slot", comment: "Settings label"), selection: $appState.homeCenterPanelRaw)
                 SettingRowDivider()
-                homeSlotRow(title: "Right slot", selection: $appState.homeTrailingPanelRaw)
+                homeSlotRow(title: NSLocalizedString("Right slot", comment: "Settings label"), selection: $appState.homeTrailingPanelRaw)
             }
 
-            SettingSectionLabel(title: "System")
+            SettingSectionLabel(title: NSLocalizedString("System", comment: "Settings section"))
             SettingGroup {
-                SettingToggleRow(title: "Battery", isOn: $appState.batteryEnabled)
+                SettingToggleRow(title: NSLocalizedString("Battery", comment: "Settings label"), isOn: $appState.batteryEnabled)
                 SettingRowDivider()
-                SettingToggleRow(title: "Shelf", isOn: $appState.shelfEnabled)
+                SettingToggleRow(title: NSLocalizedString("Shelf", comment: "Settings label"), isOn: $appState.shelfEnabled)
                 SettingRowDivider()
-                SettingToggleRow(title: "Auto-open Shelf on Drop", isOn: $appState.shelfAutoOpenOnDrop)
+                SettingToggleRow(title: NSLocalizedString("Auto-open Shelf on Drop", comment: "Settings label"), isOn: $appState.shelfAutoOpenOnDrop)
                 SettingRowDivider()
                 shelfRetentionRow
                 SettingRowDivider()
-                SettingToggleRow(title: "Connectivity", isOn: $appState.connectivityEnabled)
+                SettingToggleRow(title: NSLocalizedString("Connectivity", comment: "Settings label"), isOn: $appState.connectivityEnabled)
             }
 
-            SettingSectionLabel(title: "Information")
+            SettingSectionLabel(title: NSLocalizedString("Information", comment: "Settings section"))
             SettingGroup {
-                SettingToggleRow(title: "Calendar", isOn: calendarEnabledBinding)
+                SettingToggleRow(title: NSLocalizedString("Calendar", comment: "Settings label"), isOn: calendarEnabledBinding)
                 if appState.calendarEnabled {
                     SettingRowDivider()
                     calendarPermissionRow
                     if calendarManager.hasAccess {
                         SettingRowDivider()
                         SettingToggleRow(
-                            title: "Collapse duplicate events",
-                            description: "Hide repeated holidays or birthdays with the same title and time.",
+                            title: NSLocalizedString("Collapse duplicate events", comment: "Settings label"),
+                            description: NSLocalizedString("Hide repeated holidays or birthdays with the same title and time.", comment: "Settings description"),
                             isOn: $calendarManager.collapseDuplicates
                         )
                         SettingRowDivider()
                         SettingToggleRow(
-                            title: "Hide holidays",
+                            title: NSLocalizedString("Hide holidays", comment: "Settings label"),
                             isOn: $calendarManager.hideHolidays
                         )
                         SettingRowDivider()
                         SettingToggleRow(
-                            title: "Hide birthdays",
+                            title: NSLocalizedString("Hide birthdays", comment: "Settings label"),
                             isOn: $calendarManager.hideBirthdays
                         )
                         SettingRowDivider()
@@ -87,10 +87,10 @@ struct ModuleSettingsView: View {
                     }
                 }
                 SettingRowDivider()
-                SettingToggleRow(title: "Weather", isOn: $appState.weatherEnabled)
+                SettingToggleRow(title: NSLocalizedString("Weather", comment: "Settings label"), isOn: $appState.weatherEnabled)
                 SettingRowDivider()
                 HStack {
-                    Text("Temperature Unit")
+                    Text(NSLocalizedString("Temperature Unit", comment: "Settings label"))
                         .font(.system(size: 13))
                     Spacer(minLength: 8)
                     Picker("", selection: $appState.temperatureUnit) {
@@ -103,14 +103,14 @@ struct ModuleSettingsView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 11)
                 SettingRowDivider()
-                SettingToggleRow(title: "Notifications", isOn: notificationsEnabledBinding)
+                SettingToggleRow(title: NSLocalizedString("Notifications", comment: "Settings label"), isOn: notificationsEnabledBinding)
                 if appState.notificationsEnabled {
                     SettingRowDivider()
                     notificationPermissionRow
                     SettingRowDivider()
                     SettingToggleRow(
-                        title: "Show previews",
-                        description: "Display sender and message text when available.",
+                        title: NSLocalizedString("Show previews", comment: "Settings label"),
+                        description: NSLocalizedString("Display sender and message text when available.", comment: "Settings description"),
                         isOn: notificationPreviewsBinding
                     )
                     SettingRowDivider()
@@ -126,9 +126,9 @@ struct ModuleSettingsView: View {
                 }
             }
 
-            SettingSectionLabel(title: "Productivity")
+            SettingSectionLabel(title: NSLocalizedString("Productivity", comment: "Settings section"))
             SettingGroup {
-                SettingToggleRow(title: "Teleprompter", isOn: teleprompterEnabledBinding)
+                SettingToggleRow(title: NSLocalizedString("Teleprompter", comment: "Settings label"), isOn: teleprompterEnabledBinding)
                     .dataAnnotationID("teleprompter-module-toggle")
                 if appState.teleprompterEnabled {
                     SettingRowDivider()
@@ -136,7 +136,7 @@ struct ModuleSettingsView: View {
                     SettingRowDivider()
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Mode")
+                            Text(NSLocalizedString("Mode", comment: "Settings label"))
                                 .font(.system(size: 13))
                             Text(teleprompter.listeningMode.description)
                                 .font(.system(size: 11))
@@ -157,10 +157,10 @@ struct ModuleSettingsView: View {
                     .padding(.vertical, 11)
                     SettingRowDivider()
                     HStack {
-                        Text("Script")
+                        Text(NSLocalizedString("Script", comment: "Settings label"))
                             .font(.system(size: 13))
                         Spacer(minLength: 8)
-                        Button("Edit Script…") {
+                        Button(NSLocalizedString("Edit Script…", comment: "Button")) {
                             TeleprompterScriptEditorWindowController.show()
                         }
                         .font(.system(size: 12))
@@ -206,7 +206,7 @@ struct ModuleSettingsView: View {
 
         return HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Word Tracking permissions")
+                Text(NSLocalizedString("Word Tracking permissions", comment: "Settings label"))
                     .font(.system(size: 13))
                 Text(teleprompterPermissionDescription)
                     .font(.system(size: 11))
@@ -215,7 +215,7 @@ struct ModuleSettingsView: View {
             }
             Spacer(minLength: 12)
             if ready {
-                Label("Ready", systemImage: "checkmark.circle.fill")
+                Label(NSLocalizedString("Ready", comment: "Status label"), systemImage: "checkmark.circle.fill")
                     .font(.system(size: 11))
                     .foregroundColor(.green)
             } else {
@@ -238,18 +238,18 @@ struct ModuleSettingsView: View {
 
         if microphoneStatus == .denied || microphoneStatus == .restricted ||
             speechStatus == .denied || speechStatus == .restricted {
-            return "Access was denied or restricted. Open System Settings to enable Word Tracking."
+            return NSLocalizedString("Access was denied or restricted. Open System Settings to enable Word Tracking.", comment: "Settings description")
         }
 
         switch (microphone, speech) {
         case (true, true):
-            return "Microphone and Speech Recognition are ready for Word Tracking."
+            return NSLocalizedString("Microphone and Speech Recognition are ready for Word Tracking.", comment: "Settings description")
         case (false, true):
-            return "Microphone access will be requested when Word Tracking is enabled."
+            return NSLocalizedString("Microphone access will be requested when Word Tracking is enabled.", comment: "Settings description")
         case (true, false):
-            return "Speech Recognition access will be requested when Word Tracking is enabled."
+            return NSLocalizedString("Speech Recognition access will be requested when Word Tracking is enabled.", comment: "Settings description")
         case (false, false):
-            return "Microphone and Speech Recognition access are requested when Teleprompter is enabled."
+            return NSLocalizedString("Microphone and Speech Recognition access are requested when Teleprompter is enabled.", comment: "Settings description")
         }
     }
 
@@ -258,15 +258,15 @@ struct ModuleSettingsView: View {
         let speech = PermissionsManager.shared.speechRecognitionAuthorizationStatus()
         if microphone == .denied || microphone == .restricted ||
             speech == .denied || speech == .restricted {
-            return "Open Settings"
+            return NSLocalizedString("Open Settings", comment: "Button")
         }
-        return "Grant Access"
+        return NSLocalizedString("Grant Access", comment: "Button")
     }
 
     private var calendarPermissionRow: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Calendar access")
+                Text(NSLocalizedString("Calendar access", comment: "Settings label"))
                     .font(.system(size: 13))
                 Text(calendarPermissionDescription)
                     .font(.system(size: 11))
@@ -286,7 +286,7 @@ struct ModuleSettingsView: View {
     private var notificationPermissionRow: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Permission")
+                Text(NSLocalizedString("Permission", comment: "Settings label"))
                     .font(.system(size: 13))
                 Text(notificationPermissionDescription)
                     .font(.system(size: 11))
@@ -350,9 +350,9 @@ struct ModuleSettingsView: View {
     private var calendarLookaheadRow: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Upcoming range")
+                Text(NSLocalizedString("Upcoming range", comment: "Settings label"))
                     .font(.system(size: 13))
-                Text("How many days appear in the Upcoming column.")
+                Text(NSLocalizedString("How many days appear in the Upcoming column.", comment: "Settings description"))
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
             }
@@ -370,9 +370,9 @@ struct ModuleSettingsView: View {
     private var notificationRetentionRow: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Retained items")
+                Text(NSLocalizedString("Retained items", comment: "Settings label"))
                     .font(.system(size: 13))
-                Text("How many feed items stay available in the island.")
+                Text(NSLocalizedString("How many feed items stay available in the island.", comment: "Settings description"))
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
             }
@@ -391,7 +391,7 @@ struct ModuleSettingsView: View {
     private var calendarSourceRows: some View {
         if calendarManager.calendarSourceGroups.isEmpty {
             SettingRowDivider()
-            Text("No calendars available")
+            Text(NSLocalizedString("No calendars available", comment: "Settings description"))
                 .font(.system(size: 12))
                 .foregroundColor(.secondary)
                 .padding(.horizontal, 16)
@@ -519,50 +519,50 @@ struct ModuleSettingsView: View {
     private var calendarPermissionDescription: String {
         switch calendarManager.authorizationStatus {
         case .fullAccess, .authorized:
-            return "Allowed. Choose which calendars appear in SuperIsland."
+            return NSLocalizedString("Allowed. Choose which calendars appear in SuperIsland.", comment: "Settings description")
         case .notDetermined:
-            return "Not requested. Allow access to show upcoming events."
+            return NSLocalizedString("Not requested. Allow access to show upcoming events.", comment: "Settings description")
         case .denied:
-            return "Denied. Open System Settings to allow Calendar access."
+            return NSLocalizedString("Denied. Open System Settings to allow Calendar access.", comment: "Settings description")
         case .restricted:
-            return "Restricted by macOS settings."
+            return NSLocalizedString("Restricted by macOS settings.", comment: "Settings description")
         case .writeOnly:
-            return "Write-only access is not enough to display events."
+            return NSLocalizedString("Write-only access is not enough to display events.", comment: "Settings description")
         @unknown default:
-            return "Unknown. Check macOS Calendar privacy settings."
+            return NSLocalizedString("Unknown. Check macOS Calendar privacy settings.", comment: "Settings description")
         }
     }
 
     private var notificationPermissionDescription: String {
         switch notificationManager.authorizationStatus {
         case .authorized:
-            return "Allowed. SuperIsland can send its own notifications and extension alerts."
+            return NSLocalizedString("Allowed. SuperIsland can send its own notifications and extension alerts.", comment: "Settings description")
         case .denied:
-            return "Denied. Open System Settings to allow SuperIsland notifications."
+            return NSLocalizedString("Denied. Open System Settings to allow SuperIsland notifications.", comment: "Settings description")
         case .notDetermined:
-            return "Not requested. Allow this when you want SuperIsland or extensions to send macOS notifications."
+            return NSLocalizedString("Not requested. Allow this when you want SuperIsland or extensions to send macOS notifications.", comment: "Settings description")
         case .provisional, .ephemeral:
-            return "Allowed with limited delivery."
+            return NSLocalizedString("Allowed with limited delivery.", comment: "Settings description")
         @unknown default:
-            return "Unknown. Check macOS notification settings."
+            return NSLocalizedString("Unknown. Check macOS notification settings.", comment: "Settings description")
         }
     }
 
     private var calendarPermissionButtonTitle: String {
         switch calendarManager.authorizationStatus {
         case .notDetermined:
-            return "Request"
+            return NSLocalizedString("Request", comment: "Button")
         default:
-            return "Open Settings"
+            return NSLocalizedString("Open Settings", comment: "Button")
         }
     }
 
     private var notificationPermissionButtonTitle: String {
         switch notificationManager.authorizationStatus {
         case .notDetermined:
-            return "Request"
+            return NSLocalizedString("Request", comment: "Button")
         default:
-            return "Open Settings"
+            return NSLocalizedString("Open Settings", comment: "Button")
         }
     }
 
@@ -587,26 +587,26 @@ struct ModuleSettingsView: View {
     private func calendarTypeLabel(_ type: EKCalendarType) -> String {
         switch type {
         case .local:
-            return "Local"
+            return NSLocalizedString("Local", comment: "Calendar type")
         case .calDAV:
-            return "CalDAV"
+            return NSLocalizedString("CalDAV", comment: "Calendar type")
         case .exchange:
-            return "Exchange"
+            return NSLocalizedString("Exchange", comment: "Calendar type")
         case .subscription:
-            return "Subscription"
+            return NSLocalizedString("Subscription", comment: "Calendar type")
         case .birthday:
-            return "Birthdays"
+            return NSLocalizedString("Birthdays", comment: "Calendar type")
         @unknown default:
-            return "Calendar"
+            return NSLocalizedString("Calendar", comment: "Calendar type")
         }
     }
 
     private var shelfRetentionRow: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Shelf retention")
+                Text(NSLocalizedString("Shelf retention", comment: "Settings label"))
                     .font(.system(size: 13))
-                Text("Pinned items are kept")
+                Text(NSLocalizedString("Pinned items are kept", comment: "Settings description"))
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
             }
@@ -656,7 +656,7 @@ struct ModuleSettingsView: View {
     private func browserToggleRow(_ browser: NowPlayingBrowserTarget) -> some View {
         SettingToggleRow(
             title: browser.displayName,
-            description: "Allow SuperIsland to look for media in this browser.",
+            description: NSLocalizedString("Allow SuperIsland to look for media in this browser.", comment: "Settings description"),
             isOn: browserBinding(for: browser.id)
         )
     }
@@ -664,7 +664,7 @@ struct ModuleSettingsView: View {
     private var browserDetectionTestRow: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Detection test")
+                Text(NSLocalizedString("Detection test", comment: "Settings label"))
                     .font(.system(size: 13))
                 Text(browserDetectionMessage)
                     .font(.system(size: 11))
@@ -673,11 +673,11 @@ struct ModuleSettingsView: View {
             }
             Spacer(minLength: 12)
             VStack(alignment: .trailing, spacing: 6) {
-                Button("Test") {
+                Button(NSLocalizedString("Test", comment: "Button")) {
                     nowPlayingManager.testBrowserDetection()
                 }
                 .font(.system(size: 12))
-                Button("Open Settings") {
+                Button(NSLocalizedString("Open Settings", comment: "Button")) {
                     nowPlayingManager.openAutomationSettings()
                 }
                 .font(.system(size: 12))
@@ -698,6 +698,6 @@ struct ModuleSettingsView: View {
         if !nowPlayingManager.browserDetectionTestMessage.isEmpty {
             return nowPlayingManager.browserDetectionTestMessage
         }
-        return "Requires Automation permission and JavaScript from Apple Events in the browser."
+        return NSLocalizedString("Requires Automation permission and JavaScript from Apple Events in the browser.", comment: "Settings description")
     }
 }
