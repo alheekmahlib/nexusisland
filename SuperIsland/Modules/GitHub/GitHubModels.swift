@@ -122,7 +122,30 @@ private struct GHIssueItem: Decodable {
     let number: Int?
     let title: String?
     let url: String?
-    let repository: String?      // gh issue list returns repo as a string
+    // `gh issue list` returns repository as a STRING ("owner/repo");
+    // `gh search issues` returns it as an OBJECT with nameWithOwner.
+    // Decode defensively to handle both shapes.
+    let repository: AnyCodable?
+}
+
+/// A type-erasing Decodable that can extract a string from either a JSON
+/// string or an object's `nameWithOwner` field.
+private struct AnyCodable: Decodable {
+    let stringValue: String?
+
+    init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(),
+           let s = try? container.decode(String.self) {
+            stringValue = s
+        } else if let container = try? decoder.container(keyedBy: RepoKey.self),
+                  let nameWithOwner = try? container.decode(String.self, forKey: .nameWithOwner) {
+            stringValue = nameWithOwner
+        } else {
+            stringValue = nil
+        }
+    }
+
+    private enum RepoKey: String, CodingKey { case nameWithOwner }
 }
 
 enum GitHubItemParser {
@@ -132,15 +155,16 @@ enum GitHubItemParser {
         return items.compactMap { parse(searchItem: $0, kind: .pullRequest, reason: reason) }
     }
 
-    /// Parse `gh issue list --json` output into GitHubItems (issues, assigned reason).
+    /// Parse `gh search issues` / `gh issue list --json` output into GitHubItems.
+    /// Handles both repository shapes (string vs object).
     static func parseIssues(_ jsonData: Data, reason: GitHubItemReason = .assigned) -> [GitHubItem] {
         guard let items = try? JSONDecoder().decode([GHIssueItem].self, from: jsonData) else { return [] }
         return items.compactMap { issue in
             guard let number = issue.number,
                   let title = issue.title,
                   let urlString = issue.url, let url = URL(string: urlString) else { return nil }
-            let repo = issue.repository ?? url.deletingLastPathComponent().deletingLastPathComponent().lastPathComponent
-            let updated = issue.url.flatMap { _ in Date() } // issues list lacks updatedAt in some gh versions
+            let repo = issue.repository?.stringValue
+                ?? url.deletingLastPathComponent().deletingLastPathComponent().lastPathComponent
             return GitHubItem(
                 id: "\(repo)#\(number)",
                 kind: .issue,
@@ -149,7 +173,7 @@ enum GitHubItemParser {
                 title: title,
                 repoName: repo,
                 url: url,
-                updatedAt: updated
+                updatedAt: Date() // search issues lacks updatedAt in our query
             )
         }
     }

@@ -125,12 +125,23 @@ final class GitHubManager: ObservableObject {
             items.append(contentsOf: GitHubItemParser.parsePRs(data, reason: .authored))
         }
 
-        // 3. Issues assigned to you.
+        // 3. Issues assigned to you (search across all repos — `gh issue list`
+        // only works inside a single repo context and returns empty otherwise).
         if let out = exec(command: "gh", args: [
-            "issue", "list", "--assignee=@me", "--state=open",
+            "search", "issues", "--assignee=@me", "--state=open",
             "--json", "number,title,url,repository", "--limit", "20"
         ]), let data = out.data(using: .utf8) {
             items.append(contentsOf: GitHubItemParser.parseIssues(data, reason: .assigned))
+        }
+
+        // 3b. Issues you opened (authored) — surfaces your own open issues.
+        // NOTE: `gh search issues` searches issues only (PRs use `search prs`);
+        // there is no --type flag (it errors). Same JSON shape as PRs.
+        if let out = exec(command: "gh", args: [
+            "search", "issues", "--author=@me", "--state=open",
+            "--json", "number,title,url,repository", "--limit", "20"
+        ]), let data = out.data(using: .utf8) {
+            items.append(contentsOf: GitHubItemParser.parseIssues(data, reason: .authored))
         }
 
         // 4. Mentions — best-effort via notifications API.
