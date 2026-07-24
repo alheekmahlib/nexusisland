@@ -30,6 +30,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
     case prayerTimes
     case gitHub
     case ciMonitor
+    case devServers
     var id: String { rawValue }
 
     var displayName: String {
@@ -47,6 +48,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .prayerTimes: return NSLocalizedString("Prayer Times", comment: "Module name")
         case .gitHub: return NSLocalizedString("GitHub", comment: "Module name")
         case .ciMonitor: return NSLocalizedString("CI Monitor", comment: "Module name")
+        case .devServers: return NSLocalizedString("Dev Servers", comment: "Module name")
         }
     }
 
@@ -65,6 +67,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .prayerTimes: return "moon.stars.fill"
         case .gitHub: return "curlybraces"
         case .ciMonitor: return "checkmark.gearshape"
+        case .devServers: return "server.rack"
         }
     }
 }
@@ -284,6 +287,7 @@ final class AppState: ObservableObject {
     @AppStorage("module.prayerTimes.enabled") var prayerTimesEnabled = false
     @AppStorage("module.gitHub.enabled") var gitHubEnabled = false
     @AppStorage("module.ciMonitor.enabled") var ciMonitorEnabled = false
+    @AppStorage("module.devServers.enabled") var devServersEnabled = false
     @AppStorage("module.shelf.autoOpenOnDrop") var shelfAutoOpenOnDrop = true
     @AppStorage("module.shelf.defaultToShelf") var shelfDefaultToShelf = false
 
@@ -948,6 +952,7 @@ final class AppState: ObservableObject {
         case .prayerTimes: return prayerTimesEnabled
         case .gitHub: return gitHubEnabled
         case .ciMonitor: return ciMonitorEnabled
+        case .devServers: return devServersEnabled
         }
     }
 

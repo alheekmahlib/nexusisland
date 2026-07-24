@@ -145,6 +145,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if state.prayerTimesEnabled { _ = PrayerTimesManager.shared }
         if state.gitHubEnabled { _ = GitHubManager.shared }
         if state.ciMonitorEnabled { _ = CIManager.shared }
+        if state.devServersEnabled { _ = DevServerManager.shared }
 
         let extensions = ExtensionManager.shared
         extensions.discoverExtensions()
@@ -449,6 +450,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         case .gitHub: AppState.shared.gitHubEnabled = newState
         case .ciMonitor: AppState.shared.ciMonitorEnabled = newState
+        case .devServers: AppState.shared.devServersEnabled = newState
         }
         sender.state = newState ? .on : .off
         rebuildStatusMenu()
