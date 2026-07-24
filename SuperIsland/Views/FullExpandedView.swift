@@ -64,6 +64,8 @@ struct FullExpandedView: View {
             GitStatsFullExpandedView()
         case .builtIn(.docker):
             DockerFullExpandedView()
+        case .builtIn(.worldClock):
+            WorldClockFullExpandedView()
         case .builtIn(.nowPlaying), .builtIn(.connectivity):
             HomeScreenView()
         case .extension_(let extensionID):
