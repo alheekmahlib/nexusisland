@@ -346,45 +346,20 @@ struct PrayerProgressBar: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            track
+            // Track with fill percentage as relative width — no GeometryReader
+            // (GeometryReader collapses to zero width inside tight HStack/VStack
+            // layouts in the 88pt expanded surface).
+            // Use the battle-tested QuranProgressBar which handles the
+            // GeometryReader sizing correctly in the island's tight layout.
+            QuranProgressBar(
+                progress: max(0.04, progress),
+                onSeek: nil,
+                isRTL: false
+            )
+            .frame(height: 12)
+
             labels
         }
-    }
-
-    private var track: some View {
-        GeometryReader { proxy in
-            let width = proxy.size.width
-            let fill = max(0, width * progress)
-
-            ZStack(alignment: .leading) {
-                // Background track.
-                Capsule()
-                    .fill(QuranDesign.surfaceStroke)
-                    .frame(height: 5)
-
-                // Filled portion — a gold gradient for a premium feel.
-                Capsule()
-                    .fill(
-                        LinearGradient(
-                            colors: [QuranDesign.accent.opacity(0.6), QuranDesign.accent],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .frame(width: fill, height: 5)
-                    .animation(.easeOut(duration: 0.4), value: progress)
-
-                // Glowing knob at the leading edge of the fill.
-                Circle()
-                    .fill(QuranDesign.accent)
-                    .frame(width: 9, height: 9)
-                    .shadow(color: QuranDesign.accent.opacity(0.6), radius: 3)
-                    .offset(x: max(0, fill - 4.5))
-                    .animation(.easeOut(duration: 0.4), value: progress)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        }
-        .frame(height: 12)
     }
 
     private var labels: some View {
