@@ -120,6 +120,7 @@ struct GitHubExpandedView: View {
         case .reviewRequested: return QuranDesign.accent
         case .mentioned: return .orange
         case .assigned: return .blue
+        case .ownedRepo: return .purple
         case .authored: return QuranDesign.textTertiary
         }
     }
@@ -131,6 +132,20 @@ struct GitHubExpandedView: View {
 
 struct GitHubFullExpandedView: View {
     @ObservedObject private var manager = GitHubManager.shared
+    @State private var selectedTab: GitHubTab = .all
+
+    enum GitHubTab: String, CaseIterable {
+        case all, reviews, issues, pulls, owned
+        var label: String {
+            switch self {
+            case .all: return "الكل"
+            case .reviews: return "مراجعات"
+            case .issues: return "Issues"
+            case .pulls: return "PRs"
+            case .owned: return "مستودعاتي"
+            }
+        }
+    }
 
     var body: some View {
         if !manager.isInstalled || !manager.isAuthenticated {
@@ -160,10 +175,12 @@ struct GitHubFullExpandedView: View {
                 .foregroundColor(QuranDesign.textPrimary)
             bigStat(icon: "arrow.triangle.pull", count: manager.summary.reviewRequestedCount,
                     label: "مراجعات مستحقة", color: QuranDesign.accent)
-            bigStat(icon: "at", count: manager.summary.mentionCount,
-                    label: "إشارات إليك", color: .orange)
+            bigStat(icon: "exclamationmark.bubble.fill", count: manager.summary.unansweredCount,
+                    label: "بانتظار ردك", color: .orange)
             bigStat(icon: "smallcircle.filled", count: manager.summary.assignedCount,
                     label: "مهام مسندة", color: .blue)
+            bigStat(icon: "building.2.fill", count: manager.summary.ownedRepoCount,
+                    label: "في مستودعاتي", color: .purple)
             bigStat(icon: "arrow.triangle.pull", count: manager.summary.authoredCount,
                     label: "PRs مفتوحة لك", color: QuranDesign.textTertiary)
             Spacer(minLength: 0)
@@ -180,22 +197,25 @@ struct GitHubFullExpandedView: View {
         .environment(\.layoutDirection, .rightToLeft)
     }
 
+    /// Items filtered by the selected tab.
+    private var filteredItems: [GitHubItem] {
+        switch selectedTab {
+        case .all: return manager.summary.items
+        case .reviews: return manager.summary.items.filter { $0.reason == .reviewRequested }
+        case .issues: return manager.summary.items.filter { $0.kind == .issue }
+        case .pulls: return manager.summary.items.filter { $0.kind == .pullRequest }
+        case .owned: return manager.summary.items.filter { $0.reason == .ownedRepo }
+        }
+    }
+
     private var itemsList: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("النشاط")
-                    .font(QuranDesign.surahName(12))
-                    .foregroundColor(QuranDesign.textPrimary)
-                Spacer()
-                if manager.isLoading {
-                    ProgressView().scaleEffect(0.6).frame(width: 14, height: 14)
-                }
-            }
-            .padding(.horizontal, 10).padding(.vertical, 8)
+            // Tab bar — switch between All / Reviews / Issues / PRs / Owned.
+            tabBar
 
             Divider().background(QuranDesign.surfaceStroke)
 
-            if manager.summary.items.isEmpty {
+            if filteredItems.isEmpty {
                 VStack(spacing: 6) {
                     Image(systemName: "checkmark.seal.fill")
                         .font(.system(size: 20))
@@ -208,7 +228,7 @@ struct GitHubFullExpandedView: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 1) {
-                        ForEach(manager.summary.items) { item in
+                        ForEach(filteredItems) { item in
                             itemRow(item)
                         }
                     }
@@ -218,9 +238,58 @@ struct GitHubFullExpandedView: View {
         }
     }
 
+    private var tabBar: some View {
+        HStack(spacing: 4) {
+            ForEach(GitHubTab.allCases, id: \.self) { tab in
+                let count = tabItemCount(tab)
+                Button(action: { selectedTab = tab }) {
+                    HStack(spacing: 3) {
+                        Text(tab.label)
+                            .font(QuranDesign.caption(9))
+                        if count > 0 {
+                            Text("\(count)")
+                                .font(QuranDesign.mono(8))
+                                .foregroundColor(QuranDesign.textTertiary)
+                        }
+                    }
+                    .foregroundColor(selectedTab == tab ? QuranDesign.textPrimary : QuranDesign.textTertiary)
+                    .padding(.horizontal, 6).padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(selectedTab == tab ? QuranDesign.surfaceFillActive : Color.clear)
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+            Spacer()
+            if manager.isLoading {
+                ProgressView().scaleEffect(0.6).frame(width: 12, height: 12)
+            }
+        }
+        .padding(.horizontal, 6).padding(.vertical, 5)
+    }
+
+    private func tabItemCount(_ tab: GitHubTab) -> Int {
+        switch tab {
+        case .all: return manager.summary.items.count
+        case .reviews: return manager.summary.reviewRequestedCount
+        case .issues: return manager.summary.items.filter { $0.kind == .issue }.count
+        case .pulls: return manager.summary.items.filter { $0.kind == .pullRequest }.count
+        case .owned: return manager.summary.ownedRepoCount
+        }
+    }
+
     private func itemRow(_ item: GitHubItem) -> some View {
-        Button(action: { manager.openItem(item) }) {
+        // Highlight unanswered items with a gold left bar; answered ones stay neutral.
+        let accentColor = item.isAnswered ? QuranDesign.textTertiary : QuranDesign.accent
+        return Button(action: { manager.openItem(item) }) {
             HStack(spacing: 8) {
+                // Unanswered indicator: a gold dot for unanswered, gray for answered.
+                Circle()
+                    .fill(accentColor)
+                    .frame(width: 6, height: 6)
+                    .opacity(item.isAnswered ? 0.3 : 1)
+
                 Image(systemName: item.kind.iconName)
                     .font(.system(size: 10))
                     .foregroundColor(reasonColor(item.reason))
@@ -244,6 +313,11 @@ struct GitHubFullExpandedView: View {
                         Text(reasonLabel(item.reason))
                             .font(QuranDesign.caption(8))
                             .foregroundColor(reasonColor(item.reason))
+                        if !item.isAnswered {
+                            Text("بدون رد")
+                                .font(QuranDesign.caption(8))
+                                .foregroundColor(QuranDesign.accent)
+                        }
                     }
                 }
                 Spacer()
@@ -252,7 +326,8 @@ struct GitHubFullExpandedView: View {
                     .foregroundColor(QuranDesign.textTertiary)
             }
             .padding(.horizontal, 8).padding(.vertical, 5)
-            .quranSurface(radius: QuranDesign.cornerRadiusS)
+            // Unanswered rows get a subtle gold-tinted background.
+            .quranSurface(isActive: !item.isAnswered, radius: QuranDesign.cornerRadiusS)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -263,6 +338,7 @@ struct GitHubFullExpandedView: View {
         case .reviewRequested: return QuranDesign.accent
         case .mentioned: return .orange
         case .assigned: return .blue
+        case .ownedRepo: return .purple
         case .authored: return QuranDesign.textTertiary
         }
     }
@@ -272,6 +348,7 @@ struct GitHubFullExpandedView: View {
         case .reviewRequested: return "مراجعة"
         case .mentioned: return "إشارة"
         case .assigned: return "مسند"
+        case .ownedRepo: return "مستودعك"
         case .authored: return "لك"
         }
     }

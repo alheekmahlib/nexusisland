@@ -27,6 +27,7 @@ enum GitHubItemReason: String, Codable {
     case authored          // your own open PR/issue
     case assigned          // an issue assigned to you
     case mentioned         // you were @mentioned
+    case ownedRepo         // an issue/PR in a repo you own (opened by others)
 
     /// Display priority (lower = more important). Review requests rank highest.
     var priority: Int {
@@ -34,7 +35,8 @@ enum GitHubItemReason: String, Codable {
         case .reviewRequested: return 0
         case .mentioned: return 1
         case .assigned: return 2
-        case .authored: return 3
+        case .ownedRepo: return 3
+        case .authored: return 4
         }
     }
 }
@@ -49,6 +51,9 @@ struct GitHubItem: Identifiable, Equatable, Comparable {
     let repoName: String        // "owner/repo"
     let url: URL
     let updatedAt: Date?
+    /// True if you have engaged with this item (commented/reviewed).
+    /// Unanswered items get a distinct highlight color in the UI.
+    var isAnswered: Bool = false
 
     /// Sort key for display: reason priority, then most-recently-updated.
     static func < (lhs: GitHubItem, rhs: GitHubItem) -> Bool {
@@ -92,10 +97,14 @@ struct GitHubSummary: Equatable {
     var reviewRequestedCount: Int { items.filter { $0.reason == .reviewRequested }.count }
     var mentionCount: Int { items.filter { $0.reason == .mentioned }.count }
     var assignedCount: Int { items.filter { $0.reason == .assigned }.count }
+    var ownedRepoCount: Int { items.filter { $0.reason == .ownedRepo }.count }
     var authoredCount: Int { items.filter { $0.reason == .authored }.count }
 
+    /// Count of items you haven't engaged with yet — drives the urgent badge.
+    var unansweredCount: Int { items.filter { !$0.isAnswered }.count }
+
     /// Total actionable items (excluding authored — those don't demand action).
-    var actionableCount: Int { reviewRequestedCount + mentionCount + assignedCount }
+    var actionableCount: Int { reviewRequestedCount + mentionCount + assignedCount + ownedRepoCount }
 
     static let empty = GitHubSummary()
 }
@@ -176,6 +185,19 @@ enum GitHubItemParser {
                 updatedAt: Date() // search issues lacks updatedAt in our query
             )
         }
+    }
+
+    /// Collect a set of "owner/repo#number" IDs from `gh search issues --json`
+    /// output. Used to detect which items you've engaged with (answered).
+    static func collectIDs(from jsonData: Data) -> Set<String> {
+        guard let items = try? JSONDecoder().decode([GHIssueItem].self, from: jsonData) else { return [] }
+        var ids = Set<String>()
+        for item in items {
+            guard let number = item.number else { continue }
+            let repo = item.repository?.stringValue ?? ""
+            ids.insert("\(repo)#\(number)")
+        }
+        return ids
     }
 
     private static func parse(searchItem: GHSearchItem, kind: GitHubItemKind, reason: GitHubItemReason) -> GitHubItem? {

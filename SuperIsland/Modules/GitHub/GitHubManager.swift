@@ -144,12 +144,19 @@ final class GitHubManager: ObservableObject {
             items.append(contentsOf: GitHubItemParser.parseIssues(data, reason: .authored))
         }
 
+        // 3c. Issues opened by OTHERS in repos you own — surfaces activity in
+        // your projects that may need a response.
+        if let out = exec(command: "gh", args: [
+            "search", "issues", "--owner=@me", "--state=open",
+            "--json", "number,title,url,repository", "--limit", "30"
+        ]), let data = out.data(using: .utf8) {
+            items.append(contentsOf: GitHubItemParser.parseIssues(data, reason: .ownedRepo))
+        }
+
         // 4. Mentions — best-effort via notifications API.
         if let out = exec(command: "gh", args: [
             "api", "notifications", "--jq", ".[].subject.title"
         ]) {
-            // Notifications need a richer parse; for now we count them as
-            // mention items with a synthetic id.
             let titles = out.split(separator: "\n").prefix(10)
             for title in titles {
                 items.append(GitHubItem(
@@ -162,8 +169,21 @@ final class GitHubManager: ObservableObject {
             }
         }
 
-        if items.isEmpty && error == nil {
-            // No error, just empty — leave error nil so the UI shows "all clear".
+        // 5. Answered detection — collect the set of items you've commented on.
+        // `--commenter=@me` returns items where you participated, so its
+        // id intersection with our items marks them as answered.
+        var answeredIDs = Set<String>()
+        if let out = exec(command: "gh", args: [
+            "search", "issues", "--commenter=@me", "--state=open",
+            "--json", "number,repository", "--limit", "50"
+        ]), let data = out.data(using: .utf8) {
+            answeredIDs = GitHubItemParser.collectIDs(from: data)
+        }
+        // Mark answered items.
+        for index in items.indices {
+            if answeredIDs.contains(items[index].id) {
+                items[index].isAnswered = true
+            }
         }
 
         return (items, error)
