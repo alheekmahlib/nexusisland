@@ -47,6 +47,10 @@ struct ExpandedView: View {
                     CountdownExpandedView()
                 case .builtIn(.stocks):
                     StocksExpandedView()
+                case .builtIn(.reminders):
+                    RemindersExpandedView()
+                case .builtIn(.clipboard):
+                    ClipboardExpandedView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .expanded)
                 }

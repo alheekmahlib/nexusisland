@@ -37,6 +37,8 @@ enum ModuleType: String, CaseIterable, Identifiable {
     case currency
     case countdown
     case stocks
+    case reminders
+    case clipboard
     var id: String { rawValue }
 
     var displayName: String {
@@ -61,6 +63,8 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .currency: return NSLocalizedString("Currency", comment: "Module name")
         case .countdown: return NSLocalizedString("Countdown", comment: "Module name")
         case .stocks: return NSLocalizedString("Stocks", comment: "Module name")
+        case .reminders: return NSLocalizedString("Reminders", comment: "Module name")
+        case .clipboard: return NSLocalizedString("Clipboard", comment: "Module name")
         }
     }
 
@@ -86,6 +90,8 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .currency: return "dollarsign.circle.fill"
         case .countdown: return "calendar.badge.clock"
         case .stocks: return "chart.line.uptrend.xyaxis"
+        case .reminders: return "list.bullet.clipboard"
+        case .clipboard: return "doc.on.clipboard"
         }
     }
 }
@@ -312,6 +318,8 @@ final class AppState: ObservableObject {
     @AppStorage("module.currency.enabled") var currencyEnabled = false
     @AppStorage("module.countdown.enabled") var countdownEnabled = false
     @AppStorage("module.stocks.enabled") var stocksEnabled = false
+    @AppStorage("module.reminders.enabled") var remindersEnabled = false
+    @AppStorage("module.clipboard.enabled") var clipboardEnabled = false
     @AppStorage("module.shelf.autoOpenOnDrop") var shelfAutoOpenOnDrop = true
     @AppStorage("module.shelf.defaultToShelf") var shelfDefaultToShelf = false
 
@@ -983,6 +991,8 @@ final class AppState: ObservableObject {
         case .currency: return currencyEnabled
         case .countdown: return countdownEnabled
         case .stocks: return stocksEnabled
+        case .reminders: return remindersEnabled
+        case .clipboard: return clipboardEnabled
         }
     }
 

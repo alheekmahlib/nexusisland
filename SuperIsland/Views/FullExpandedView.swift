@@ -72,6 +72,10 @@ struct FullExpandedView: View {
             CountdownFullExpandedView()
         case .builtIn(.stocks):
             StocksFullExpandedView()
+        case .builtIn(.reminders):
+            RemindersFullExpandedView()
+        case .builtIn(.clipboard):
+            ClipboardFullExpandedView()
         case .builtIn(.nowPlaying), .builtIn(.connectivity):
             HomeScreenView()
         case .extension_(let extensionID):

@@ -104,6 +104,10 @@ struct CompactView: View {
                     CountdownCompactView()
                 case .builtIn(.stocks):
                     StocksCompactView()
+                case .builtIn(.reminders):
+                    RemindersCompactView()
+                case .builtIn(.clipboard):
+                    ClipboardCompactView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .compact)
                 }
