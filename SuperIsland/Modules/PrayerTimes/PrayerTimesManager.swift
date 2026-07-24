@@ -1,4 +1,5 @@
 import Combine
+import CoreLocation
 import Foundation
 import SwiftUI
 
@@ -101,10 +102,14 @@ enum PrayerCalculationMethod: String, CaseIterable, Identifiable {
 /// prayer-times extension's settings (same UserDefaults keys) so the native
 /// module and the notification-feed extension share one configuration.
 ///
+/// Location: by default uses the device's GPS (CoreLocation, like Weather) so
+/// the user never has to enter coordinates. A manual override is supported for
+/// cases where location permission is denied or the user wants a fixed city.
+///
 /// Follows the project manager-singleton convention: @MainActor ObservableObject
 /// with static let shared, registered in ModuleType.
 @MainActor
-final class PrayerTimesManager: ObservableObject {
+final class PrayerTimesManager: NSObject, ObservableObject {
     static let shared = PrayerTimesManager()
 
     // MARK: - Published state
@@ -112,13 +117,18 @@ final class PrayerTimesManager: ObservableObject {
     @Published private(set) var schedule: PrayerSchedule = .empty
     @Published private(set) var isLoading = false
     @Published private(set) var lastError: String?
+    /// Human-readable city name from reverse-geocoding the resolved location.
+    @Published private(set) var locationName: String = ""
 
     // MARK: - Settings (shared with the extension via UserDefaults)
 
-    /// Latitude. Default: Riyadh.
-    @AppStorage("latitude") var latitude: Double = 24.7136
-    /// Longitude. Default: Riyadh.
-    @AppStorage("longitude") var longitude: Double = 46.6753
+    /// When true (default), use CoreLocation to determine coordinates automatically.
+    /// When false, fall back to the manual latitude/longitude fields.
+    @AppStorage("prayerTimes.useAutoLocation") var useAutoLocation: Bool = true
+    /// Manual override latitude. Default: Riyadh.
+    @AppStorage("prayerTimes.manualLatitude") var manualLatitude: Double = 24.7136
+    /// Manual override longitude. Default: Riyadh.
+    @AppStorage("prayerTimes.manualLongitude") var manualLongitude: Double = 46.6753
     /// Calculation method id (matches PrayerCalculationMethod).
     @AppStorage("calcMethod") private var calcMethodRaw: String = PrayerCalculationMethod.ummAlQura.rawValue
 
@@ -126,22 +136,78 @@ final class PrayerTimesManager: ObservableObject {
         PrayerCalculationMethod(rawValue: calcMethodRaw) ?? .ummAlQura
     }
 
+    /// Update the calculation method and reload timings.
+    func setCalculationMethod(_ method: PrayerCalculationMethod) {
+        calcMethodRaw = method.rawValue
+        schedule = .empty
+        fetchTimings()
+    }
+
+    /// The coordinates currently in effect, prioritizing a fresh fix when
+    /// auto-location is enabled.
+    private(set) var resolvedLatitude: Double = 24.7136
+    private(set) var resolvedLongitude: Double = 46.6753
+
+    private let locationManager = CLLocationManager()
+    private var lastLocationFix: Date?
+    private var hasFetchedFromLocation = false
     private var refreshToken: ModuleRefreshToken?
     private let defaults = UserDefaults.standard
 
     // MARK: - Init
 
-    private init() {
-        fetchTimings()
+    override private init() {
+        super.init()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+
+        // Seed with manual coords so we can fetch immediately even before the
+        // first GPS fix arrives.
+        resolvedLatitude = manualLatitude
+        resolvedLongitude = manualLongitude
+
+        requestLocationAndFetch()
         registerRefresh()
     }
 
     // MARK: - Settings changes
 
-    /// Call when the user changes location or method to reload immediately.
+    /// Call when the user changes location/method settings to reload immediately.
+    /// When auto-location is turned off, the manual coordinates take effect.
     func settingsDidChange() {
         schedule = .empty
-        fetchTimings()
+        hasFetchedFromLocation = false
+        if useAutoLocation {
+            requestLocationAndFetch()
+        } else {
+            resolvedLatitude = manualLatitude
+            resolvedLongitude = manualLongitude
+            fetchTimings()
+        }
+    }
+
+    // MARK: - Location (CoreLocation, mirrors WeatherManager)
+
+    /// Request a fresh location fix and fetch timings once we have one.
+    func requestLocationAndFetch() {
+        guard useAutoLocation else {
+            resolvedLatitude = manualLatitude
+            resolvedLongitude = manualLongitude
+            fetchTimings()
+            return
+        }
+        switch locationManager.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse, .authorized:
+            locationManager.startUpdatingLocation()
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+            // locationManagerDidChangeAuthorization restarts updates once granted.
+        default:
+            // Denied/restricted — fall back to manual coords and fetch anyway.
+            resolvedLatitude = manualLatitude
+            resolvedLongitude = manualLongitude
+            fetchTimings()
+        }
     }
 
     // MARK: - Fetching (Aladhan API)
@@ -155,7 +221,7 @@ final class PrayerTimesManager: ObservableObject {
         isLoading = true
         lastError = nil
 
-        let urlString = "https://api.aladhan.com/v1/timings/\(key)?latitude=\(latitude)&longitude=\(longitude)&method=\(calcMethodRaw)"
+        let urlString = "https://api.aladhan.com/v1/timings/\(key)?latitude=\(resolvedLatitude)&longitude=\(resolvedLongitude)&method=\(calcMethodRaw)"
         guard let url = URL(string: urlString) else {
             isLoading = false
             lastError = "Invalid URL"
@@ -268,5 +334,62 @@ final class PrayerTimesManager: ObservableObject {
     deinit {
         let token = refreshToken
         Task { @MainActor in ModuleRefreshScheduler.shared.unregister(token) }
+    }
+}
+
+// MARK: - CLLocationManagerDelegate
+
+extension PrayerTimesManager: CLLocationManagerDelegate {
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        Task { @MainActor in
+            switch status {
+            case .authorizedAlways, .authorizedWhenInUse, .authorized:
+                manager.startUpdatingLocation()
+            default:
+                // Permission denied — fall back to manual coordinates.
+                resolvedLatitude = manualLatitude
+                resolvedLongitude = manualLongitude
+                fetchTimings()
+            }
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        Task { @MainActor in
+            // Stop as soon as we have a usable fix — prayer times only need km accuracy.
+            manager.stopUpdatingLocation()
+            resolvedLatitude = location.coordinate.latitude
+            resolvedLongitude = location.coordinate.longitude
+            lastLocationFix = Date()
+
+            // Reverse-geocode for a friendly city name (best-effort, non-blocking).
+            CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, _ in
+                Task { @MainActor in
+                    if let city = placemarks?.first?.locality {
+                        self?.locationName = city
+                    }
+                }
+            }
+
+            // Fetch once per fresh fix (avoids re-fetching on every location tick).
+            if !hasFetchedFromLocation {
+                hasFetchedFromLocation = true
+                fetchTimings()
+            }
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Task { @MainActor in
+            // Fall back to manual coordinates on failure.
+            resolvedLatitude = manualLatitude
+            resolvedLongitude = manualLongitude
+            if !hasFetchedFromLocation {
+                hasFetchedFromLocation = true
+                fetchTimings()
+            }
+        }
     }
 }

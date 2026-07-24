@@ -13,6 +13,10 @@
     "Teleprompter" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "المُلقّن" } } } },
     "Quran" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "القرآن" } } } },
     "Prayer Times" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "مواقيت الصلاة" } } } },
+    "Use automatic location" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "استخدام الموقع التلقائي" } } } },
+    "Latitude" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "خط العرض" } } } },
+    "Longitude" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "خط الطول" } } } },
+    "Calculation method" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "طريقة الحساب" } } } },
     "Home" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الرئيسية" } } } },
     "Empty" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "فارغ" } } } },
 

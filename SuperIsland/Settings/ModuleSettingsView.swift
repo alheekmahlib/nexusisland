@@ -12,6 +12,7 @@ struct ModuleSettingsView: View {
     @ObservedObject private var nowPlayingManager = NowPlayingManager.shared
     @ObservedObject private var shelf = ShelfStore.shared
     @ObservedObject private var teleprompter = TeleprompterManager.shared
+    @ObservedObject private var prayerTimes = PrayerTimesManager.shared
     @State private var teleprompterPermissionRefresh = 0
     @State private var didAutoRequestTeleprompterPermissions = false
 
@@ -168,6 +169,86 @@ struct ModuleSettingsView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 11)
+                }
+            }
+
+            // Prayer Times
+            SettingSectionLabel(title: NSLocalizedString("Prayer Times", comment: "Settings section"))
+            SettingGroup {
+                SettingToggleRow(title: NSLocalizedString("Prayer Times", comment: "Settings label"),
+                                 isOn: $appState.prayerTimesEnabled)
+                if appState.prayerTimesEnabled {
+                    SettingRowDivider()
+                    SettingToggleRow(title: NSLocalizedString("Use automatic location", comment: "Settings label"),
+                                     isOn: $prayerTimes.useAutoLocation)
+                        .onChange(of: prayerTimes.useAutoLocation) { _, _ in
+                            prayerTimes.settingsDidChange()
+                        }
+                    if !prayerTimes.useAutoLocation {
+                        SettingRowDivider()
+                        HStack {
+                            Text(NSLocalizedString("Latitude", comment: "Settings label"))
+                                .font(.system(size: 13))
+                            Spacer()
+                            TextField("", value: $prayerTimes.manualLatitude, format: .number)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 110)
+                                .onChange(of: prayerTimes.manualLatitude) { _, _ in
+                                    prayerTimes.settingsDidChange()
+                                }
+                        }
+                        .padding(.horizontal, 16).padding(.vertical, 8)
+                        HStack {
+                            Text(NSLocalizedString("Longitude", comment: "Settings label"))
+                                .font(.system(size: 13))
+                            Spacer()
+                            TextField("", value: $prayerTimes.manualLongitude, format: .number)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 110)
+                                .onChange(of: prayerTimes.manualLongitude) { _, _ in
+                                    prayerTimes.settingsDidChange()
+                                }
+                        }
+                        .padding(.horizontal, 16).padding(.vertical, 8)
+                    }
+                    SettingRowDivider()
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(NSLocalizedString("Calculation method", comment: "Settings label"))
+                                .font(.system(size: 13))
+                            Text(prayerTimes.calculationMethod.displayName)
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer(minLength: 12)
+                        Picker("", selection: Binding(
+                            get: { prayerTimes.calculationMethod },
+                            set: { newMethod in
+                                prayerTimes.setCalculationMethod(newMethod)
+                            }
+                        )) {
+                            ForEach(PrayerCalculationMethod.allCases) { method in
+                                Text(method.displayName).tag(method)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                        .frame(width: 200)
+                    }
+                    .padding(.horizontal, 16).padding(.vertical, 11)
+                    if !prayerTimes.locationName.isEmpty {
+                        SettingRowDivider()
+                        HStack {
+                            Image(systemName: "location.fill")
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary)
+                            Text(prayerTimes.locationName)
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 16).padding(.vertical, 8)
+                    }
                 }
             }
         }
