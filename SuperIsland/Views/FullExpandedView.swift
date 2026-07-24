@@ -52,6 +52,8 @@ struct FullExpandedView: View {
             TeleprompterExpandedView()
         case .builtIn(.quran):
             QuranFullExpandedView()
+        case .builtIn(.prayerTimes):
+            PrayerTimesFullExpandedView()
         case .builtIn(.nowPlaying), .builtIn(.connectivity):
             HomeScreenView()
         case .extension_(let extensionID):

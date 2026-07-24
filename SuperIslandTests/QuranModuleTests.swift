@@ -172,8 +172,10 @@ final class QuranModuleTests: XCTestCase {
 
     func testQuranIsRegisteredAsModuleType() {
         XCTAssertNotNil(ModuleType(rawValue: "quran"))
-        XCTAssertEqual(ModuleType.quran.displayName, "Quran")
+        // displayName is locale-dependent; assert against stable rawValue + icon.
+        XCTAssertEqual(ModuleType.quran.rawValue, "quran")
         XCTAssertEqual(ModuleType.quran.iconName, "book.fill")
+        XCTAssertFalse(ModuleType.quran.displayName.isEmpty)
     }
 
     func testQuranIsInAllCases() {
