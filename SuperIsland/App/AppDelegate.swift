@@ -148,6 +148,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if state.devServersEnabled { _ = DevServerManager.shared }
         if state.gitStatsEnabled { _ = GitStatsManager.shared }
         if state.dockerEnabled { _ = DockerManager.shared }
+        if state.worldClockEnabled { _ = WorldClockManager.shared }
 
         let extensions = ExtensionManager.shared
         extensions.discoverExtensions()
@@ -455,6 +456,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .devServers: AppState.shared.devServersEnabled = newState
         case .gitStats: AppState.shared.gitStatsEnabled = newState
         case .docker: AppState.shared.dockerEnabled = newState
+        case .worldClock: AppState.shared.worldClockEnabled = newState
         }
         sender.state = newState ? .on : .off
         rebuildStatusMenu()

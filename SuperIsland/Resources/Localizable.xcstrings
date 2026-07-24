@@ -18,6 +18,7 @@
     "Dev Servers" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "خوادم التطوير" } } } },
     "Git Stats" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "إحصائيات Git" } } } },
     "Docker" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "دوكر" } } } },
+    "World Clock" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الساعة العالمية" } } } },
     "Reveal in Finder" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "إظهار في Finder" } } } },
     "Open in Terminal" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "فتح في الطرفية" } } } },
     "Copy URL" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "نسخ الرابط" } } } },

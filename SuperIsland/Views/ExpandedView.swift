@@ -38,7 +38,9 @@ struct ExpandedView: View {
                 case .builtIn(.gitStats):
                     GitStatsExpandedView()
                 case .builtIn(.docker):
-                    DockerExpandedView()
+                    DockerCompactView()
+                case .builtIn(.worldClock):
+                    WorldClockExpandedView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .expanded)
                 }

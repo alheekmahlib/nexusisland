@@ -33,6 +33,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
     case devServers
     case gitStats
     case docker
+    case worldClock
     var id: String { rawValue }
 
     var displayName: String {
@@ -53,6 +54,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .devServers: return NSLocalizedString("Dev Servers", comment: "Module name")
         case .gitStats: return NSLocalizedString("Git Stats", comment: "Module name")
         case .docker: return NSLocalizedString("Docker", comment: "Module name")
+        case .worldClock: return NSLocalizedString("World Clock", comment: "Module name")
         }
     }
 
@@ -74,6 +76,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .devServers: return "server.rack"
         case .gitStats: return "arrow.triangle.branch"
         case .docker: return "shippingbox"
+        case .worldClock: return "clock"
         }
     }
 }
@@ -296,6 +299,7 @@ final class AppState: ObservableObject {
     @AppStorage("module.devServers.enabled") var devServersEnabled = false
     @AppStorage("module.gitStats.enabled") var gitStatsEnabled = false
     @AppStorage("module.docker.enabled") var dockerEnabled = false
+    @AppStorage("module.worldClock.enabled") var worldClockEnabled = false
     @AppStorage("module.shelf.autoOpenOnDrop") var shelfAutoOpenOnDrop = true
     @AppStorage("module.shelf.defaultToShelf") var shelfDefaultToShelf = false
 
@@ -963,6 +967,7 @@ final class AppState: ObservableObject {
         case .devServers: return devServersEnabled
         case .gitStats: return gitStatsEnabled
         case .docker: return dockerEnabled
+        case .worldClock: return worldClockEnabled
         }
     }
 

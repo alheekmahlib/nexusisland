@@ -34,7 +34,8 @@ final class AppStateCoreTests: XCTestCase {
             "shelf",
             "teleprompter",
             "volumeHUD",
-            "weather"
+            "weather",
+            "worldClock"
         ].sorted())
     }
 
