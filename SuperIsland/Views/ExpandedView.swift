@@ -37,6 +37,8 @@ struct ExpandedView: View {
                     DevServersExpandedView()
                 case .builtIn(.gitStats):
                     GitStatsExpandedView()
+                case .builtIn(.docker):
+                    DockerExpandedView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .expanded)
                 }

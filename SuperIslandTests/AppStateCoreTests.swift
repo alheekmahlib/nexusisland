@@ -24,6 +24,7 @@ final class AppStateCoreTests: XCTestCase {
             "ciMonitor",
             "connectivity",
             "devServers",
+            "docker",
             "gitHub",
             "gitStats",
             "nowPlaying",
