@@ -60,21 +60,48 @@ struct PrayerTimesExpandedView: View {
     @ObservedObject private var manager = PrayerTimesManager.shared
 
     var body: some View {
-        HStack(spacing: 12) {
-            if let next = manager.nextPrayerInfo {
-                medallion(next.kind)
-                nextInfo(next)
-            } else {
-                medallion(.isha)
-                loadingInfo
+        VStack(alignment: .leading, spacing: 4) {
+            // Location indicator — shows city or coordinates so the user
+            // can verify the times are for the right place.
+            locationBadge
+
+            HStack(spacing: 12) {
+                if let next = manager.nextPrayerInfo {
+                    medallion(next.kind)
+                    nextInfo(next)
+                } else {
+                    medallion(.isha)
+                    loadingInfo
+                }
+
+                Divider().background(QuranDesign.surfaceStroke).frame(maxHeight: 60)
+
+                // Compact list of the remaining prayers with their times.
+                todayList
             }
-
-            Divider().background(QuranDesign.surfaceStroke).frame(maxHeight: 60)
-
-            // Compact list of the remaining prayers with their times.
-            todayList
         }
         .environment(\.layoutDirection, .rightToLeft)
+    }
+
+    private var locationBadge: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "location.fill").font(.system(size: 8)).foregroundColor(QuranDesign.accent)
+            if !manager.locationName.isEmpty {
+                Text(manager.locationName)
+                    .font(QuranDesign.caption(8))
+                    .foregroundColor(QuranDesign.textTertiary)
+            } else {
+                // Show coordinates so the user sees which location is in use.
+                Text(String(format: "%.2f, %.2f", manager.resolvedLatitude, manager.resolvedLongitude))
+                    .font(QuranDesign.mono(8))
+                    .foregroundColor(manager.hasLocationFix ? QuranDesign.accent : QuranDesign.textTertiary)
+            }
+            if !manager.hasLocationFix && manager.useAutoLocation {
+                Text("(بانتظار الموقع)")
+                    .font(QuranDesign.caption(7))
+                    .foregroundColor(.orange)
+            }
+        }
     }
 
     private func medallion(_ kind: PrayerKind) -> some View {
@@ -210,6 +237,29 @@ struct PrayerTimesFullExpandedView: View {
                         .environment(\.layoutDirection, .rightToLeft)
                 }
             }
+
+            // Location badge so the user can verify which city the times are for.
+            HStack(spacing: 6) {
+                Image(systemName: "location.fill")
+                    .font(.system(size: 10))
+                    .foregroundColor(manager.hasLocationFix ? QuranDesign.accent : .orange)
+                if !manager.locationName.isEmpty {
+                    Text(manager.locationName)
+                        .font(QuranDesign.body(11))
+                        .foregroundColor(QuranDesign.textSecondary)
+                } else {
+                    Text(String(format: "%.2f, %.2f", manager.resolvedLatitude, manager.resolvedLongitude))
+                        .font(QuranDesign.mono(10))
+                        .foregroundColor(QuranDesign.textTertiary)
+                }
+                if !manager.hasLocationFix && manager.useAutoLocation {
+                    Text("— بانتظار الموقع")
+                        .font(QuranDesign.caption(9))
+                        .foregroundColor(.orange)
+                }
+            }
+            .environment(\.layoutDirection, .rightToLeft)
+
             Spacer(minLength: 0)
         }
         .padding(12)

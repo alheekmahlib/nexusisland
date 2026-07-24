@@ -190,9 +190,12 @@ final class PrayerTimesManager: NSObject, ObservableObject {
     }
 
     /// The coordinates currently in effect, prioritizing a fresh fix when
-    /// auto-location is enabled.
-    private(set) var resolvedLatitude: Double = 24.7136
-    private(set) var resolvedLongitude: Double = 46.6753
+    /// auto-location is enabled. Published so the UI can show which location
+    /// the times are computed for.
+    @Published private(set) var resolvedLatitude: Double = 24.7136
+    @Published private(set) var resolvedLongitude: Double = 46.6753
+    /// True when CoreLocation has provided a real fix (not the default Riyadh).
+    @Published private(set) var hasLocationFix = false
 
     private let locationManager = CLLocationManager()
     private var lastLocationFix: Date?
@@ -437,6 +440,7 @@ extension PrayerTimesManager: CLLocationManagerDelegate {
             resolvedLatitude = location.coordinate.latitude
             resolvedLongitude = location.coordinate.longitude
             lastLocationFix = Date()
+            hasLocationFix = true
 
             // Reverse-geocode for a friendly city name (best-effort, non-blocking).
             CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, _ in
