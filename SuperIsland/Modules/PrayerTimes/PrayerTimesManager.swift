@@ -248,9 +248,15 @@ final class PrayerTimesManager: NSObject, ObservableObject {
         switch locationManager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse, .authorized:
             locationManager.startUpdatingLocation()
+            // Fetch immediately with current/default coords so the UI isn't
+            // empty while waiting for the GPS fix. Updates when fix arrives.
+            fetchTimings()
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
-            // locationManagerDidChangeAuthorization restarts updates once granted.
+            // CRITICAL: fetch with default coords NOW so the UI isn't blank
+            // while waiting for the permission dialog. locationManagerDidChangeAuthorization
+            // will re-fetch with real coords once granted.
+            fetchTimings()
         default:
             // Denied/restricted — fall back to manual coords and fetch anyway.
             resolvedLatitude = manualLatitude
