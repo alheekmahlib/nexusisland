@@ -47,7 +47,7 @@ enum PrayerKind: String, CaseIterable, Identifiable {
 
 /// All six timings for a single day, keyed by PrayerKind.
 struct PrayerSchedule: Equatable {
-    let dateKey: String           // "yyyy-MM-dd"
+    let dateKey: String           // "dd-MM-yyyy" (matches Aladhan's path format)
     let times: [PrayerKind: Date] // today's Date for each prayer
     let hijriDate: String?        // "15 محرم 1448"
 
@@ -266,13 +266,26 @@ final class PrayerTimesManager: NSObject, ObservableObject {
         if let date = payload["date"] as? [String: Any],
            let hijriDict = date["hijri"] as? [String: Any] {
             let day = hijriDict["day"] as? String ?? ""
-            let month = (hijriDict["month"] as? [String: Any])?["ar"] as? String ?? ""
+            // Aladhan returns Arabic month names WITH harakat (e.g. "مُحَرَّم");
+            // strip the diacritics for a cleaner display matching HijriDateFormatter.
+            let rawMonth = (hijriDict["month"] as? [String: Any])?["ar"] as? String ?? ""
+            let month = Self.stripArabicDiacritics(rawMonth)
             let year = hijriDict["year"] as? String ?? ""
             let composed = "\(day) \(month) \(year)".trimmingCharacters(in: .whitespaces)
             hijri = composed.isEmpty ? nil : composed
         }
 
         return PrayerSchedule(dateKey: dateKey, times: times, hijriDate: hijri)
+    }
+
+    /// Remove Arabic harakat/diacritics from a string for cleaner display.
+    static func stripArabicDiacritics(_ string: String) -> String {
+        // Unicode range U+064B–U+0652 covers the common harakat (fatha, kasra,
+        // damma, shadda, sukun, tanwin). U+0670 is superscript alef.
+        let diacritics = CharacterSet(charactersIn: "\u{064B}"..."\u{0652}")
+            .union(CharacterSet(charactersIn: "\u{0670}"..."\u{0670}"))
+            .union(CharacterSet(charactersIn: "\u{0640}"..."\u{0640}")) // tatweel
+        return string.components(separatedBy: diacritics).joined()
     }
 
     /// Convert Aladhan's "HH:MM (TZ)" or "HH:MM" to today's Date.
@@ -292,8 +305,11 @@ final class PrayerTimesManager: NSObject, ObservableObject {
     // MARK: - Helpers
 
     static func todayKey() -> String {
+        // Aladhan's timings endpoint expects DD-MM-YYYY in the path. Sending
+        // YYYY-MM-DD silently returns a default/old date, so the format MUST
+        // be dd-MM-yyyy.
         let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd"
+        f.dateFormat = "dd-MM-yyyy"
         f.locale = Locale(identifier: "en_US_POSIX")
         return f.string(from: Date())
     }

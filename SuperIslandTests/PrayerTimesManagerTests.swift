@@ -156,4 +156,40 @@ final class PrayerTimesManagerTests: XCTestCase {
         XCTAssertEqual(ModuleType.prayerTimes.iconName, "moon.stars.fill")
         XCTAssertFalse(ModuleType.prayerTimes.displayName.isEmpty)
     }
+
+    // MARK: - Date format (Aladhan expects DD-MM-YYYY)
+
+    func testTodayKeyIsDayMonthYearFormat() {
+        let key = PrayerTimesManager.todayKey()
+        // DD-MM-YYYY: 10 chars, digits and hyphens, two hyphens.
+        XCTAssertEqual(key.count, 10)
+        XCTAssertEqual(key.filter { $0 == "-" }.count, 2)
+        // Verify the ordering: day (1-31) comes first.
+        let parts = key.split(separator: "-")
+        XCTAssertEqual(parts.count, 3)
+        let day = Int(parts[0]) ?? 0
+        XCTAssertTrue((1...31).contains(day), "first segment should be the day, got \(key)")
+    }
+
+    // MARK: - Arabic diacritics stripping
+
+    func testStripDiacriticsRemovesHarakat() {
+        XCTAssertEqual(PrayerTimesManager.stripArabicDiacritics("مُحَرَّم"), "محرم")
+        XCTAssertEqual(PrayerTimesManager.stripArabicDiacritics("صَفَر"), "صفر")
+        XCTAssertEqual(PrayerTimesManager.stripArabicDiacritics("رَمَضَان"), "رمضان")
+    }
+
+    func testStripDiacriticsLeavesPlainTextIntact() {
+        XCTAssertEqual(PrayerTimesManager.stripArabicDiacritics("محرم"), "محرم")
+        XCTAssertEqual(PrayerTimesManager.stripArabicDiacritics(""), "")
+    }
+
+    func testParsePayloadStripsDiacriticsFromHijriMonth() {
+        let payload: [String: Any] = [
+            "timings": ["Fajr": "05:00"],
+            "date": ["hijri": ["day": "9", "month": ["ar": "صَفَر"], "year": "1448"]]
+        ]
+        let schedule = PrayerTimesManager.parse(payload: payload, dateKey: "23-07-2026")
+        XCTAssertEqual(schedule.hijriDate, "9 صفر 1448")
+    }
 }

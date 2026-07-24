@@ -434,7 +434,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 PermissionsManager.shared.requestTeleprompterWordTrackingAccess()
             }
         case .quran: AppState.shared.quranEnabled = newState
-        case .prayerTimes: AppState.shared.prayerTimesEnabled = newState
+        case .prayerTimes:
+            AppState.shared.prayerTimesEnabled = newState
+            if newState {
+                // Touch the singleton so its init runs (CoreLocation auth
+                // request + first fetch). Without this the lazy singleton is
+                // never created and no permission prompt appears.
+                _ = PrayerTimesManager.shared
+                PrayerTimesManager.shared.settingsDidChange()
+            }
         }
         sender.state = newState ? .on : .off
         rebuildStatusMenu()
