@@ -95,6 +95,35 @@ struct GeneralSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
 
+            // Language
+            SettingSectionLabel(title: "Language")
+            SettingGroup {
+                HStack {
+                    Text("App language").font(.system(size: 13))
+                    Spacer()
+                    Picker("", selection: Binding(
+                        get: { appState.languageOverride },
+                        set: { appState.languageOverride = $0 }
+                    )) {
+                        Text("System").tag("system")
+                        Text("English").tag("en")
+                        Text("العربية").tag("ar")
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                    .frame(width: 140)
+                }
+                .padding(.horizontal, 16).padding(.vertical, 11)
+
+                SettingRowDivider()
+                HStack {
+                    Text("Restart required to apply").font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                    Spacer()
+                }
+                .padding(.horizontal, 16).padding(.vertical, 8)
+            }
+
             // Startup
             SettingSectionLabel(title: "Startup")
             SettingGroup {

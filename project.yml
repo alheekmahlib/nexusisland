@@ -5,6 +5,9 @@ options:
     macOS: "14.0"
   minimumXcodeGenVersion: "2.35"
   generateEmptyDirectories: true
+  knownRegions:
+    - en
+    - ar
 settings:
   base:
     SWIFT_VERSION: "5.9"

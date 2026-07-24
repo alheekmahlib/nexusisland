@@ -31,16 +31,16 @@ enum ModuleType: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .nowPlaying: return "Now Playing"
-        case .volumeHUD: return "Volume"
-        case .battery: return "Battery"
-        case .shelf: return "Shelf"
-        case .connectivity: return "Connectivity"
-        case .calendar: return "Calendar"
-        case .weather: return "Weather"
-        case .notifications: return "Notifications"
-        case .teleprompter: return "Teleprompter"
-        case .quran: return "Quran"
+        case .nowPlaying: return NSLocalizedString("Now Playing", comment: "Module name")
+        case .volumeHUD: return NSLocalizedString("Volume", comment: "Module name")
+        case .battery: return NSLocalizedString("Battery", comment: "Module name")
+        case .shelf: return NSLocalizedString("Shelf", comment: "Module name")
+        case .connectivity: return NSLocalizedString("Connectivity", comment: "Module name")
+        case .calendar: return NSLocalizedString("Calendar", comment: "Module name")
+        case .weather: return NSLocalizedString("Weather", comment: "Module name")
+        case .notifications: return NSLocalizedString("Notifications", comment: "Module name")
+        case .teleprompter: return NSLocalizedString("Teleprompter", comment: "Module name")
+        case .quran: return NSLocalizedString("Quran", comment: "Module name")
         }
     }
 
@@ -289,6 +289,9 @@ final class AppState: ObservableObject {
 
     // General settings
     @AppStorage("general.showMenuBarIcon") var showMenuBarIcon = true
+    /// App language override. "system" follows the macOS preferred languages;
+    /// "en" / "ar" force a specific language. Applied via applyLanguageOverride().
+    @AppStorage("general.language") var languageOverride: String = "system"
     @AppStorage("general.showOnAllSpaces") var showOnAllSpaces = true
     @AppStorage("general.launchAtLogin") var launchAtLogin = false
     @AppStorage("general.showInScreenRecordings") var showInScreenRecordings = false
@@ -429,6 +432,21 @@ final class AppState: ObservableObject {
         guard isAppActive != active else { return }
         isAppActive = active
         refreshEnergyState()
+    }
+
+    /// Apply the user's language override to the active locale. Call at launch
+    /// (after setting languageOverride from @AppStorage) and whenever it changes.
+    /// A change requires an app restart to fully relayout, so the caller should
+    /// prompt the user; we set the languages here so the next launch picks them up.
+    func applyLanguageOverride() {
+        let resolved: [String]
+        switch languageOverride {
+        case "ar": resolved = ["ar"]
+        case "en": resolved = ["en"]
+        default:   resolved = [] // empty → follow macOS preferred languages
+        }
+        UserDefaults.standard.set(resolved.isEmpty ? nil : resolved,
+                                  forKey: "AppleLanguages")
     }
 
     func refreshEnergyState() {

@@ -1,0 +1,38 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+
+    "Now Playing" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الوسائط الآن" } } } },
+    "Volume" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "مستوى الصوت" } } } },
+    "Battery" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "البطارية" } } } },
+    "Shelf" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الرف" } } } },
+    "Connectivity" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الاتصال" } } } },
+    "Calendar" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "التقويم" } } } },
+    "Weather" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الطقس" } } } },
+    "Notifications" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الإشعارات" } } } },
+    "Teleprompter" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "المُلقّن" } } } },
+    "Quran" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "القرآن" } } } },
+
+    "General" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "عام" } } } },
+    "Modules" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الوحدات" } } } },
+    "Appearance" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "المظهر" } } } },
+    "Extensions" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الإضافات" } } } },
+    "Advanced" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "متقدم" } } } },
+
+    "Show island on" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "إظهار الجزيرة على" } } } },
+    "Pick a specific display or let SuperIsland choose" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "اختر شاشة محددة أو دع SuperIsland يختار" } } } },
+
+    "No events" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "لا توجد فعاليات" } } } },
+    "Event" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "فعالية" } } } },
+    "No events scheduled today" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "لا توجد فعاليات اليوم" } } } },
+
+    "Check for Updates" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "التحقق من التحديثات" } } } },
+    "Restore all settings to their defaults" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "استعادة كل الإعدادات الافتراضية" } } } },
+
+    "Play" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "تشغيل" } } } },
+    "Pause" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "إيقاف مؤقت" } } } },
+    "Settings" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الإعدادات" } } } },
+    "Quit SuperIsland" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "إنهاء SuperIsland" } } } }
+  },
+  "version" : "1.0"
+}

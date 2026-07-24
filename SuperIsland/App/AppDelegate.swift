@@ -29,6 +29,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             "build": Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
         ])
 
+        // Apply the user's language override before any UI is built so the
+        // NSLocalizedString lookups resolve against the right locale.
+        AppState.shared.applyLanguageOverride()
+
         registerURLHandler()
         installQuitHotkeyMonitor()
 
