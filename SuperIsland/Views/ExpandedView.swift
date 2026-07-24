@@ -29,6 +29,8 @@ struct ExpandedView: View {
                     QuranExpandedView()
                 case .builtIn(.prayerTimes):
                     PrayerTimesExpandedView()
+                case .builtIn(.gitHub):
+                    GitHubExpandedView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .expanded)
                 }

@@ -86,6 +86,8 @@ struct CompactView: View {
                     QuranCompactView()
                 case .builtIn(.prayerTimes):
                     PrayerTimesCompactView()
+                case .builtIn(.gitHub):
+                    GitHubCompactView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .compact)
                 }
