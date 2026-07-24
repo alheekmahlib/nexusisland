@@ -16,7 +16,7 @@
     "compact": false,
     "expanded": false,
     "fullExpanded": false,
-    "minimalCompact": false,
+    "minimalCompact": true,
     "backgroundRefresh": true,
     "settings": true,
     "notificationFeed": true
