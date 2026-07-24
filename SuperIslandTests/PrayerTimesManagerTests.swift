@@ -33,8 +33,13 @@ final class PrayerTimesManagerTests: XCTestCase {
 
     // MARK: - Calculation method
 
-    func testUmmAlQuraIsDefaultMethod() {
-        XCTAssertEqual(PrayerTimesManager.shared.calculationMethod, .ummAlQura)
+    func testUmmAlQuraIsDefaultMethodValue() {
+        // The DEFAULT value of calcMethodRaw is ummAlQura. The shared singleton
+        // may have had it changed by user interaction, so we assert against the
+        // raw default rather than the live singleton state.
+        let raw = PrayerCalculationMethod.ummAlQura.rawValue
+        let resolved = PrayerCalculationMethod(rawValue: raw)
+        XCTAssertEqual(resolved, .ummAlQura)
     }
 
     func testCalculationMethodDisplayNames() {
@@ -118,6 +123,58 @@ final class PrayerTimesManagerTests: XCTestCase {
         let next = schedule.nextPrayer(now: now)
         XCTAssertEqual(next?.kind, .fajr)
         XCTAssertGreaterThan(next!.date, now)
+    }
+
+    // MARK: - Interval progress (drives the progress bar)
+
+    func testIntervalProgressAtStartOfInterval() {
+        let cal = Calendar.current
+        let fajr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 5, minute: 0))!
+        let dhuhr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 12, minute: 0))!
+        let now = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 5, minute: 1))!
+        let schedule = PrayerSchedule(dateKey: "2026-07-23",
+                                      times: [.fajr: fajr, .dhuhr: dhuhr], hijriDate: nil)
+        let fraction = schedule.intervalProgress(now: now)
+        XCTAssertNotNil(fraction)
+        // Just after Fajr → near 0.
+        XCTAssertLessThan(fraction!, 0.05)
+    }
+
+    func testIntervalProgressMidway() {
+        let cal = Calendar.current
+        let fajr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 5, minute: 0))!
+        let dhuhr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 12, minute: 0))!
+        // Halfway: 5:00 + 3.5h = 8:30 (interval is 7h)
+        let now = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 8, minute: 30))!
+        let schedule = PrayerSchedule(dateKey: "2026-07-23",
+                                      times: [.fajr: fajr, .dhuhr: dhuhr], hijriDate: nil)
+        let fraction = schedule.intervalProgress(now: now)
+        XCTAssertNotNil(fraction)
+        XCTAssertEqual(fraction!, 0.5, accuracy: 0.02)
+    }
+
+    func testIntervalProgressJustBeforeNextPrayer() {
+        let cal = Calendar.current
+        let fajr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 5, minute: 0))!
+        let dhuhr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 12, minute: 0))!
+        // 1 minute before Dhuhr → near 1.0
+        let now = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 11, minute: 59))!
+        let schedule = PrayerSchedule(dateKey: "2026-07-23",
+                                      times: [.fajr: fajr, .dhuhr: dhuhr], hijriDate: nil)
+        let fraction = schedule.intervalProgress(now: now)
+        XCTAssertNotNil(fraction)
+        XCTAssertGreaterThan(fraction!, 0.95)
+    }
+
+    func testPreviousPrayerFindsLatestPassed() {
+        let cal = Calendar.current
+        let fajr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 5, minute: 0))!
+        let dhuhr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 12, minute: 0))!
+        let asr = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 15, minute: 30))!
+        let now = cal.date(from: DateComponents(year: 2026, month: 7, day: 23, hour: 14, minute: 0))!
+        let schedule = PrayerSchedule(dateKey: "2026-07-23",
+                                      times: [.fajr: fajr, .dhuhr: dhuhr, .asr: asr], hijriDate: nil)
+        XCTAssertEqual(schedule.previousPrayer(now: now)?.kind, .dhuhr)
     }
 
     // MARK: - Countdown

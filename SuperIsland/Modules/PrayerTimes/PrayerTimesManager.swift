@@ -29,6 +29,18 @@ enum PrayerKind: String, CaseIterable, Identifiable {
         }
     }
 
+    /// Short Arabic label for tight progress-bar endpoints (without the "ال").
+    var arabicShortName: String {
+        switch self {
+        case .fajr: return "الفجر"
+        case .sunrise: return "الشروق"
+        case .dhuhr: return "الظهر"
+        case .asr: return "العصر"
+        case .maghrib: return "المغرب"
+        case .isha: return "العشاء"
+        }
+    }
+
     /// SF Symbol representing the time of day.
     var iconName: String {
         switch self {
@@ -66,6 +78,40 @@ struct PrayerSchedule: Equatable {
             return (kind: .fajr, date: tomorrowFajr)
         }
         return nil
+    }
+
+    /// The most recent prayer that has already started, relative to `now`.
+    /// Used to compute the inter-prayer progress fraction. Returns nil if we
+    /// are before the first prayer of the day.
+    func previousPrayer(now: Date) -> (kind: PrayerKind, date: Date)? {
+        let ordered: [PrayerKind] = [.fajr, .sunrise, .dhuhr, .asr, .maghrib, .isha]
+        var last: (PrayerKind, Date)?
+        for kind in ordered {
+            // Use strict < so that at the exact instant of a prayer, that
+            // prayer becomes "next" (not previous) — keeps the interval logic
+            // consistent at boundaries.
+            if let time = times[kind], time < now {
+                last = (kind, time)
+            }
+        }
+        // If none today, we're before Fajr → previous is yesterday's Isha.
+        if last == nil, let isha = times[.isha],
+           let yesterdayIsha = Calendar.current.date(byAdding: .day, value: -1, to: isha) {
+            return (kind: .isha, date: yesterdayIsha)
+        }
+        return last.map { (kind: $0.0, date: $0.1) }
+    }
+
+    /// Fraction of the current inter-prayer interval that has elapsed,
+    /// 0...1. Drives the progress bar between the previous and next prayer.
+    /// Returns nil if either boundary is unknown.
+    func intervalProgress(now: Date) -> Double? {
+        guard let next = nextPrayer(now: now),
+              let prev = previousPrayer(now: now) else { return nil }
+        let total = next.date.timeIntervalSince(prev.date)
+        guard total > 0 else { return 0 }
+        let elapsed = now.timeIntervalSince(prev.date)
+        return min(1, max(0, elapsed / total))
     }
 
     static let empty = PrayerSchedule(dateKey: "", times: [:], hijriDate: nil)
@@ -329,6 +375,18 @@ final class PrayerTimesManager: NSObject, ObservableObject {
     var nextPrayerInfo: (kind: PrayerKind, date: Date, countdown: String)? {
         guard let next = schedule.nextPrayer(now: Date()) else { return nil }
         return (next.kind, next.date, Self.countdownString(from: Date(), to: next.date))
+    }
+
+    /// The previous prayer (the one we're currently inside the interval of).
+    var previousPrayerInfo: (kind: PrayerKind, date: Date)? {
+        guard let prev = schedule.previousPrayer(now: Date()) else { return nil }
+        return (prev.kind, prev.date)
+    }
+
+    /// Fraction (0...1) of the current inter-prayer interval elapsed — drives
+    /// the progress bar. nil if not yet computable.
+    var progressFraction: Double? {
+        schedule.intervalProgress(now: Date())
     }
 
     // MARK: - Refresh

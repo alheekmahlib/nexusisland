@@ -16,15 +16,24 @@ struct PrayerTimesCompactView: View {
                     .frame(width: 20, height: 20)
                     .background(Circle().fill(QuranDesign.accentSoft))
 
-                Text(next.kind.arabicName)
-                    .font(QuranDesign.surahName(12))
-                    .foregroundColor(QuranDesign.textPrimary)
-                    .lineLimit(1)
-                    .environment(\.layoutDirection, .rightToLeft)
-
-                Text(next.countdown)
-                    .font(QuranDesign.mono(10))
-                    .foregroundColor(QuranDesign.textSecondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 4) {
+                        Text(next.kind.arabicName)
+                            .font(QuranDesign.surahName(11))
+                            .foregroundColor(QuranDesign.textPrimary)
+                            .lineLimit(1)
+                            .environment(\.layoutDirection, .rightToLeft)
+                        Text(next.countdown)
+                            .font(QuranDesign.mono(9))
+                            .foregroundColor(QuranDesign.textSecondary)
+                    }
+                    // Progress hairline: elapsed fraction of the current
+                    // inter-prayer interval, gold fill.
+                    if let fraction = manager.progressFraction {
+                        PrayerProgressHairline(progress: fraction)
+                            .frame(width: 60, height: 2)
+                    }
+                }
             }
         } else if manager.isLoading {
             HStack(spacing: 6) {
@@ -60,7 +69,7 @@ struct PrayerTimesExpandedView: View {
                 loadingInfo
             }
 
-            Divider().background(QuranDesign.surfaceStroke).frame(maxHeight: 50)
+            Divider().background(QuranDesign.surfaceStroke).frame(maxHeight: 60)
 
             // Compact list of the remaining prayers with their times.
             todayList
@@ -81,16 +90,23 @@ struct PrayerTimesExpandedView: View {
     }
 
     private func nextInfo(_ next: (kind: PrayerKind, date: Date, countdown: String)) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text("القادمة")
-                .font(QuranDesign.caption(9))
-                .foregroundColor(QuranDesign.textTertiary)
-            Text(next.kind.arabicName)
-                .font(QuranDesign.surahName(14))
+        VStack(alignment: .leading, spacing: 4) {
+            Text(next.kind.arabicName + " · " + next.countdown)
+                .font(QuranDesign.surahName(13))
                 .foregroundColor(QuranDesign.textPrimary)
-            Text("بعد " + next.countdown)
-                .font(QuranDesign.body(11))
-                .foregroundColor(QuranDesign.accent)
+                .environment(\.layoutDirection, .rightToLeft)
+
+            // The professional progress bar: shows elapsed fraction of the
+            // current inter-prayer interval, with previous→next labels.
+            if let fraction = manager.progressFraction,
+               let prev = manager.previousPrayerInfo {
+                PrayerProgressBar(
+                    progress: fraction,
+                    leadingLabel: prev.kind.arabicShortName,
+                    trailingLabel: next.kind.arabicShortName
+                )
+                .frame(height: 12)
+            }
         }
     }
 
@@ -264,4 +280,94 @@ struct PrayerTimesFullExpandedView: View {
         f.locale = Locale(identifier: "en_US_POSIX")
         return f
     }()
+}
+
+// MARK: - Prayer Progress Bar (professional inter-prayer interval indicator)
+//
+// Shows the elapsed fraction of the current interval between two prayers as
+// a smooth gold gradient bar with a soft glowing knob, plus short endpoint
+// labels for the previous and next prayer. The fill animates with a gentle
+// ease so it feels alive as time passes.
+
+struct PrayerProgressBar: View {
+    let progress: Double                 // 0...1
+    var leadingLabel: String             // previous prayer short name
+    var trailingLabel: String            // next prayer short name
+
+    var body: some View {
+        VStack(spacing: 2) {
+            track
+            labels
+        }
+    }
+
+    private var track: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let fill = max(0, width * progress)
+
+            ZStack(alignment: .leading) {
+                // Background track.
+                Capsule()
+                    .fill(QuranDesign.surfaceStroke)
+                    .frame(height: 5)
+
+                // Filled portion — a gold gradient for a premium feel.
+                Capsule()
+                    .fill(
+                        LinearGradient(
+                            colors: [QuranDesign.accent.opacity(0.6), QuranDesign.accent],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: fill, height: 5)
+                    .animation(.easeOut(duration: 0.4), value: progress)
+
+                // Glowing knob at the leading edge of the fill.
+                Circle()
+                    .fill(QuranDesign.accent)
+                    .frame(width: 9, height: 9)
+                    .shadow(color: QuranDesign.accent.opacity(0.6), radius: 3)
+                    .offset(x: max(0, fill - 4.5))
+                    .animation(.easeOut(duration: 0.4), value: progress)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        }
+        .frame(height: 12)
+    }
+
+    private var labels: some View {
+        HStack(spacing: 0) {
+            Text(leadingLabel)
+                .font(QuranDesign.caption(8))
+                .foregroundColor(QuranDesign.textTertiary)
+            Spacer()
+            Text(trailingLabel)
+                .font(QuranDesign.caption(8))
+                .foregroundColor(QuranDesign.textTertiary)
+        }
+        .environment(\.layoutDirection, .rightToLeft)
+    }
+}
+
+// MARK: - Prayer Progress Hairline (compact pill)
+//
+// A non-interactive 2pt hairline for the tight 200×36 compact row — just the
+// fill, no knob or labels.
+
+struct PrayerProgressHairline: View {
+    let progress: Double
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule().fill(QuranDesign.surfaceStroke)
+                Capsule()
+                    .fill(QuranDesign.accent.opacity(0.85))
+                    .frame(width: proxy.size.width * progress)
+                    .animation(.easeOut(duration: 0.4), value: progress)
+            }
+        }
+    }
 }
