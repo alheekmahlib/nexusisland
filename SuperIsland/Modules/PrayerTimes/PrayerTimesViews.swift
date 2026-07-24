@@ -101,7 +101,7 @@ struct PrayerTimesExpandedView: View {
             if let fraction = manager.progressFraction,
                let prev = manager.previousPrayerInfo {
                 PrayerProgressBar(
-                    progress: fraction,
+                    progress: max(0.04, fraction), // floor so the fill is always visible
                     leadingLabel: prev.kind.arabicShortName,
                     trailingLabel: next.kind.arabicShortName
                 )

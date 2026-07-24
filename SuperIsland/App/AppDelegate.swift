@@ -141,6 +141,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 permissions.requestTeleprompterWordTrackingAccess()
             }
         }
+        if state.quranEnabled { _ = QuranManager.shared }
+        if state.prayerTimesEnabled { _ = PrayerTimesManager.shared }
 
         let extensions = ExtensionManager.shared
         extensions.discoverExtensions()
