@@ -269,6 +269,6 @@ extension WeatherManager: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        NSLog("SuperIsland: location error — \(error.localizedDescription), status=\(locationManager.authorizationStatus.rawValue)")
+        NSLog("NexusIsland: location error — \(error.localizedDescription), status=\(locationManager.authorizationStatus.rawValue)")
     }
 }

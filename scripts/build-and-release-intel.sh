@@ -4,7 +4,7 @@
 # or reads from .env file
 #
 # Produces an Intel-only (x86_64) signed + notarized DMG at
-# build-intel/SuperIsland-x86_64.dmg. The arm64 release script
+# build-intel/NexusIsland-x86_64.dmg. The arm64 release script
 # (./scripts/build-and-release.sh) is the canonical Apple Silicon path
 # and writes to build/. The two are intentionally kept as separate
 # self-contained scripts so each is easy to debug in isolation.
@@ -13,14 +13,14 @@ set -euo pipefail
 
 # --- Configuration (from env or .env file) ---
 source .env 2>/dev/null || true
-APP_NAME="SuperIsland"
+APP_NAME="NexusIsland"
 SCHEME="${APP_NAME}"
 BUILD_DIR="build-intel"
 ARCHIVE_PATH="${BUILD_DIR}/${APP_NAME}.xcarchive"
 APP_PATH="${BUILD_DIR}/${APP_NAME}.app"
 DMG_PATH="${BUILD_DIR}/${APP_NAME}-x86_64.dmg"
 DMG_STAGING_DIR="${BUILD_DIR}/dmg-root"
-ENTITLEMENTS="SuperIsland/SuperIsland.entitlements"
+ENTITLEMENTS="NexusIsland/NexusIsland.entitlements"
 
 # Required env vars
 : "${APPLE_ID:?Set APPLE_ID in .env}"
@@ -74,7 +74,7 @@ rm -rf "${NODE_TMP}"
 echo "   Bundled node v${NODE_VERSION} ($(du -sh "${APP_PATH}/Contents/Resources/node" | cut -f1))"
 
 echo "==> Re-signing app (required after injecting node binary)..."
-NODE_ENTITLEMENTS="SuperIsland/node.entitlements"
+NODE_ENTITLEMENTS="NexusIsland/node.entitlements"
 codesign --sign "${SIGNING_IDENTITY}" --force --options runtime \
   --entitlements "${NODE_ENTITLEMENTS}" \
   "${APP_PATH}/Contents/Resources/node"

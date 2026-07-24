@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for GitHubModels — parsing and the priority/sort logic that drives
 /// the watcher's display order. The manager shells out to `gh` (I/O), so we

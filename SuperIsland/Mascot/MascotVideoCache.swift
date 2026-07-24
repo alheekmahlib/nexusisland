@@ -8,7 +8,7 @@ actor MascotVideoCache {
 
     private init() {
         let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        cacheDirectory = caches.appendingPathComponent("SuperIsland/Mascots", isDirectory: true)
+        cacheDirectory = caches.appendingPathComponent("NexusIsland/Mascots", isDirectory: true)
         try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
     }
 

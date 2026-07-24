@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for GitStatReader's pure parsing functions.
 final class GitStatsParserTests: XCTestCase {

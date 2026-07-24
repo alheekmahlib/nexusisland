@@ -24,10 +24,10 @@
     <array>
         <dict>
             <key>CFBundleURLName</key>
-            <string>com.workview.SuperIsland.oauth</string>
+            <string>com.vexaltech.NexusIsland.oauth</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>superisland</string>
+                <string>nexusisland</string>
             </array>
         </dict>
     </array>
@@ -36,29 +36,29 @@
     <key>LSUIElement</key>
     <true/>
     <key>NSCalendarsFullAccessUsageDescription</key>
-    <string>SuperIsland needs calendar access to show upcoming events.</string>
+    <string>Nexus Island needs calendar access to show upcoming events.</string>
     <key>NSCalendarsUsageDescription</key>
-    <string>SuperIsland needs calendar access to show upcoming events.</string>
+    <string>Nexus Island needs calendar access to show upcoming events.</string>
     <key>NSRemindersFullAccessUsageDescription</key>
-    <string>SuperIsland needs reminders access to show your pending tasks.</string>
+    <string>Nexus Island needs reminders access to show your pending tasks.</string>
     <key>NSRemindersUsageDescription</key>
-    <string>SuperIsland needs reminders access to show your pending tasks.</string>
+    <string>Nexus Island needs reminders access to show your pending tasks.</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>SuperIsland needs Bluetooth access to show connected device notifications.</string>
+    <string>Nexus Island needs Bluetooth access to show connected device notifications.</string>
     <key>NSLocationUsageDescription</key>
-    <string>SuperIsland needs location access for weather information.</string>
+    <string>Nexus Island needs location access for weather and prayer times.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>SuperIsland needs location access for weather information.</string>
+    <string>Nexus Island needs location access for weather and prayer times.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>SuperIsland needs location access for weather information.</string>
+    <string>Nexus Island needs location access for weather and prayer times.</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>SuperIsland needs microphone access for audio visualization and Teleprompter word tracking.</string>
+    <string>Nexus Island needs microphone access for audio visualization and Teleprompter word tracking.</string>
     <key>NSSpeechRecognitionUsageDescription</key>
-    <string>SuperIsland uses speech recognition to follow along with Teleprompter scripts as you read.</string>
+    <string>Nexus Island uses speech recognition to follow along with Teleprompter scripts as you read.</string>
     <key>NSAppleEventsUsageDescription</key>
-    <string>SuperIsland needs automation access to detect currently playing media in browsers and music apps.</string>
+    <string>Nexus Island needs automation access to detect currently playing media in browsers and music apps.</string>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2024 WorkView. All rights reserved.</string>
+    <string>Copyright © 2026 VexalTech. All rights reserved.</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
 </dict>

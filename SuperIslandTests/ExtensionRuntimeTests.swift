@@ -1,6 +1,6 @@
 import XCTest
 import JavaScriptCore
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for the extension runtime's sandboxing and the ViewNode IR that
 /// bridges JavaScript view trees into SwiftUI.

@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 @MainActor
 final class ModuleRefreshSchedulerTests: XCTestCase {

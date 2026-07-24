@@ -6,7 +6,7 @@
         {
           "type": "toggle",
           "key": "autoReveal",
-          "label": "Auto reveal Super Island when a new mention arrives",
+          "label": "Auto reveal Nexus Island when a new mention arrives",
           "default": true
         },
         {

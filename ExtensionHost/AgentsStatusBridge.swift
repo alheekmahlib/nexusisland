@@ -5,7 +5,7 @@ import Darwin
 @MainActor
 final class AgentsStatusBridge {
     static let shared = AgentsStatusBridge()
-    nonisolated static let managedExtensionID = "superisland.agents-status"
+    nonisolated static let managedExtensionID = "nexus.agents-status"
     nonisolated static let port = 7823
 
     private let fileManager = FileManager.default
@@ -160,7 +160,7 @@ final class AgentsStatusBridge {
         }
         let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
         if let installed = appSupport?
-            .appendingPathComponent("SuperIsland/Extensions/agents-status/server/server.py",
+            .appendingPathComponent("NexusIsland/Extensions/agents-status/server/server.py",
                                     isDirectory: false),
            fileManager.fileExists(atPath: installed.path) {
             return installed
@@ -185,7 +185,7 @@ final class AgentsStatusBridge {
         }
         let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
         if let installed = appSupport?
-            .appendingPathComponent("SuperIsland/Extensions/agents-status/hooks/\(filename)",
+            .appendingPathComponent("NexusIsland/Extensions/agents-status/hooks/\(filename)",
                                     isDirectory: false).path {
             return installed
         }
@@ -349,7 +349,7 @@ final class AgentsStatusBridge {
         didCleanupLegacyLaunchd = true
 
         let home = fileManager.homeDirectoryForCurrentUser
-        let labels = ["com.superisland.agents-status", "com.superisland.cc-status"]
+        let labels = ["com.nexus.agents-status", "com.nexus.cc-status"]
         let uid = getuid()
         for label in labels {
             let plistURL = home.appendingPathComponent("Library/LaunchAgents/\(label).plist")
@@ -380,7 +380,7 @@ final class AgentsStatusBridge {
         DispatchQueue.main.async {
             let alert = NSAlert()
             alert.messageText = "Agents Status port \(Self.port) is in use"
-            alert.informativeText = "Another process on this Mac is already listening on 127.0.0.1:\(Self.port). A leftover agents-status server from a previous Super Island run is the most common cause. Open Terminal and run `lsof -iTCP:\(Self.port) -sTCP:LISTEN` to find it, then quit that process (or reboot) and relaunch Super Island."
+            alert.informativeText = "Another process on this Mac is already listening on 127.0.0.1:\(Self.port). A leftover agents-status server from a previous Nexus Island run is the most common cause. Open Terminal and run `lsof -iTCP:\(Self.port) -sTCP:LISTEN` to find it, then quit that process (or reboot) and relaunch Nexus Island."
             alert.alertStyle = .warning
             alert.addButton(withTitle: "Got it")
             _ = alert.runModal()
@@ -393,7 +393,7 @@ final class AgentsStatusBridge {
         DispatchQueue.main.async {
             let alert = NSAlert()
             alert.messageText = "Python 3 required for Agents Status"
-            alert.informativeText = "Agents Status tracks your Claude Code and Codex CLI sessions through a small background service that needs Python 3. On macOS, install the Command Line Tools by running `xcode-select --install` in Terminal, then restart Super Island."
+            alert.informativeText = "Agents Status tracks your Claude Code and Codex CLI sessions through a small background service that needs Python 3. On macOS, install the Command Line Tools by running `xcode-select --install` in Terminal, then restart Nexus Island."
             alert.alertStyle = .warning
             alert.addButton(withTitle: "Got it")
             _ = alert.runModal()

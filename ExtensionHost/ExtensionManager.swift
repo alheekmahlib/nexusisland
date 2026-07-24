@@ -68,11 +68,36 @@ final class ExtensionManager: ObservableObject {
 
         let appSupportBase = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+
+        // Migrate from old "SuperIsland" App Support folder if it exists.
+        Self.migrateAppSupportIfNeeded(base: appSupportBase)
+
         installedExtensionsDirectory = appSupportBase
-            .appendingPathComponent("SuperIsland", isDirectory: true)
+            .appendingPathComponent("NexusIsland", isDirectory: true)
             .appendingPathComponent("Extensions", isDirectory: true)
 
         try? fileManager.createDirectory(at: installedExtensionsDirectory, withIntermediateDirectories: true)
+    }
+
+    /// One-time migration: if the old ~/Library/Application Support/SuperIsland
+    /// exists and NexusIsland doesn't, rename it so user data (extensions,
+    /// shelf items, mascots, OAuth tokens) survives the rebrand.
+    private static func migrateAppSupportIfNeeded(base: URL) {
+        let fm = FileManager.default
+        let oldDir = base.appendingPathComponent("SuperIsland", isDirectory: true)
+        let newDir = base.appendingPathComponent("NexusIsland", isDirectory: true)
+
+        guard fm.fileExists(atPath: oldDir.path),
+              !fm.fileExists(atPath: newDir.path) else { return }
+
+        do {
+            try fm.moveItem(at: oldDir, to: newDir)
+            ExtensionLogger.shared.log("migration", .info,
+                "Migrated App Support from SuperIsland → NexusIsland")
+        } catch {
+            // If move fails, try copy + remove (handles cross-volume edge cases).
+            try? fm.copyItem(at: oldDir, to: newDir)
+        }
     }
 
     private static func resolveRepoExtensionsDirectory() -> URL? {
@@ -505,7 +530,7 @@ private struct PendingWhatsAppProviderCommand {
 @MainActor
 final class WhatsAppWebBridge: ObservableObject {
     static let shared = WhatsAppWebBridge()
-    private static let managedExtensionID = "superisland.whatsapp-web"
+    private static let managedExtensionID = "nexus.whatsapp-web"
 
     enum ConnectionState: String {
         case idle
@@ -547,7 +572,7 @@ final class WhatsAppWebBridge: ObservableObject {
     private var appSupportDirectory: URL {
         let base = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        return base.appendingPathComponent("SuperIsland", isDirectory: true)
+        return base.appendingPathComponent("NexusIsland", isDirectory: true)
     }
 
     private var authDirectory: URL {
@@ -743,7 +768,7 @@ final class WhatsAppWebBridge: ObservableObject {
             performBridgeUpdate {
                 connectionState = .error
                 statusText = "Node.js required"
-                lastError = "Node.js is not installed. Please install it from nodejs.org, then restart Super Island."
+                lastError = "Node.js is not installed. Please install it from nodejs.org, then restart Nexus Island."
             }
             DispatchQueue.main.async { Self.showNodeJSInstallAlert() }
             return
@@ -847,7 +872,7 @@ final class WhatsAppWebBridge: ObservableObject {
     private static func showNodeJSInstallAlert() {
         let alert = NSAlert()
         alert.messageText = "Node.js Required for WhatsApp"
-        alert.informativeText = "The WhatsApp integration needs Node.js to run. It's a free, one-time install — just download the macOS installer from nodejs.org and restart Super Island."
+        alert.informativeText = "The WhatsApp integration needs Node.js to run. It's a free, one-time install — just download the macOS installer from nodejs.org and restart Nexus Island."
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Download Node.js")
         alert.addButton(withTitle: "Dismiss")

@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for DevServerParser — the lsof output parsing logic. The manager
 /// shells out to lsof (I/O), so we test the pure parser instead.

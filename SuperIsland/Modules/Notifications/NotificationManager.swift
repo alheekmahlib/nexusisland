@@ -50,7 +50,7 @@ enum NotificationFeedSource: String, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .extensions:
-            return "Notifications sent by installed SuperIsland extensions."
+            return "Notifications sent by installed NexusIsland extensions."
         case .whatsApp:
             return "Notifications from the bundled WhatsApp integration."
         case .compatibleApps:
@@ -66,7 +66,7 @@ enum NotificationFeedSource: String, CaseIterable, Identifiable {
 @MainActor
 final class NotificationManager: ObservableObject {
     private static let accessibilityPromptedDefaultsKey = "notifications.accessibilityPrompted"
-    private static let whatsappExtensionID = "superisland.whatsapp-web"
+    private static let whatsappExtensionID = "nexus.whatsapp-web"
 
     private struct WhatsAppLogEvent {
         let eventID: String
@@ -91,8 +91,8 @@ final class NotificationManager: ObservableObject {
     @Published var hasPermission: Bool = false
     @Published var authorizationStatus: UNAuthorizationStatus = .notDetermined
 
-    private let logMonitorQueue = DispatchQueue(label: "superisland.whatsapp-log-monitor", qos: .utility)
-    private let deliveredMonitorQueue = DispatchQueue(label: "superisland.notifications-delivered-monitor", qos: .utility)
+    private let logMonitorQueue = DispatchQueue(label: "nexus.whatsapp-log-monitor", qos: .utility)
+    private let deliveredMonitorQueue = DispatchQueue(label: "nexus.notifications-delivered-monitor", qos: .utility)
     private var whatsappLogRefreshToken: ModuleRefreshToken?
     private var deliveredNotificationRefreshToken: ModuleRefreshToken?
     private var seenWhatsAppEventIDs: [String] = []

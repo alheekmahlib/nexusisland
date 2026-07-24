@@ -1,7 +1,7 @@
 "use strict";
 
 // ---------------------------------------------------------------------------
-// Live Football — FIFA World Cup 2026 live scores for SuperIsland.
+// Live Football — FIFA World Cup 2026 live scores for Nexus.
 //
 // Data: ESPN public scoreboard (keyless, undocumented):
 //   https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard
@@ -43,7 +43,7 @@ var manualFeaturedUntil = 0;
 // ---------------------------------------------------------------------------
 
 function settingBool(key, fallback) {
-  var v = SuperIsland.settings.get(key);
+  var v = Nexus.settings.get(key);
   if (typeof v === "boolean") return v;
   if (v === null || v === undefined) return fallback;
   if (typeof v === "number") return v !== 0;
@@ -52,7 +52,7 @@ function settingBool(key, fallback) {
 }
 
 function settingString(key, fallback) {
-  var v = SuperIsland.settings.get(key);
+  var v = Nexus.settings.get(key);
   if (v === null || v === undefined || v === "") return fallback;
   return String(v);
 }
@@ -224,7 +224,7 @@ function refreshNow() {
   var to = espnDate(Date.now() + 8 * DAY_MS);
   var url = ESPN_BASE + "/scoreboard?limit=300&dates=" + from + "-" + to;
 
-  SuperIsland.http.fetch(url).then(function (res) {
+  Nexus.http.fetch(url).then(function (res) {
     fetchInFlight = false;
     if (!res || res.status !== 200 || !res.data || !res.data.events) {
       fetchError = res && res.error ? String(res.error) : "HTTP " + (res ? res.status : "?");
@@ -295,7 +295,7 @@ function onGoal(match, side) {
 
   var team = side === "home" ? match.home : match.away;
   if (settingBool("notifyGoals", true)) {
-    SuperIsland.notifications.send({
+    Nexus.notifications.send({
       title: "⚽ GOOOAL — " + team.name + "!",
       body: flagEmoji(match.home.abbr) + " " + match.home.name + " " + scoreText(match) + " " +
         match.away.name + " " + flagEmoji(match.away.abbr) +
@@ -303,7 +303,7 @@ function onGoal(match, side) {
       sound: settingBool("playSound", true)
     });
   }
-  SuperIsland.playFeedback("success");
+  Nexus.playFeedback("success");
   revealIsland(CELEBRATION_MS - 1500);
 }
 
@@ -313,7 +313,7 @@ function onKickoff(match) {
   revealIsland(5000);
   if (!settingBool("notifyKickoff", true)) return;
   if (settingBool("favoriteOnlyAlerts", false) && !involvesFavorite(match)) return;
-  SuperIsland.notifications.send({
+  Nexus.notifications.send({
     title: "🏟️ Kickoff",
     body: flagEmoji(match.home.abbr) + " " + match.home.name + " vs " +
       match.away.name + " " + flagEmoji(match.away.abbr) + " · " + matchGroupLabel(match),
@@ -325,7 +325,7 @@ function onFullTime(match) {
   ftFlash = { match: match, until: Date.now() + 7000 };
   if (!settingBool("notifyFullTime", true)) return;
   if (settingBool("favoriteOnlyAlerts", false) && !involvesFavorite(match)) return;
-  SuperIsland.notifications.send({
+  Nexus.notifications.send({
     title: "FT: " + match.home.name + " " + scoreText(match) + " " + match.away.name,
     body: flagEmoji(match.home.abbr) + " " + flagEmoji(match.away.abbr) + " " +
       matchGroupLabel(match) + (match.venue ? " · " + match.venue : ""),
@@ -334,16 +334,16 @@ function onFullTime(match) {
 }
 
 function revealIsland(visibleMs) {
-  if (SuperIsland.island.state === "fullExpanded") return;
-  SuperIsland.island.activate(false);
-  setTimeout(function () { SuperIsland.island.activate(false); }, 120);
+  if (Nexus.island.state === "fullExpanded") return;
+  Nexus.island.activate(false);
+  setTimeout(function () { Nexus.island.activate(false); }, 120);
   setTimeout(function () {
-    if (SuperIsland.island.state !== "fullExpanded") SuperIsland.island.dismiss();
+    if (Nexus.island.state !== "fullExpanded") Nexus.island.dismiss();
   }, (visibleMs || 4000) + 120);
 }
 
 function fetchStandings() {
-  SuperIsland.http.fetch(ESPN_STANDINGS).then(function (res) {
+  Nexus.http.fetch(ESPN_STANDINGS).then(function (res) {
     if (!res || res.status !== 200 || !res.data || !res.data.children) return;
     var map = {};
     var children = res.data.children;
@@ -915,7 +915,7 @@ function fullExpandedView() {
 // Module registration
 // ---------------------------------------------------------------------------
 
-SuperIsland.registerModule({
+Nexus.registerModule({
   onActivate: function () {
     fetchStandings();
     refreshNow();
@@ -932,16 +932,16 @@ SuperIsland.registerModule({
     if (actionID === "prev") { stepFeatured(-1); return; }
     if (actionID === "next") { stepFeatured(1); return; }
     if (actionID === "refresh") { lastFetchAt = 0; refreshNow(); return; }
-    if (actionID === "open-web") { SuperIsland.openURL(SCOREBOARD_URL); return; }
+    if (actionID === "open-web") { Nexus.openURL(SCOREBOARD_URL); return; }
     if (actionID.indexOf("tab-") === 0) {
       activeTab = actionID.slice(4);
-      SuperIsland.playFeedback("selection");
+      Nexus.playFeedback("selection");
       return;
     }
     if (actionID.indexOf("feat-") === 0) {
       manualFeaturedID = actionID.slice(5);
       manualFeaturedUntil = Date.now() + MANUAL_HOLD_MS;
-      SuperIsland.playFeedback("selection");
+      Nexus.playFeedback("selection");
       return;
     }
   },

@@ -600,7 +600,7 @@ struct ModuleSettingsView: View {
     private var calendarPermissionDescription: String {
         switch calendarManager.authorizationStatus {
         case .fullAccess, .authorized:
-            return NSLocalizedString("Allowed. Choose which calendars appear in SuperIsland.", comment: "Settings description")
+            return NSLocalizedString("Allowed. Choose which calendars appear in NexusIsland.", comment: "Settings description")
         case .notDetermined:
             return NSLocalizedString("Not requested. Allow access to show upcoming events.", comment: "Settings description")
         case .denied:
@@ -617,11 +617,11 @@ struct ModuleSettingsView: View {
     private var notificationPermissionDescription: String {
         switch notificationManager.authorizationStatus {
         case .authorized:
-            return NSLocalizedString("Allowed. SuperIsland can send its own notifications and extension alerts.", comment: "Settings description")
+            return NSLocalizedString("Allowed. NexusIsland can send its own notifications and extension alerts.", comment: "Settings description")
         case .denied:
-            return NSLocalizedString("Denied. Open System Settings to allow SuperIsland notifications.", comment: "Settings description")
+            return NSLocalizedString("Denied. Open System Settings to allow NexusIsland notifications.", comment: "Settings description")
         case .notDetermined:
-            return NSLocalizedString("Not requested. Allow this when you want SuperIsland or extensions to send macOS notifications.", comment: "Settings description")
+            return NSLocalizedString("Not requested. Allow this when you want NexusIsland or extensions to send macOS notifications.", comment: "Settings description")
         case .provisional, .ephemeral:
             return NSLocalizedString("Allowed with limited delivery.", comment: "Settings description")
         @unknown default:
@@ -737,7 +737,7 @@ struct ModuleSettingsView: View {
     private func browserToggleRow(_ browser: NowPlayingBrowserTarget) -> some View {
         SettingToggleRow(
             title: browser.displayName,
-            description: NSLocalizedString("Allow SuperIsland to look for media in this browser.", comment: "Settings description"),
+            description: NSLocalizedString("Allow NexusIsland to look for media in this browser.", comment: "Settings description"),
             isOn: browserBinding(for: browser.id)
         )
     }

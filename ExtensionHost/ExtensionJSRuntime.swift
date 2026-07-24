@@ -185,7 +185,7 @@ final class ExtensionJSRuntime {
 
     private func injectAPI() {
         let superIsland = JSValue(newObjectIn: context)!
-        context.setObject(superIsland, forKeyedSubscript: "SuperIsland" as NSString)
+        context.setObject(superIsland, forKeyedSubscript: "NexusIsland" as NSString)
 
         injectModuleRegistration(into: superIsland)
         injectStore(into: superIsland)
@@ -352,7 +352,7 @@ final class ExtensionJSRuntime {
         // Truly-async fetch: takes a JS callback and resolves on a background
         // queue, so the main thread never blocks. The sync variant is kept
         // for extensions that still rely on it, but agents-status and any new
-        // caller should go through SuperIsland.http.fetch (promise-based).
+        // caller should go through NexusIsland.http.fetch (promise-based).
         let fetchAsync: @convention(block) (String, JSValue?, JSValue) -> Void = { [weak self] urlString, options, callback in
             guard let self else { return }
             // Capture the payload on the JS thread, then hop off main for the
@@ -385,11 +385,11 @@ final class ExtensionJSRuntime {
         if manifest.permissions.contains("network") {
             context.evaluateScript(
                 """
-                SuperIsland.http = {
+                NexusIsland.http = {
                   fetch: function(url, options) {
                     return new Promise(function(resolve) {
                       try {
-                        SuperIsland.__fetchAsync(url, options || {}, function(res) {
+                        NexusIsland.__fetchAsync(url, options || {}, function(res) {
                           resolve(res);
                         });
                       } catch (e) {
@@ -402,7 +402,7 @@ final class ExtensionJSRuntime {
             )
         } else {
             context.evaluateScript(
-                "SuperIsland.http = { fetch: function() { throw new Error('Permission denied: network'); } };"
+                "NexusIsland.http = { fetch: function() { throw new Error('Permission denied: network'); } };"
             )
         }
     }
@@ -659,9 +659,9 @@ final class ExtensionJSRuntime {
         context.evaluateScript(
             """
             globalThis.console = {
-              log: function() { SuperIsland.__log(Array.from(arguments).map(String).join(' ')); },
-              warn: function() { SuperIsland.__warn(Array.from(arguments).map(String).join(' ')); },
-              error: function() { SuperIsland.__error(Array.from(arguments).map(String).join(' ')); }
+              log: function() { NexusIsland.__log(Array.from(arguments).map(String).join(' ')); },
+              warn: function() { NexusIsland.__warn(Array.from(arguments).map(String).join(' ')); },
+              error: function() { NexusIsland.__error(Array.from(arguments).map(String).join(' ')); }
             };
             """
         )
@@ -776,8 +776,8 @@ final class ExtensionJSRuntime {
                 ], { spacing: 4, align: 'center' });
               }
 
-              const existing = SuperIsland.components || {};
-              SuperIsland.components = {
+              const existing = NexusIsland.components || {};
+              NexusIsland.components = {
                 ...existing,
                 shortcutHint,
                 inputComposer: function(opts) {
@@ -1061,7 +1061,7 @@ final class ExtensionJSRuntime {
             content.sound = sound ? .default : nil
 
             let request = UNNotificationRequest(
-                identifier: "superisland.\(extensionID).\(UUID().uuidString)",
+                identifier: "nexus.\(extensionID).\(UUID().uuidString)",
                 content: content,
                 trigger: UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
             )

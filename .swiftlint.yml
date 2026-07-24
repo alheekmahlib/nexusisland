@@ -1,4 +1,4 @@
-# SwiftLint configuration for SuperIsland
+# SwiftLint configuration for NexusIsland
 #
 # Tuned to match the existing codebase style:
 #   - @MainActor on all UI-touching types
@@ -9,12 +9,12 @@
 # while still catching real regressions on new work.
 
 included:
-  - SuperIsland
+  - NexusIsland
   - ExtensionHost
-  - SuperIslandTests
+  - NexusIslandTests
 
 excluded:
-  - SuperIsland/Resources
+  - NexusIsland/Resources
   - "**/.build"
   - "**/DerivedData"
 

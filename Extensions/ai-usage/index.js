@@ -260,11 +260,11 @@ function ringWithPercent(model, lineWidth) {
 }
 
 function usageSnapshot() {
-  const usage = SuperIsland.system.getAIUsage();
+  const usage = Nexus.system.getAIUsage();
   return usage && typeof usage === "object" ? usage : null;
 }
 
-SuperIsland.registerModule({
+Nexus.registerModule({
   compact() {
     const usage = usageSnapshot();
     const codex = codexModel(usage);

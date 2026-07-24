@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for the weather data model and the Open-Meteo response shape the app
 /// depends on.

@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for the Quran module's value types and URL construction.
 ///

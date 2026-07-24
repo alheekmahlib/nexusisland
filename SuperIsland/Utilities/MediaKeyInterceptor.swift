@@ -6,7 +6,7 @@ import IOKit.hidsystem
 /// Intercepts the hardware volume keys (F10/F11/F12 or touch-bar / keyboard-row
 /// equivalents) via a session-level `CGEventTap` so the macOS system overlay
 /// (`OSDUIHelper`) never receives the event. The volume change is then applied
-/// programmatically via `VolumeManager` and SuperIsland's own HUD is shown.
+/// programmatically via `VolumeManager` and NexusIsland's own HUD is shown.
 ///
 /// The tap runs in `.defaultTap` mode which lets the callback return `nil` to
 /// consume the event. Consuming before the OS dispatches to `OSDUIHelper` is

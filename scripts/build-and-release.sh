@@ -7,14 +7,14 @@ set -euo pipefail
 
 # --- Configuration (from env or .env file) ---
 source .env 2>/dev/null || true
-APP_NAME="SuperIsland"
+APP_NAME="NexusIsland"
 SCHEME="${APP_NAME}"
 BUILD_DIR="build"
 ARCHIVE_PATH="${BUILD_DIR}/${APP_NAME}.xcarchive"
 APP_PATH="${BUILD_DIR}/${APP_NAME}.app"
 DMG_PATH="${BUILD_DIR}/${APP_NAME}.dmg"
 DMG_STAGING_DIR="${BUILD_DIR}/dmg-root"
-ENTITLEMENTS="SuperIsland/SuperIsland.entitlements"
+ENTITLEMENTS="NexusIsland/NexusIsland.entitlements"
 
 # Required env vars
 : "${APPLE_ID:?Set APPLE_ID in .env}"
@@ -74,7 +74,7 @@ echo "   Bundled node v${NODE_VERSION} ($(du -sh "${APP_PATH}/Contents/Resources
 
 echo "==> Re-signing app (required after injecting node binary)..."
 # Sign the bundled node binary with JIT entitlements (V8 requires executable memory)
-NODE_ENTITLEMENTS="SuperIsland/node.entitlements"
+NODE_ENTITLEMENTS="NexusIsland/node.entitlements"
 codesign --sign "${SIGNING_IDENTITY}" --force --options runtime \
   --entitlements "${NODE_ENTITLEMENTS}" \
   "${APP_PATH}/Contents/Resources/node"

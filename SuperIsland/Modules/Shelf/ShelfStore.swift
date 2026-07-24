@@ -724,7 +724,7 @@ final class ShelfStore: ObservableObject {
     private static var imageStorageURL: URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first?
-            .appendingPathComponent("SuperIsland", isDirectory: true)
+            .appendingPathComponent("NexusIsland", isDirectory: true)
             .appendingPathComponent("ShelfImages", isDirectory: true)
     }
 

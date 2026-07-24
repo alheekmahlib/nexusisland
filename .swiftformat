@@ -1,4 +1,4 @@
-# SwiftFormat configuration for SuperIsland
+# SwiftFormat configuration for NexusIsland
 #
 # Minimal, non-destructive rules that enforce consistency on NEW code
 # without churning the existing codebase. Run with:
@@ -6,7 +6,7 @@
 #   swiftformat --lint .   (check only)
 
 # Scope to the Swift sources only.
---exclude SuperIsland/Resources,Scripts
+--exclude NexusIsland/Resources,Scripts
 
 # Project conventions.
 --swiftversion 5.9

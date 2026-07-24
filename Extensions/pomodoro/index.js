@@ -20,11 +20,11 @@ function toNumber(value, fallback) {
 }
 
 function settingNumber(key, fallback) {
-  return toNumber(SuperIsland.settings.get(key), fallback);
+  return toNumber(Nexus.settings.get(key), fallback);
 }
 
 function settingBool(key, fallback) {
-  var value = SuperIsland.settings.get(key);
+  var value = Nexus.settings.get(key);
   if (typeof value === "boolean") return value;
   if (value === null || value === undefined) return fallback;
   if (typeof value === "number") return value !== 0;
@@ -61,12 +61,12 @@ function todayDateString() {
 }
 
 function resetSessionsIfNewDay() {
-  var storedDate = SuperIsland.store.get("sessionsDate");
+  var storedDate = Nexus.store.get("sessionsDate");
   var today = todayDateString();
   if (storedDate !== today) {
     sessionsCompleted = 0;
-    SuperIsland.store.set("sessionsCompleted", 0);
-    SuperIsland.store.set("sessionsDate", today);
+    Nexus.store.set("sessionsCompleted", 0);
+    Nexus.store.set("sessionsDate", today);
   }
 }
 
@@ -75,21 +75,21 @@ function resetSessionsIfNewDay() {
 // ---------------------------------------------------------------------------
 
 function saveState() {
-  SuperIsland.store.set("phase", phase);
-  SuperIsland.store.set("isRunning", isRunning);
-  SuperIsland.store.set("remainingSeconds", remainingSeconds);
-  SuperIsland.store.set("sessionsCompleted", sessionsCompleted);
-  SuperIsland.store.set("sessionsDate", todayDateString());
+  Nexus.store.set("phase", phase);
+  Nexus.store.set("isRunning", isRunning);
+  Nexus.store.set("remainingSeconds", remainingSeconds);
+  Nexus.store.set("sessionsCompleted", sessionsCompleted);
+  Nexus.store.set("sessionsDate", todayDateString());
 }
 
 function loadState() {
   resetSessionsIfNewDay();
-  sessionsCompleted = toNumber(SuperIsland.store.get("sessionsCompleted"), 0);
-  var storedPhase = SuperIsland.store.get("phase");
+  sessionsCompleted = toNumber(Nexus.store.get("sessionsCompleted"), 0);
+  var storedPhase = Nexus.store.get("phase");
   phase = storedPhase === PHASE_BREAK ? PHASE_BREAK : PHASE_FOCUS;
-  var storedRemaining = toNumber(SuperIsland.store.get("remainingSeconds"), currentPhaseDuration());
+  var storedRemaining = toNumber(Nexus.store.get("remainingSeconds"), currentPhaseDuration());
   remainingSeconds = Math.max(0, Math.min(storedRemaining, currentPhaseDuration()));
-  var storedRunning = SuperIsland.store.get("isRunning");
+  var storedRunning = Nexus.store.get("isRunning");
   isRunning = typeof storedRunning === "boolean" ? storedRunning : false;
   if (remainingSeconds <= 0) remainingSeconds = currentPhaseDuration();
 }
@@ -108,16 +108,16 @@ function startTimer() {
 }
 
 function isFullExpanded() {
-  return SuperIsland.island.state === "fullExpanded";
+  return Nexus.island.state === "fullExpanded";
 }
 
 function revealIsland() {
   if (isFullExpanded()) return;
   var revealSettleDelay = 120;
   var visibleDuration = 2000;
-  SuperIsland.island.activate(false);
-  setTimeout(function() { SuperIsland.island.activate(false); }, revealSettleDelay);
-  setTimeout(function() { SuperIsland.island.dismiss(); }, visibleDuration + revealSettleDelay);
+  Nexus.island.activate(false);
+  setTimeout(function() { Nexus.island.activate(false); }, revealSettleDelay);
+  setTimeout(function() { Nexus.island.dismiss(); }, visibleDuration + revealSettleDelay);
 }
 
 function setRunning(nextRunning) {
@@ -129,22 +129,22 @@ function setRunning(nextRunning) {
 
 function updateMascotExpression() {
   if (!isRunning || phase === PHASE_BREAK) {
-    SuperIsland.mascot.setExpression("idle");
+    Nexus.mascot.setExpression("idle");
     return;
   }
-  SuperIsland.mascot.setExpression("working");
+  Nexus.mascot.setExpression("working");
 }
 
 function switchPhase() {
   var wasFocus = phase === PHASE_FOCUS;
   if (wasFocus) {
     sessionsCompleted += 1;
-    SuperIsland.store.set("sessionsCompleted", sessionsCompleted);
+    Nexus.store.set("sessionsCompleted", sessionsCompleted);
   }
   phase = wasFocus ? PHASE_BREAK : PHASE_FOCUS;
   remainingSeconds = currentPhaseDuration();
   if (settingBool("notifyOnComplete", true)) {
-    SuperIsland.notifications.send({
+    Nexus.notifications.send({
       title: wasFocus ? "Break started" : "Break ended",
       body: wasFocus
         ? "Session " + sessionsCompleted + " complete. Break is now running."
@@ -152,7 +152,7 @@ function switchPhase() {
       sound: settingBool("playSound", true)
     });
   }
-  SuperIsland.playFeedback("success");
+  Nexus.playFeedback("success");
   if (wasFocus) { setRunning(true); revealIsland(); }
   else { setRunning(false); revealIsland(); }
   updateMascotExpression();
@@ -312,7 +312,7 @@ function controlBtn(iconName, actionID, size, primary) {
 // Module
 // ---------------------------------------------------------------------------
 
-SuperIsland.registerModule({
+Nexus.registerModule({
   onActivate: function() {
     loadState();
     if (isRunning) startTimer();

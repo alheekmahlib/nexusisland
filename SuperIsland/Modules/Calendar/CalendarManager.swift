@@ -59,7 +59,7 @@ final class CalendarManager: ObservableObject {
     private let store = EKEventStore()
     private var refreshToken: ModuleRefreshToken?
     private var preEventTimer: Timer?
-    private let calendarQueue = DispatchQueue(label: "superisland.calendar", qos: .userInitiated)
+    private let calendarQueue = DispatchQueue(label: "nexus.calendar", qos: .userInitiated)
     private var isObservingStoreChanges = false
     private let enabledCalendarIDsKey = "calendar.enabledCalendarIDs"
     @Published var datesWithEvents: Set<Date> = []

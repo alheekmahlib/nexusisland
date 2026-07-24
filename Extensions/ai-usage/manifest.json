@@ -1,11 +1,11 @@
 {
-  "id": "superisland.ai-usage",
+  "id": "nexus.ai-usage",
   "name": "AI Usage Rings",
   "version": "1.0.0",
   "minAppVersion": "1.0.0",
   "main": "index.js",
   "author": {
-    "name": "SuperIsland"
+    "name": "Nexus Island"
   },
   "description": "Codex and Claude usage in the notch with ring indicators.",
   "icon": "icon.svg",

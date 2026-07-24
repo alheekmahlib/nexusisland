@@ -7,9 +7,9 @@ import Speech
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private static let linearExtensionID = "superisland.linear-mentions"
+    private static let linearExtensionID = "nexus.linear-mentions"
     private static let linearOAuthStoreKey = "extensions.\(linearExtensionID).store.oauth"
-    private static let lastFmExtensionID = "superisland.lastfm-scrobbler"
+    private static let lastFmExtensionID = "nexus.lastfm-scrobbler"
     private static let lastFmOAuthStoreKey = "extensions.\(lastFmExtensionID).store.oauth"
     private var islandWindowController: IslandWindowController?
     private var onboardingWindowController: OnboardingWindowController?
@@ -36,7 +36,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         registerURLHandler()
         installQuitHotkeyMonitor()
 
-        // defaults write com.workview.SuperIsland "debug.alwaysShowOnboarding" -bool true
+        // defaults write com.vexaltech.NexusIsland "debug.alwaysShowOnboarding" -bool true
         let shouldShowOnboarding = !AppState.shared.onboardingCompleted || AppState.shared.debugAlwaysShowOnboarding
         if shouldShowOnboarding {
             showOnboardingIfNeeded()
@@ -217,7 +217,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func handleOAuthCallback(url: URL) {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-              components.scheme?.lowercased() == "superisland",
+              components.scheme?.lowercased() == "nexusisland",
               components.host?.lowercased() == "auth",
               components.path.lowercased() == "/callback" else {
             return
@@ -314,7 +314,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
         if let button = item.button {
-            button.image = NSImage(systemSymbolName: Constants.menuBarIconName, accessibilityDescription: "SuperIsland")
+            button.image = NSImage(systemSymbolName: Constants.menuBarIconName, accessibilityDescription: "NexusIsland")
         }
 
         item.menu = buildStatusMenu()
@@ -365,7 +365,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
         menu.addItem(makeMenuItem(title: NSLocalizedString("Settings...", comment: "Menu item"), action: #selector(openSettings), keyEquivalent: ","))
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(makeMenuItem(title: NSLocalizedString("Quit SuperIsland", comment: "Menu item"), action: #selector(quitApp), keyEquivalent: "q"))
+        menu.addItem(makeMenuItem(title: NSLocalizedString("Quit NexusIsland", comment: "Menu item"), action: #selector(quitApp), keyEquivalent: "q"))
         return menu
     }
 
@@ -513,7 +513,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let hostingController = NSHostingController(rootView: rootView)
 
         let window = NSWindow(contentViewController: hostingController)
-        window.title = NSLocalizedString("SuperIsland Settings", comment: "Window title")
+        window.title = NSLocalizedString("NexusIsland Settings", comment: "Window title")
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
         window.setContentSize(NSSize(width: 960, height: 680))
         window.minSize = NSSize(width: 800, height: 560)

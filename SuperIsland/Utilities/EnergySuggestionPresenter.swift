@@ -7,9 +7,9 @@ enum EnergySuggestionReason {
     var message: String {
         switch self {
         case .battery:
-            return "Your Mac switched to battery power. SuperIsland can reduce background refresh and pause inactive extension work until you switch back."
+            return "Your Mac switched to battery power. NexusIsland can reduce background refresh and pause inactive extension work until you switch back."
         case .sustainedActivity:
-            return "SuperIsland has been doing sustained background refresh work. Low Power mode can slow non-essential refresh until you need it again."
+            return "NexusIsland has been doing sustained background refresh work. Low Power mode can slow non-essential refresh until you need it again."
         }
     }
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // rebundle-extensions.js
 //
-// Wipes stale extensions out of every SuperIsland.app bundle on this machine
+// Wipes stale extensions out of every NexusIsland.app bundle on this machine
 // and copies the current contents of `Extensions/` back in. Useful when the
 // loaded extension set has drifted from what's in this branch (e.g. an
 // extension built on another branch is still showing up).
@@ -11,7 +11,7 @@
 //   node scripts/rebundle-extensions.js --dry-run     # show what would happen
 //   node scripts/rebundle-extensions.js --app PATH    # rebundle a specific .app
 //   node scripts/rebundle-extensions.js --clean-installed
-//                                                     # also wipe ~/Library/Application Support/SuperIsland/Extensions
+//                                                     # also wipe ~/Library/Application Support/NexusIsland/Extensions
 
 "use strict";
 
@@ -22,7 +22,7 @@ const { execSync } = require("child_process");
 
 const REPO_ROOT       = path.resolve(__dirname, "..");
 const SOURCE_EXT_DIR  = path.join(REPO_ROOT, "Extensions");
-const APP_SUPPORT_DIR = path.join(os.homedir(), "Library", "Application Support", "SuperIsland", "Extensions");
+const APP_SUPPORT_DIR = path.join(os.homedir(), "Library", "Application Support", "NexusIsland", "Extensions");
 const DERIVED_DATA    = path.join(os.homedir(), "Library", "Developer", "Xcode", "DerivedData");
 const SKIP_FILES      = new Set([".DS_Store", "README.md", "node_modules"]);
 
@@ -56,21 +56,21 @@ function findAppBundles() {
   const found = new Set();
 
   // 1. Local build/ output of build-dmg.sh
-  const localBuild = path.join(REPO_ROOT, "build", "SuperIsland.app");
+  const localBuild = path.join(REPO_ROOT, "build", "NexusIsland.app");
   if (fs.existsSync(localBuild)) found.add(localBuild);
 
   // 2. Installed app
-  const installed = "/Applications/SuperIsland.app";
+  const installed = "/Applications/NexusIsland.app";
   if (fs.existsSync(installed)) found.add(installed);
 
   // 3. Every Xcode DerivedData build (Debug + Release)
   if (fs.existsSync(DERIVED_DATA)) {
     for (const entry of fs.readdirSync(DERIVED_DATA)) {
-      if (!entry.startsWith("SuperIsland-")) continue;
+      if (!entry.startsWith("NexusIsland-")) continue;
       const products = path.join(DERIVED_DATA, entry, "Build", "Products");
       if (!fs.existsSync(products)) continue;
       for (const cfg of fs.readdirSync(products)) {
-        const app = path.join(products, cfg, "SuperIsland.app");
+        const app = path.join(products, cfg, "NexusIsland.app");
         if (fs.existsSync(app)) found.add(app);
       }
     }
@@ -155,7 +155,7 @@ if (dryRun) log("(dry-run — no files will be modified)");
 
 const apps = findAppBundles();
 if (!apps.length) {
-  warn("No SuperIsland.app bundles found. Build the app first or pass --app <path>.");
+  warn("No NexusIsland.app bundles found. Build the app first or pass --app <path>.");
   process.exit(1);
 }
 log(`Found ${apps.length} app bundle(s):`);
@@ -172,5 +172,5 @@ for (const app of apps) {
 if (cleanInstalled) cleanInstalledExtensions();
 
 log(`\nSummary: ${succeeded} rebundled, ${skipped} skipped, ${failed} failed.`);
-log(dryRun ? "Dry run complete." : "Restart SuperIsland to see the changes.");
+log(dryRun ? "Dry run complete." : "Restart NexusIsland to see the changes.");
 process.exit(failed > 0 ? 1 : 0);

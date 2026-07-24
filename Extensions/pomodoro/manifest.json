@@ -1,11 +1,11 @@
 {
-  "id": "superisland.pomodoro",
+  "id": "nexus.pomodoro",
   "name": "Pomodoro Timer",
   "version": "1.0.0",
   "minAppVersion": "1.0.0",
   "main": "index.js",
   "author": {
-    "name": "SuperIsland"
+    "name": "Nexus Island"
   },
   "description": "Focus timer with compact countdown and quick controls.",
   "icon": "icon.svg",

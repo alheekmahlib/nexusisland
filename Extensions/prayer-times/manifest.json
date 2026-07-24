@@ -1,5 +1,5 @@
 {
-  "id": "superisland.prayer-times",
+  "id": "nexus.prayer-times",
   "name": "Prayer Times",
   "version": "0.1.0",
   "minAppVersion": "1.0.0",
@@ -7,7 +7,7 @@
   "author": {
     "name": "Your Name"
   },
-  "description": "Prayer Times extension for SuperIsland.",
+  "description": "Prayer Times extension for Nexus Island.",
   "icon": "icon.svg",
   "license": "MIT",
   "categories": ["productivity"],

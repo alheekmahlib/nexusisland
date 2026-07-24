@@ -1,8 +1,8 @@
 import SwiftUI
 import AppKit
 
-private let linearMentionsExtensionID = "superisland.linear-mentions"
-private let lastFmScrobblerExtensionID = "superisland.lastfm-scrobbler"
+private let linearMentionsExtensionID = "nexus.linear-mentions"
+private let lastFmScrobblerExtensionID = "nexus.lastfm-scrobbler"
 
 private enum ExtensionListFilter: String, CaseIterable, Identifiable {
     case all
@@ -118,7 +118,7 @@ struct ExtensionsSettingsView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     extensionHeaderCard(for: manifest)
 
-                    if manifest.id == "superisland.whatsapp-web" {
+                    if manifest.id == "nexus.whatsapp-web" {
                         SettingsCard(title: NSLocalizedString("WhatsApp Web Login", comment: "Card title")) {
                             WhatsAppWebBridgeSettingsView()
                         }
@@ -427,7 +427,7 @@ struct ExtensionsSettingsView: View {
 }
 
 private struct LinearOAuthSettingsView: View {
-    private static let authorizeURLString = "https://api.supercmd.sh/auth/linear/authorize?app=superisland"
+    private static let authorizeURLString = "https://api.supercmd.sh/auth/linear/authorize?app=nexusisland"
     private static let oauthStoreKey = "extensions.\(linearMentionsExtensionID).store.oauth"
 
     @ObservedObject private var manager = ExtensionManager.shared
@@ -506,7 +506,7 @@ private struct LinearOAuthSettingsView: View {
             if session.isExpired {
                 return NSLocalizedString("Your Linear session has expired. Authenticate again to resume mention syncing.", comment: "Settings description")
             }
-            return NSLocalizedString("Linear is authenticated. New mentions will appear in the Super Island.", comment: "Settings description")
+            return NSLocalizedString("Linear is authenticated. New mentions will appear in the Nexus Island.", comment: "Settings description")
         }
         return NSLocalizedString("Authenticate with Linear to start mention notifications and inline replies.", comment: "Settings description")
     }
@@ -604,7 +604,7 @@ private struct LinearOAuthSession {
 }
 
 private struct LastFmOAuthSettingsView: View {
-    private static let authorizeURLString = "https://api.supercmd.sh/auth/lastfm/authorize?app=superisland"
+    private static let authorizeURLString = "https://api.supercmd.sh/auth/lastfm/authorize?app=nexusisland"
     private static let oauthStoreKey = "extensions.\(lastFmScrobblerExtensionID).store.oauth"
 
     @ObservedObject private var manager = ExtensionManager.shared

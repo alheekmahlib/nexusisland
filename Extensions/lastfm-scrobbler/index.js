@@ -1,7 +1,7 @@
 "use strict";
 
 var LASTFM_API_ROOT = "https://ws.audioscrobbler.com/2.0/";
-var LASTFM_AUTHORIZE_URL = "https://api.supercmd.sh/auth/lastfm/authorize?app=superisland";
+var LASTFM_AUTHORIZE_URL = "https://api.supercmd.sh/auth/lastfm/authorize?app=nexus";
 // Last.fm API key for the SuperCMD-registered app. Public per Last.fm's auth flow
 // (Last.fm exposes it in the auth redirect URL). Used as a fallback when the
 // OAuth callback doesn't carry an apiKey of its own.
@@ -76,12 +76,12 @@ function nowEpochSeconds() {
 }
 
 function storeGet(key, fallback) {
-  var value = SuperIsland.store.get(key);
+  var value = Nexus.store.get(key);
   return value === null || value === undefined ? fallback : value;
 }
 
 function storeSet(key, value) {
-  SuperIsland.store.set(key, value);
+  Nexus.store.set(key, value);
 }
 
 function logInfo(message) {
@@ -105,9 +105,9 @@ function setResult(message, shouldLog) {
 }
 
 function syncSettingFlag(key, nextValue) {
-  var currentValue = SuperIsland.settings.get(key);
+  var currentValue = Nexus.settings.get(key);
   if (typeof currentValue === "boolean" && currentValue === nextValue) return;
-  SuperIsland.settings.set(key, nextValue);
+  Nexus.settings.set(key, nextValue);
 }
 
 function syncButtonAvailability() {
@@ -247,7 +247,7 @@ function decorateTrailingIndicator(node) {
 }
 
 function settingBool(key, fallback) {
-  var value = SuperIsland.settings.get(key);
+  var value = Nexus.settings.get(key);
   if (typeof value === "boolean") return value;
   if (typeof value === "number") return value !== 0;
   if (typeof value === "string") return value.toLowerCase() === "true";
@@ -255,19 +255,19 @@ function settingBool(key, fallback) {
 }
 
 function effectiveEnabled() {
-  var override = SuperIsland.store.get("enabledOverride");
+  var override = Nexus.store.get("enabledOverride");
   if (typeof override === "boolean") return override;
   return settingBool("enabled", true);
 }
 
 function sendNowPlayingEnabled() {
-  var override = SuperIsland.store.get("sendNowPlayingOverride");
+  var override = Nexus.store.get("sendNowPlayingOverride");
   if (typeof override === "boolean") return override;
   return settingBool("sendNowPlaying", true);
 }
 
 function hasMediaBridge() {
-  return !!(SuperIsland.system && typeof SuperIsland.system.getNowPlaying === "function");
+  return !!(Nexus.system && typeof Nexus.system.getNowPlaying === "function");
 }
 
 function readOAuthSession() {
@@ -727,7 +727,7 @@ function setupStatusCard() {
 
   if (pending) {
     title = "Approve Last.fm access";
-    subtitle = "Finish the approval in your browser. SuperIsland will connect automatically.";
+    subtitle = "Finish the approval in your browser. Nexus will connect automatically.";
   } else if (oauth.expired) {
     title = "Last.fm login expired";
     subtitle = "Reconnect to keep scrobbling.";
@@ -1106,7 +1106,7 @@ async function lastFmRequest(methodName, params, options) {
   }
 
   try {
-    var response = await SuperIsland.http.fetch(url, fetchOptions);
+    var response = await Nexus.http.fetch(url, fetchOptions);
     var parsed = await parseResponse(response);
     var status = response && typeof response.status === "number" ? response.status : 0;
     if (status >= 200 && status < 300) {
@@ -1185,7 +1185,7 @@ function maybeNotify(title, body) {
   var now = nowEpochMs();
   if (now - state.lastNotificationAtEpochMs < NOTIFICATION_COOLDOWN_SECONDS * 1000) return;
   state.lastNotificationAtEpochMs = now;
-  SuperIsland.notifications.send({
+  Nexus.notifications.send({
     title: title,
     body: body,
     sound: false
@@ -1359,8 +1359,8 @@ function startAuthFlow() {
   clearError();
   state.auth.lastAuthError = "";
   state.auth.status = "pending";
-  setResult("Approve SuperIsland in your browser to finish connecting Last.fm.");
-  SuperIsland.openURL(LASTFM_AUTHORIZE_URL);
+  setResult("Approve Nexus in your browser to finish connecting Last.fm.");
+  Nexus.openURL(LASTFM_AUTHORIZE_URL);
 }
 
 function clearAuthState() {
@@ -1372,9 +1372,9 @@ function clearAuthState() {
 
 function revealIslandForSetup() {
   // Double-activate to survive the notch's initial settle animation.
-  SuperIsland.island.activate(false);
+  Nexus.island.activate(false);
   setTimeout(function() {
-    SuperIsland.island.activate(false);
+    Nexus.island.activate(false);
   }, 120);
 }
 
@@ -1696,7 +1696,7 @@ function mediaBridgeStatusView() {
         lineLimit: 1,
         multilineTextAlignment: "center"
       }),
-      View.text("Playback data is temporarily unavailable in this app session. Relaunch SuperIsland to restore the media bridge.", {
+      View.text("Playback data is temporarily unavailable in this app session. Relaunch Nexus to restore the media bridge.", {
         style: "footnote",
         color: warningTextColor(),
         lineLimit: 3,
@@ -1815,10 +1815,10 @@ async function tick() {
 
   var snapshot = null;
   try {
-    snapshot = asObject(hasMediaBridge() ? SuperIsland.system.getNowPlaying() : null);
+    snapshot = asObject(hasMediaBridge() ? Nexus.system.getNowPlaying() : null);
   } catch (error) {
     snapshot = null;
-    logOperationWarning("nowPlaying", "Unable to read current playback from SuperIsland.");
+    logOperationWarning("nowPlaying", "Unable to read current playback from Nexus.");
   }
   state.lastSnapshot = snapshot;
 
@@ -1872,19 +1872,19 @@ function signOut() {
 
 function toggleEnabled(forceValue) {
   var nextValue = typeof forceValue === "boolean" ? forceValue : !effectiveEnabled();
-  SuperIsland.store.set("enabledOverride", nextValue);
+  Nexus.store.set("enabledOverride", nextValue);
   setResult(nextValue ? "Auto scrobbling enabled" : "Auto scrobbling paused");
 }
 
 function toggleSendNowPlaying(forceValue) {
   var nextValue = typeof forceValue === "boolean" ? forceValue : !sendNowPlayingEnabled();
-  SuperIsland.store.set("sendNowPlayingOverride", nextValue);
+  Nexus.store.set("sendNowPlayingOverride", nextValue);
   setResult(nextValue ? "Now playing updates enabled" : "Now playing updates paused");
 }
 
 loadState();
 
-SuperIsland.registerModule({
+Nexus.registerModule({
   onActivate: function() {
     startPolling();
     if (!authConnected() || state.auth.status === "pending") {
@@ -1905,28 +1905,28 @@ SuperIsland.registerModule({
   onAction: function(actionID, value) {
     if (actionID === "openAlbumPage") {
       if (lastFmAlbumURL()) {
-        SuperIsland.openURL(lastFmAlbumURL());
+        Nexus.openURL(lastFmAlbumURL());
         setResult("Opened album on Last.fm.");
       }
       return;
     }
     if (actionID === "openTrackPage") {
       if (lastFmTrackURL()) {
-        SuperIsland.openURL(lastFmTrackURL());
+        Nexus.openURL(lastFmTrackURL());
         setResult("Opened track on Last.fm.");
       }
       return;
     }
     if (actionID === "openArtistPage") {
       if (lastFmArtistURL()) {
-        SuperIsland.openURL(lastFmArtistURL());
+        Nexus.openURL(lastFmArtistURL());
         setResult("Opened artist on Last.fm.");
       }
       return;
     }
     if (actionID === "openProfilePage") {
       if (lastFmProfileURL()) {
-        SuperIsland.openURL(lastFmProfileURL());
+        Nexus.openURL(lastFmProfileURL());
         setResult("Opened your Last.fm profile.");
       }
       return;

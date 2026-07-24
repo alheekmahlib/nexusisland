@@ -4,7 +4,7 @@ import Aptabase
 /// Privacy-friendly usage analytics via Aptabase.
 /// Counts unique users (anonymous) and lets us see which features are used.
 enum Analytics {
-    /// Aptabase App Key. Tied to the SuperIsland project on aptabase.com.
+    /// Aptabase App Key. Tied to the NexusIsland project on aptabase.com.
     private static let appKey = "A-US-9480990542"
 
     /// Call once at app launch — safe to call multiple times (Aptabase guards).

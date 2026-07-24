@@ -16,8 +16,8 @@ var DEFAULT_SOUND_PACK = "8bit";
 // read via `forProperty(...).toString()` with no undefined/null guard. Always
 // pass a complete options object so Swift never receives the literal string
 // "undefined" as a method or body.
-var _rawFetch = (SuperIsland && SuperIsland.http && typeof SuperIsland.http.fetch === "function")
-  ? SuperIsland.http.fetch.bind(SuperIsland.http)
+var _rawFetch = (Nexus && Nexus.http && typeof Nexus.http.fetch === "function")
+  ? Nexus.http.fetch.bind(Nexus.http)
   : null;
 
 function safeFetch(url, opts) {
@@ -389,7 +389,7 @@ function notifyFailure(title, body) {
   if (offlineWarningSent) return;
   offlineWarningSent = true;
   try {
-    SuperIsland.notifications.send({
+    Nexus.notifications.send({
       title: title,
       body: body,
       id: "agents-status-bridge-offline",
@@ -403,7 +403,7 @@ function notifyFailure(title, body) {
 // --- Settings helpers ----------------------------------------------------
 function settingBool(key, fallback) {
   try {
-    var v = SuperIsland.settings.get(key);
+    var v = Nexus.settings.get(key);
     if (typeof v === "boolean") return v;
   } catch (e) {}
   return fallback;
@@ -430,7 +430,7 @@ function recomputeTop() {
 // --- Sound alerts --------------------------------------------------------
 function currentSoundPack() {
   try {
-    var v = SuperIsland.settings.get(SETTING_SOUND_PACK);
+    var v = Nexus.settings.get(SETTING_SOUND_PACK);
     if (typeof v === "string" && v) return v;
   } catch (e) {}
   return DEFAULT_SOUND_PACK;
@@ -455,7 +455,7 @@ function popIslandForDone(persist) {
     // Normal "done" events auto-dismiss (persist=false), but when we have a
     // pending question the island must stay open so the user can click an
     // option button — otherwise it collapses before they can answer.
-    SuperIsland.island.activate(persist ? false : true);
+    Nexus.island.activate(persist ? false : true);
   } catch (e) {
     dlog("island activate threw: " + e);
   }
@@ -581,8 +581,8 @@ function postBridge(path, bodyString) {
 }
 
 function focusSession(agent, sessionID) {
-  SuperIsland.playFeedback("selection");
-  SuperIsland.island.dismiss();
+  Nexus.playFeedback("selection");
+  Nexus.island.dismiss();
   return postBridge("/focus", JSON.stringify({
     agent: agent || "",
     session_id: sessionID || ""
@@ -590,12 +590,12 @@ function focusSession(agent, sessionID) {
     .then(function (r) {
       var ok = !!(r && r.status === 200 && r.data && r.data.ok);
       if (!ok) {
-        SuperIsland.playFeedback("error");
+        Nexus.playFeedback("error");
         dlog("focus failed status=" + (r && r.status));
       }
     })
     .catch(function (e) {
-      SuperIsland.playFeedback("error");
+      Nexus.playFeedback("error");
       dlog("focus threw: " + e);
     });
 }
@@ -613,12 +613,12 @@ function resolvePermission(permissionId, optionIndex) {
     break;
   }
   if (selectedLabel == null) {
-    SuperIsland.playFeedback("error");
+    Nexus.playFeedback("error");
     dlog("resolve: option not found");
     return;
   }
-  SuperIsland.playFeedback("selection");
-  SuperIsland.island.dismiss();
+  Nexus.playFeedback("selection");
+  Nexus.island.dismiss();
   postBridge("/permission/resolve", JSON.stringify({
     permission_id: permissionId,
     selected_option: selectedLabel
@@ -626,12 +626,12 @@ function resolvePermission(permissionId, optionIndex) {
     .then(function (r) {
       var ok = !!(r && r.status === 200 && r.data && r.data.ok);
       if (!ok) {
-        SuperIsland.playFeedback("error");
+        Nexus.playFeedback("error");
         dlog("resolve failed status=" + (r && r.status));
       }
     })
     .catch(function (e) {
-      SuperIsland.playFeedback("error");
+      Nexus.playFeedback("error");
       dlog("resolve threw: " + e);
     });
 }
@@ -670,7 +670,7 @@ function reconcileHooks(agent, want) {
       // the toggle "doesn't work". This is the only channel that actually
       // reaches the user from JS without them opening the expanded view.
       try {
-        SuperIsland.notifications.send({
+        Nexus.notifications.send({
           title: (agent === "codex" ? "Codex" : "Claude") + " hooks failed",
           body: err,
           id: "agents-status-hooks-error-" + agent,
@@ -681,7 +681,7 @@ function reconcileHooks(agent, want) {
     .catch(function (e) {
       dlog(agent + " hooks reconcile threw: " + e);
       try {
-        SuperIsland.notifications.send({
+        Nexus.notifications.send({
           title: (agent === "codex" ? "Codex" : "Claude") + " hooks bridge error",
           body: String(e),
           id: "agents-status-hooks-error-" + agent,
@@ -706,7 +706,7 @@ function stopPolling() {
 }
 
 // --- Module --------------------------------------------------------------
-SuperIsland.registerModule({
+Nexus.registerModule({
   onActivate: function () {
     dlog("boot v" + EXT_VERSION + " at " + new Date().toISOString());
     activationFailed = false;
@@ -762,7 +762,7 @@ SuperIsland.registerModule({
 
   onAction: function (actionID) {
     if (actionID === "activate") {
-      SuperIsland.island.activate(false);
+      Nexus.island.activate(false);
       return;
     }
     if (actionID && actionID.indexOf("ask/") === 0) {
@@ -779,7 +779,7 @@ SuperIsland.registerModule({
         if (focusActionID(sessions[i]) === actionID) { target = sessions[i]; break; }
       }
       if (!isSessionFocusable(target)) {
-        SuperIsland.playFeedback("warning");
+        Nexus.playFeedback("warning");
         dlog("focus skipped: session not focusable");
         return;
       }

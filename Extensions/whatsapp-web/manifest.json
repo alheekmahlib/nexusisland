@@ -1,13 +1,13 @@
 {
-  "id": "superisland.whatsapp-web",
+  "id": "nexus.whatsapp-web",
   "name": "WhatsApp Web",
   "version": "1.0.0",
   "minAppVersion": "1.0.0",
   "main": "index.js",
   "author": {
-    "name": "SuperIsland"
+    "name": "Nexus Island"
   },
-  "description": "Pairs with WhatsApp Web via QR and routes incoming messages to the SuperIsland notification feed.",
+  "description": "Pairs with WhatsApp Web via QR and routes incoming messages to the Nexus Island notification feed.",
   "icon": "icon.svg",
   "license": "MIT",
   "categories": ["communication", "productivity"],

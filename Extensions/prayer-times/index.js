@@ -1,7 +1,7 @@
 "use strict";
 
-// Prayer Times — SuperIsland extension
-// id: superisland.prayer-times
+// Prayer Times — Nexus extension
+// id: nexus.prayer-times
 //
 // Fetches daily prayer times from the Aladhan API (https://aladhan.com) for a
 // user-configured location, surfaces the next prayer as a minimal-compact
@@ -43,19 +43,19 @@ var fetchInFlight = false;
 // ---------------------------------------------------------------------------
 
 function settingStr(key, fallback) {
-  var v = SuperIsland.settings.get(key);
+  var v = Nexus.settings.get(key);
   return (v === null || v === undefined || v === "") ? fallback : String(v);
 }
 
 function settingNum(key, fallback) {
-  var raw = SuperIsland.settings.get(key);
+  var raw = Nexus.settings.get(key);
   if (raw === null || raw === undefined || raw === "") return fallback;
   var n = Number(raw);
   return Number.isFinite(n) ? n : fallback;
 }
 
 function settingBool(key, fallback) {
-  var v = SuperIsland.settings.get(key);
+  var v = Nexus.settings.get(key);
   if (typeof v === "boolean") return v;
   if (v === null || v === undefined) return fallback;
   if (typeof v === "number") return v !== 0;
@@ -152,7 +152,7 @@ function fetchTimings() {
             "?latitude=" + cfg.lat + "&longitude=" + cfg.lng +
             "&method=" + cfg.method;
 
-  SuperIsland.http.fetch(url)
+  Nexus.http.fetch(url)
     .then(function (res) { return res.json(); })
     .then(function (json) {
       fetchInFlight = false;
@@ -174,7 +174,7 @@ function fetchTimings() {
     })
     .catch(function (err) {
       fetchInFlight = false;
-      SuperIsland.console.error("Prayer Times fetch failed: " + (err && err.message));
+      Nexus.console.error("Prayer Times fetch failed: " + (err && err.message));
     });
 }
 
@@ -203,7 +203,7 @@ function checkAndNotify() {
       if (now >= preTs && now < ts && !notifiedKeys[preKey]) {
         notifiedKeys[preKey] = true;
         var mins = cfg.notifyBefore;
-        SuperIsland.notifications.send({
+        Nexus.notifications.send({
           title: p.ar + " بعد " + mins + " دقيقة",
           body: "حان وقت صلاة " + p.ar + " خلال " + mins + " دقيقة",
           tapAction: { type: "openURL", url: "" }
@@ -214,14 +214,14 @@ function checkAndNotify() {
     // At-prayer notification.
     if (now >= ts && now < ts + 60000 && !notifiedKeys[p.key]) {
       notifiedKeys[p.key] = true;
-      SuperIsland.notifications.send({
+      Nexus.notifications.send({
         title: "حان الآن وقت صلاة " + p.ar,
         body: todaysHijri ? "التاريخ الهجري: " + todaysHijri : "",
         tapAction: { type: "openURL", url: "" }
       });
       if (cfg.adhanEnabled) {
         // A subtle haptic; full adhan audio would need a bundled asset.
-        SuperIsland.playFeedback("success");
+        Nexus.playFeedback("success");
       }
     }
   });
@@ -245,7 +245,7 @@ function tick() {
 // View callbacks (notificationFeed → only minimalCompact is shown)
 // ---------------------------------------------------------------------------
 
-SuperIsland.registerModule({
+Nexus.registerModule({
   onActivate: function () {
     // Fetch immediately, then poll every minute for precise notifications.
     fetchTimings();

@@ -294,7 +294,7 @@ private struct WelcomeScreen: View {
                 .padding(.bottom, 24)
 
             VStack(spacing: 8) {
-                Text(NSLocalizedString("Welcome to SuperIsland", comment: "Onboarding title"))
+                Text(NSLocalizedString("Welcome to NexusIsland", comment: "Onboarding title"))
                     .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundStyle(OBColors.textPrimary)
 
@@ -347,7 +347,7 @@ private struct PermissionsScreen: View {
                     .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundStyle(OBColors.textPrimary)
 
-                Text(NSLocalizedString("SuperIsland needs a few permissions to work properly.", comment: "Onboarding section subtitle"))
+                Text(NSLocalizedString("NexusIsland needs a few permissions to work properly.", comment: "Onboarding section subtitle"))
                     .font(.system(size: 13, weight: .regular))
                     .foregroundStyle(OBColors.textSecondary)
             }
@@ -568,21 +568,21 @@ private struct OnboardingExtensionInfo: Identifiable {
 
     static let available: [OnboardingExtensionInfo] = [
         OnboardingExtensionInfo(
-            id: "superisland.pomodoro",
+            id: "nexus.pomodoro",
             name: "Pomodoro Timer",
             description: "Focus timer with countdown in the island",
             fallbackIcon: "timer",
             badge: nil
         ),
         OnboardingExtensionInfo(
-            id: "superisland.whatsapp-web",
+            id: "nexus.whatsapp-web",
             name: "WhatsApp Web",
             description: "Route WhatsApp messages to the island",
             fallbackIcon: "message.fill",
             badge: "Requires Login"
         ),
         OnboardingExtensionInfo(
-            id: "superisland.ai-usage",
+            id: "nexus.ai-usage",
             name: "AI Usage",
             description: "Claude & Codex usage rings in the notch",
             fallbackIcon: "brain.head.profile",
@@ -754,7 +754,7 @@ private struct ReadyScreen: View {
                     .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundStyle(OBColors.textPrimary)
 
-                Text(NSLocalizedString("SuperIsland will run in the background.", comment: "Onboarding section subtitle"))
+                Text(NSLocalizedString("NexusIsland will run in the background.", comment: "Onboarding section subtitle"))
                     .font(.system(size: 14, weight: .regular))
                     .foregroundStyle(OBColors.textSecondary)
             }

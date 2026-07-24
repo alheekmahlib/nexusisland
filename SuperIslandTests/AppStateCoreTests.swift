@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for the `ModuleType`, `IslandState`, and `ActiveModule` value types
 /// that form the backbone of routing and module identity across the app.

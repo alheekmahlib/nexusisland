@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for the Hijri (Umm al-Qura) date formatter used by the Calendar module.
 ///

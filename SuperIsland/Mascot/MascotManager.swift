@@ -225,7 +225,7 @@ final class MascotManager: ObservableObject {
 
     private var templateCacheDirectory: URL {
         let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        let dir = caches.appendingPathComponent("SuperIsland/MascotTemplates", isDirectory: true)
+        let dir = caches.appendingPathComponent("NexusIsland/MascotTemplates", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir
     }

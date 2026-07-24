@@ -34,8 +34,8 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild \
-            -project SuperIsland.xcodeproj \
-            -scheme SuperIsland \
+            -project NexusIsland.xcodeproj \
+            -scheme NexusIsland \
             -clonedSourcePackagesDirPath .build/packages \
             -resolvePackageDependencies
 
@@ -43,8 +43,8 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild \
-            -project SuperIsland.xcodeproj \
-            -scheme SuperIsland \
+            -project NexusIsland.xcodeproj \
+            -scheme NexusIsland \
             -configuration Debug \
             -destination 'platform=macOS' \
             -clonedSourcePackagesDirPath .build/packages \
@@ -57,8 +57,8 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild \
-            -project SuperIsland.xcodeproj \
-            -scheme SuperIsland \
+            -project NexusIsland.xcodeproj \
+            -scheme NexusIsland \
             -configuration Debug \
             -destination 'platform=macOS' \
             -clonedSourcePackagesDirPath .build/packages \
@@ -92,4 +92,4 @@ jobs:
         run: swiftlint lint --reporter github-actions-logging --quiet || true
 
       - name: Lint (strict — fails on errors)
-        run: swiftlint lint --strict --reporter github-actions-logging SuperIsland ExtensionHost SuperIslandTests
+        run: swiftlint lint --strict --reporter github-actions-logging NexusIsland ExtensionHost NexusIslandTests

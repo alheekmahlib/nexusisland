@@ -115,7 +115,7 @@ final class NowPlayingManager: ObservableObject {
     private var adapterPipeHandler: JSONLinesPipeHandler?
     private var adapterStreamTask: Task<Void, Never>?
     private var adapterDidDeliverUpdate = false
-    private let appleScriptQueue = DispatchQueue(label: "superisland.applescript", qos: .userInitiated)
+    private let appleScriptQueue = DispatchQueue(label: "nexus.applescript", qos: .userInitiated)
 
     private init() {
         loadMediaRemote()

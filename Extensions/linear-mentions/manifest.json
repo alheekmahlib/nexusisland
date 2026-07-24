@@ -1,13 +1,13 @@
 {
-  "id": "superisland.linear-mentions",
+  "id": "nexus.linear-mentions",
   "name": "Linear Mentions",
   "version": "1.0.0",
   "minAppVersion": "1.0.0",
   "main": "index.js",
   "author": {
-    "name": "SuperIsland"
+    "name": "Nexus Island"
   },
-  "description": "Watches Linear issue mentions and comment mentions, surfaces them in Super Island, and lets you reply inline.",
+  "description": "Watches Linear issue mentions and comment mentions, surfaces them in Nexus Island, and lets you reply inline.",
   "icon": "icon.svg",
   "license": "MIT",
   "categories": ["productivity", "communication"],

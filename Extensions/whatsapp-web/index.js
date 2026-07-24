@@ -21,8 +21,8 @@ const LEGACY_MEDIA_PREVIEW_LABELS = {
   "<media:sticker>": "Sticker"
 };
 function renderInputComposer(options) {
-  if (SuperIsland.components && typeof SuperIsland.components.inputComposer === "function") {
-    return SuperIsland.components.inputComposer(options);
+  if (Nexus.components && typeof Nexus.components.inputComposer === "function") {
+    return Nexus.components.inputComposer(options);
   }
 
   return View.inputBox(
@@ -144,7 +144,7 @@ function previewNode(preview, limit, style, color, lineLimit) {
 }
 
 function shouldShowConnectionHint() {
-  const configured = SuperIsland.settings.get("showConnectionHint");
+  const configured = Nexus.settings.get("showConnectionHint");
   return typeof configured === "boolean" ? configured : true;
 }
 
@@ -155,11 +155,11 @@ function refreshState(force) {
   }
   lastRefreshAt = now;
 
-  if (typeof SuperIsland.system.getWhatsAppWeb !== "function") {
+  if (typeof Nexus.system.getWhatsAppWeb !== "function") {
     return;
   }
 
-  const snapshot = asObject(SuperIsland.system.getWhatsAppWeb(8));
+  const snapshot = asObject(Nexus.system.getWhatsAppWeb(8));
   if (!snapshot) return;
 
   const messages = asArray(snapshot.messages)
@@ -259,8 +259,8 @@ function openReplyComposer(payload) {
     error: ""
   };
 
-  if (typeof SuperIsland.system.startWhatsAppWeb === "function") {
-    SuperIsland.system.startWhatsAppWeb();
+  if (typeof Nexus.system.startWhatsAppWeb === "function") {
+    Nexus.system.startWhatsAppWeb();
   }
   refreshState(true);
 }
@@ -270,7 +270,7 @@ function closeReplyComposer() {
 }
 
 function mediaPreviewSection() {
-  const previewText = replyComposer.preview || "Send a quick reply from Super Island.";
+  const previewText = replyComposer.preview || "Send a quick reply from Nexus Island.";
   const previewMarkdown = markdownWithLinkedURL(previewText);
   const previewTextNode = View.frame(
     previewMarkdown
@@ -445,10 +445,10 @@ function fullExpandedView() {
   ], { spacing: 8, align: "leading" });
 }
 
-SuperIsland.registerModule({
+Nexus.registerModule({
   onActivate() {
-    if (typeof SuperIsland.system.startWhatsAppWeb === "function") {
-      SuperIsland.system.startWhatsAppWeb();
+    if (typeof Nexus.system.startWhatsAppWeb === "function") {
+      Nexus.system.startWhatsAppWeb();
     }
     refreshState(true);
   },
@@ -479,16 +479,16 @@ SuperIsland.registerModule({
   },
 
   onAction(actionID) {
-    if (actionID === "refresh-qr" && typeof SuperIsland.system.refreshWhatsAppWebQR === "function") {
-      SuperIsland.system.refreshWhatsAppWebQR();
+    if (actionID === "refresh-qr" && typeof Nexus.system.refreshWhatsAppWebQR === "function") {
+      Nexus.system.refreshWhatsAppWebQR();
       refreshState(true);
       return;
     }
 
     if (actionID === "close-reply") {
       closeReplyComposer();
-      const closed = typeof SuperIsland.system.closePresentedInteraction === "function"
-        ? !!SuperIsland.system.closePresentedInteraction()
+      const closed = typeof Nexus.system.closePresentedInteraction === "function"
+        ? !!Nexus.system.closePresentedInteraction()
         : false;
       if (!closed) {
         refreshState(true);
@@ -508,7 +508,7 @@ SuperIsland.registerModule({
       if (!replyComposer || !body) {
         return;
       }
-      if (typeof SuperIsland.system.sendWhatsAppWebMessageAsync !== "function") {
+      if (typeof Nexus.system.sendWhatsAppWebMessageAsync !== "function") {
         replyComposer.error = "Reply API unavailable.";
         refreshState(true);
         return;
@@ -516,18 +516,18 @@ SuperIsland.registerModule({
 
       const recipient = replyComposer.recipient;
       const notificationSourceID = replyComposer.notificationSourceID;
-      SuperIsland.system.sendWhatsAppWebMessageAsync(recipient, body);
-      if (notificationSourceID && typeof SuperIsland.system.dismissNotification === "function") {
-        SuperIsland.system.dismissNotification(notificationSourceID);
+      Nexus.system.sendWhatsAppWebMessageAsync(recipient, body);
+      if (notificationSourceID && typeof Nexus.system.dismissNotification === "function") {
+        Nexus.system.dismissNotification(notificationSourceID);
       }
       closeReplyComposer();
-      const closed = typeof SuperIsland.system.closePresentedInteraction === "function"
-        ? !!SuperIsland.system.closePresentedInteraction()
+      const closed = typeof Nexus.system.closePresentedInteraction === "function"
+        ? !!Nexus.system.closePresentedInteraction()
         : false;
       if (!closed) {
         refreshState(true);
       }
-      SuperIsland.playFeedback("success");
+      Nexus.playFeedback("success");
       return;
     }
   }

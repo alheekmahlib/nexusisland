@@ -1,5 +1,5 @@
 import XCTest
-@testable import SuperIsland
+@testable import NexusIsland
 
 /// Tests for PrayerTimesManager's pure logic (models + parsing + helpers).
 /// The manager itself is a @MainActor singleton doing network I/O, so we test

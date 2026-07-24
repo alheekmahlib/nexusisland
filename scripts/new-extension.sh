@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# new-extension.sh — scaffold a new SuperIsland JS extension.
+# new-extension.sh — scaffold a new NexusIsland JS extension.
 #
 # Usage:
 #   scripts/new-extension.sh <name> [options]
@@ -10,7 +10,7 @@
 #   scripts/new-extension.sh my-tool --dir ExtensionsDev   # dev discovery dir
 #
 # Generates a ready-to-enable extension folder with:
-#   <name>/manifest.json   (id: superisland.<name>, version 0.1.0)
+#   <name>/manifest.json   (id: nexus.<name>, version 0.1.0)
 #   <name>/index.js        (registerModule skeleton with compact/expanded/fullExpanded)
 #   <name>/settings.json   (one toggle, one text field — easy to extend)
 #   <name>/icon.svg        (placeholder monochrome icon)
@@ -35,7 +35,7 @@ Usage: scripts/new-extension.sh <name> [options]
 
 Arguments:
   <name>                  Extension folder + id suffix (e.g. "prayer-times" →
-                          folder prayer-times, id superisland.prayer-times).
+                          folder prayer-times, id nexus.prayer-times).
                           Lowercase, words separated by hyphens.
 
 Options:
@@ -142,7 +142,7 @@ display_name() {
   }'
 }
 DISPLAY_NAME="$(display_name "$NAME")"
-EXTENSION_ID="superisland.${NAME}"
+EXTENSION_ID="nexus.${NAME}"
 
 # -----------------------------------------------------------------------------
 # manifest.json
@@ -187,7 +187,7 @@ cat > "${TARGET_DIR}/manifest.json" <<MANIFEST
   "author": {
     "name": "Your Name"
   },
-  "description": "${DISPLAY_NAME} extension for SuperIsland.",
+  "description": "${DISPLAY_NAME} extension for NexusIsland.",
   "icon": "icon.svg",
   "license": "MIT",
   "categories": ["productivity"],
@@ -221,19 +221,19 @@ function tick() {
   // Called on each refresh (refreshInterval). Fetch data and surface it via
   // the shared Notifications module:
   //
-  //   SuperIsland.notifications.send({
+  //   NexusIsland.notifications.send({
   //     title: "New ${DISPLAY_NAME} event",
   //     body:  "details…",
   //     tapAction: { type: "openURL", url: "https://example.com" }
   //   });
   //
   // Guard against duplicates by tracking what you have already sent in
-  // SuperIsland.store (the @network permission gates http.fetch).
+  // NexusIsland.store (the @network permission gates http.fetch).
 }'
 else
   INDEX_BODY='function buildCompact() {
   // Pill view — keep it glanceable. Read live state from your module variables
-  // or from SuperIsland.settings.get(...).
+  // or from NexusIsland.settings.get(...).
   return View.hstack({
     spacing: 6,
     children: [
@@ -283,7 +283,7 @@ function tick() {
   // Called on each refresh (refreshInterval). Refresh state, then re-render
   // happens automatically from the compact/expanded/fullExpanded callbacks.
   // With the @network permission:
-  //   SuperIsland.http.fetch("https://api.example.com/data")
+  //   NexusIsland.http.fetch("https://api.example.com/data")
   //     .then(function (res) { return res.json(); })
   //     .then(function (data) { /* update state */ });
 }'
@@ -296,7 +296,7 @@ cat > "${TARGET_DIR}/index.js" <<INDEX
 // Extension id: ${EXTENSION_ID}
 //
 // Docs: EXTENSIONS-API.md (authoritative), EXTENSIONS.md (overview).
-// The SuperIsland.registerModule contract:
+// The NexusIsland.registerModule contract:
 //   onActivate / onDeactivate / onAction / onSettingsChanged hooks, plus
 //   compact() / expanded() / fullExpanded() / minimalCompact view callbacks
 //   that return View.* node trees.
@@ -307,7 +307,7 @@ ${INDEX_BODY}
 // Lifecycle
 // ---------------------------------------------------------------------------
 
-SuperIsland.registerModule({
+NexusIsland.registerModule({
   onActivate: function () {
     // Called once when the extension is enabled. Seed any initial state here.
   },
@@ -319,7 +319,7 @@ SuperIsland.registerModule({
   onAction: function (actionID) {
     // Fired when a user taps a button whose \`action\` === actionID.
     if (actionID === "demo-action") {
-      SuperIsland.notifications.send({
+      NexusIsland.notifications.send({
         title: "${DISPLAY_NAME}",
         body: "Action received: " + actionID
       });
@@ -383,7 +383,7 @@ SVG
 cat > "${TARGET_DIR}/README.md" <<README
 # ${DISPLAY_NAME}
 
-A SuperIsland extension. Generated with \`scripts/new-extension.sh\`.
+A NexusIsland extension. Generated with \`scripts/new-extension.sh\`.
 
 ## What it does
 
@@ -393,7 +393,7 @@ TODO: describe the feature.
 
 Newly discovered extensions default to **disabled**. Enable in
 **Settings → Extensions**, or the menu-bar Modules submenu, then restart
-SuperIsland (or toggle the extension off/on).
+NexusIsland (or toggle the extension off/on).
 
 ## Permissions
 
@@ -404,7 +404,7 @@ $(if [[ "$FEED" == "yes" ]]; then echo "## Mode\n\nNotification-feed extension �
 ## Layout
 
 - \`manifest.json\` — id, permissions, capabilities, refreshInterval.
-- \`index.js\` — \`SuperIsland.registerModule({...})\` with view callbacks.
+- \`index.js\` — \`NexusIsland.registerModule({...})\` with view callbacks.
 - \`settings.json\` — schema for the Settings → Extensions pane.
 - \`icon.svg\` — template icon.
 
@@ -422,5 +422,5 @@ echo "  id:            ${EXTENSION_ID}"
 echo "  permissions:   ${PERMISSIONS:-none}"
 echo "  feed mode:     ${FEED}"
 echo ""
-echo "Next: restart SuperIsland, then enable it in Settings → Extensions."
+echo "Next: restart NexusIsland, then enable it in Settings → Extensions."
 echo "To ship it bundled, add '${NAME}' to project.yml's postCompileScripts rsync list."

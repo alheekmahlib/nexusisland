@@ -16,7 +16,7 @@ struct AdvancedSettingsView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(NSLocalizedString("Show island on", comment: "Settings label")).font(.system(size: 13))
-                        Text(NSLocalizedString("Pick a specific display or let SuperIsland choose", comment: "Settings description"))
+                        Text(NSLocalizedString("Pick a specific display or let NexusIsland choose", comment: "Settings description"))
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer(minLength: 8)
@@ -72,7 +72,7 @@ struct AdvancedSettingsView: View {
                         Button(NSLocalizedString("Cancel", comment: "Button"), role: .cancel) {}
                         Button(NSLocalizedString("Reset", comment: "Button"), role: .destructive) { resetAllSettings() }
                     } message: {
-                        Text(NSLocalizedString("This will reset all SuperIsland settings to their defaults.", comment: "Alert message"))
+                        Text(NSLocalizedString("This will reset all NexusIsland settings to their defaults.", comment: "Alert message"))
                     }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 12)
@@ -155,7 +155,7 @@ struct AdvancedSettingsView: View {
     }
 
     private func resetAllSettings() {
-        let domain = Bundle.main.bundleIdentifier ?? "com.workview.SuperIsland"
+        let domain = Bundle.main.bundleIdentifier ?? "com.vexaltech.NexusIsland"
         UserDefaults.standard.removePersistentDomain(forName: domain)
         UserDefaults.standard.synchronize()
     }

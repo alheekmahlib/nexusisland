@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# build-signed.sh — build SuperIsland with real Developer ID code signing.
+# build-signed.sh — build NexusIsland with real Developer ID code signing.
 #
 # Usage: scripts/build-signed.sh
 #
@@ -33,8 +33,8 @@ xcodegen generate
 # 2. Build without signing (avoids SPM auto-signing conflicts).
 echo "Building (unsigned)…"
 xcodebuild \
-  -project SuperIsland.xcodeproj \
-  -scheme SuperIsland \
+  -project NexusIsland.xcodeproj \
+  -scheme NexusIsland \
   -configuration Debug \
   -destination 'platform=macOS' \
   -clonedSourcePackagesDirPath .build/packages \
@@ -42,12 +42,12 @@ xcodebuild \
   CODE_SIGNING_ALLOWED=NO \
   build 2>&1 | tail -5
 
-APP_PATH="build/DerivedData/Build/Products/Debug/SuperIsland.app"
+APP_PATH="build/DerivedData/Build/Products/Debug/NexusIsland.app"
 
 # 3. Sign with Developer ID + entitlements.
 echo "Signing with Developer ID + entitlements…"
 codesign --force --deep --sign "$SIGN_IDENTITY" \
-  --entitlements SuperIsland/SuperIsland.entitlements \
+  --entitlements NexusIsland/NexusIsland.entitlements \
   "$APP_PATH"
 
 # 4. Verify.
