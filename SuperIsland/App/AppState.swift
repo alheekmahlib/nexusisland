@@ -436,17 +436,13 @@ final class AppState: ObservableObject {
 
     /// Apply the user's language override to the active locale. Call at launch
     /// (after setting languageOverride from @AppStorage) and whenever it changes.
-    /// A change requires an app restart to fully relayout, so the caller should
-    /// prompt the user; we set the languages here so the next launch picks them up.
+    ///
+    /// Uses L10n's Bundle swizzling because setting AppleLanguages at runtime
+    /// doesn't reliably flip NSLocalizedString lookups in the current process
+    /// (Bundle.main.preferredLocalizations is resolved early). A restart prompt
+    /// is still shown for the few SwiftUI-cached strings.
     func applyLanguageOverride() {
-        let resolved: [String]
-        switch languageOverride {
-        case "ar": resolved = ["ar"]
-        case "en": resolved = ["en"]
-        default:   resolved = [] // empty → follow macOS preferred languages
-        }
-        UserDefaults.standard.set(resolved.isEmpty ? nil : resolved,
-                                  forKey: "AppleLanguages")
+        L10n.applyOverride()
     }
 
     func refreshEnergyState() {
