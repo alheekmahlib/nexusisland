@@ -269,22 +269,28 @@ SuperIsland.registerModule({
     }
   },
 
-  compact: function () { return View.empty(); },
-  expanded: function () { return View.empty(); },
-  fullExpanded: function () { return View.empty(); },
+  // Notification-feed extensions are hidden from module slots, so these return
+  // a trivial node. There's no View.empty() in the runtime; an empty zstack is
+  // the canonical "render nothing" node.
+  compact: function () { return View.zstack([]); },
+  expanded: function () { return View.zstack([]); },
+  fullExpanded: function () { return View.zstack([]); },
 
   // The side chip beside the notch: next prayer + countdown.
+  // NOTE: the runtime's builder signatures are positional, not object-literal:
+  //   View.icon(name, opts)        — name first, then opts
+  //   View.text(value, opts)       — value first, then opts
   minimalCompact: {
     leading: function () {
       var next = nextPrayer();
-      if (!next) return View.text({ value: "", style: "caption", color: "white" });
-      return View.icon({ name: next.prayer.icon, size: 12, color: "white" });
+      if (!next) return View.text("", { style: "caption", color: "white" });
+      return View.icon(next.prayer.icon, { size: 12, color: "white" });
     },
     trailing: function () {
       var next = nextPrayer();
-      if (!next) return View.text({ value: "—", style: "caption", color: "white" });
+      if (!next) return View.text("—", { style: "caption", color: "white" });
       var label = next.prayer.ar + " " + humanCountdown(next.msUntil);
-      return View.text({ value: label, style: "caption", color: "white" });
+      return View.text(label, { style: "caption", color: "white" });
     },
     precedence: function () {
       // Show the chip whenever we have timings; 0 hides it.
