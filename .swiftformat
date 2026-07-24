@@ -1,0 +1,38 @@
+# SwiftFormat configuration for SuperIsland
+#
+# Minimal, non-destructive rules that enforce consistency on NEW code
+# without churning the existing codebase. Run with:
+#   swiftformat .          (auto-format)
+#   swiftformat --lint .   (check only)
+
+# Scope to the Swift sources only.
+--exclude SuperIsland/Resources,Scripts
+
+# Project conventions.
+--swiftversion 5.9
+
+# Indentation: the codebase uses 4 spaces.
+--indent 4
+
+# Keep `--self remove` OFF. Managers reference `self.` explicitly in closures
+# and run-loop callbacks (see BatteryManager.swift); removing it would break
+# capture semantics and readability.
+
+# Do not aggressively strip or sort imports — order varies (Foundation first).
+--disable sortImports
+
+# Preserve trailing closure style used throughout the SwiftUI code.
+--disable trailingClosures
+
+# Keep `void` -> `Void` as written (codebase uses `-> Void` explicitly in
+# function-type aliases like ModuleRefreshScheduler's `action`).
+--disable voidReturnType
+
+# Don't reflow long lines in the existing SwiftUI view bodies.
+--maxwidth 200
+
+# Specifier order (public static let) — match what's already in the repo.
+--modifierorder instance, type
+
+# Don't strip comments or doc markers (// MARK: - is used everywhere).
+--disable stripComments
