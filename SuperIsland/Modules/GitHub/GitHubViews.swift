@@ -161,6 +161,7 @@ struct GitHubFullExpandedView: View {
             HStack(spacing: 0) {
                 statsCard
                     .frame(width: 200)
+                    .frame(maxHeight: .infinity)
                 Rectangle().fill(QuranDesign.surfaceStroke).frame(width: 0.5)
                 itemsList
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -169,10 +170,11 @@ struct GitHubFullExpandedView: View {
     }
 
     private var statsCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 7) {
             Text("GitHub")
-                .font(QuranDesign.surahName(14))
+                .font(QuranDesign.surahName(13))
                 .foregroundColor(QuranDesign.textPrimary)
+                .padding(.bottom, 2)
             bigStat(icon: "arrow.triangle.pull", count: manager.summary.reviewRequestedCount,
                     label: "مراجعات مستحقة", color: QuranDesign.accent)
             bigStat(icon: "exclamationmark.bubble.fill", count: manager.summary.unansweredCount,
@@ -185,14 +187,14 @@ struct GitHubFullExpandedView: View {
                     label: "PRs مفتوحة لك", color: QuranDesign.textTertiary)
             Spacer(minLength: 0)
         }
-        .padding(12)
+        .padding(10)
     }
 
     private func bigStat(icon: String, count: Int, label: String, color: Color) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon).font(.system(size: 11)).foregroundColor(color)
-            Text("\(count)").font(QuranDesign.surahName(16)).foregroundColor(QuranDesign.textPrimary)
-            Text(label).font(QuranDesign.caption(9)).foregroundColor(QuranDesign.textTertiary)
+        HStack(spacing: 6) {
+            Image(systemName: icon).font(.system(size: 10)).foregroundColor(color)
+            Text("\(count)").font(QuranDesign.surahName(14)).foregroundColor(QuranDesign.textPrimary)
+            Text(label).font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
         }
         .environment(\.layoutDirection, .rightToLeft)
     }
