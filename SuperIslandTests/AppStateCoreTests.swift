@@ -24,6 +24,7 @@ final class AppStateCoreTests: XCTestCase {
             "connectivity",
             "nowPlaying",
             "notifications",
+            "prayerTimes",
             "quran",
             "shelf",
             "teleprompter",

@@ -27,6 +27,8 @@ struct ExpandedView: View {
                     TeleprompterExpandedView()
                 case .builtIn(.quran):
                     QuranExpandedView()
+                case .builtIn(.prayerTimes):
+                    PrayerTimesExpandedView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .expanded)
                 }

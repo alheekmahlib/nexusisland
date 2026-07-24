@@ -27,6 +27,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
     case notifications
     case teleprompter
     case quran
+    case prayerTimes
     var id: String { rawValue }
 
     var displayName: String {
@@ -41,6 +42,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .notifications: return NSLocalizedString("Notifications", comment: "Module name")
         case .teleprompter: return NSLocalizedString("Teleprompter", comment: "Module name")
         case .quran: return NSLocalizedString("Quran", comment: "Module name")
+        case .prayerTimes: return NSLocalizedString("Prayer Times", comment: "Module name")
         }
     }
 
@@ -56,6 +58,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .notifications: return "bell.fill"
         case .teleprompter: return "scroll"
         case .quran: return "book.fill"
+        case .prayerTimes: return "moon.stars.fill"
         }
     }
 }
@@ -272,6 +275,7 @@ final class AppState: ObservableObject {
     @AppStorage("module.notifications.enabledSources") private var notificationEnabledSourcesRaw = NotificationFeedSource.defaultEnabledRawValue
     @AppStorage("module.teleprompter.enabled") var teleprompterEnabled = false
     @AppStorage("module.quran.enabled") var quranEnabled = false
+    @AppStorage("module.prayerTimes.enabled") var prayerTimesEnabled = false
     @AppStorage("module.shelf.autoOpenOnDrop") var shelfAutoOpenOnDrop = true
     @AppStorage("module.shelf.defaultToShelf") var shelfDefaultToShelf = false
 
@@ -933,6 +937,7 @@ final class AppState: ObservableObject {
         case .notifications: return notificationsEnabled
         case .teleprompter: return teleprompterEnabled
         case .quran: return quranEnabled
+        case .prayerTimes: return prayerTimesEnabled
         }
     }
 

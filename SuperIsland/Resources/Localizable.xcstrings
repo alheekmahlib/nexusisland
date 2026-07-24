@@ -12,6 +12,7 @@
     "Notifications" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الإشعارات" } } } },
     "Teleprompter" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "المُلقّن" } } } },
     "Quran" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "القرآن" } } } },
+    "Prayer Times" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "مواقيت الصلاة" } } } },
     "Home" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "الرئيسية" } } } },
     "Empty" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "فارغ" } } } },
 

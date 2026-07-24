@@ -84,6 +84,8 @@ struct CompactView: View {
                     TeleprompterCompactView()
                 case .builtIn(.quran):
                     QuranCompactView()
+                case .builtIn(.prayerTimes):
+                    PrayerTimesCompactView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .compact)
                 }
