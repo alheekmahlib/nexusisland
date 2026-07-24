@@ -60,46 +60,43 @@ struct PrayerTimesExpandedView: View {
     @ObservedObject private var manager = PrayerTimesManager.shared
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            // Location indicator — shows city or coordinates so the user
-            // can verify the times are for the right place.
-            locationBadge
-
-            HStack(spacing: 12) {
-                if let next = manager.nextPrayerInfo {
-                    medallion(next.kind)
-                    nextInfo(next)
-                } else {
-                    medallion(.isha)
-                    loadingInfo
+        HStack(spacing: 12) {
+            if let next = manager.nextPrayerInfo {
+                medallion(next.kind)
+                // Compact info: name + countdown only (no progress bar —
+                // the 88pt expanded height can't fit it alongside the day list).
+                // The progress bar lives in FullExpanded (180pt).
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(next.kind.arabicName + " · " + next.countdown)
+                        .font(QuranDesign.surahName(13))
+                        .foregroundColor(QuranDesign.textPrimary)
+                        .environment(\.layoutDirection, .rightToLeft)
+                    locationBadge
                 }
-
-                Divider().background(QuranDesign.surfaceStroke).frame(maxHeight: 60)
-
-                // Compact list of the remaining prayers with their times.
-                todayList
+            } else {
+                medallion(.isha)
+                loadingInfo
             }
+
+            Divider().background(QuranDesign.surfaceStroke).frame(maxHeight: 60)
+
+            // Compact list of the remaining prayers with their times.
+            todayList
         }
         .environment(\.layoutDirection, .rightToLeft)
     }
 
     private var locationBadge: some View {
-        HStack(spacing: 4) {
-            Image(systemName: "location.fill").font(.system(size: 8)).foregroundColor(QuranDesign.accent)
+        HStack(spacing: 3) {
+            Image(systemName: "location.fill").font(.system(size: 7)).foregroundColor(QuranDesign.accent)
             if !manager.locationName.isEmpty {
                 Text(manager.locationName)
-                    .font(QuranDesign.caption(8))
+                    .font(QuranDesign.caption(7))
                     .foregroundColor(QuranDesign.textTertiary)
             } else {
-                // Show coordinates so the user sees which location is in use.
                 Text(String(format: "%.2f, %.2f", manager.resolvedLatitude, manager.resolvedLongitude))
-                    .font(QuranDesign.mono(8))
+                    .font(QuranDesign.mono(7))
                     .foregroundColor(manager.hasLocationFix ? QuranDesign.accent : QuranDesign.textTertiary)
-            }
-            if !manager.hasLocationFix && manager.useAutoLocation {
-                Text("(بانتظار الموقع)")
-                    .font(QuranDesign.caption(7))
-                    .foregroundColor(.orange)
             }
         }
     }
@@ -123,16 +120,28 @@ struct PrayerTimesExpandedView: View {
                 .foregroundColor(QuranDesign.textPrimary)
                 .environment(\.layoutDirection, .rightToLeft)
 
-            // The professional progress bar: shows elapsed fraction of the
-            // current inter-prayer interval, with previous→next labels.
-            if let fraction = manager.progressFraction,
-               let prev = manager.previousPrayerInfo {
-                PrayerProgressBar(
-                    progress: max(0.04, fraction), // floor so the fill is always visible
-                    leadingLabel: prev.kind.arabicShortName,
-                    trailingLabel: next.kind.arabicShortName
-                )
-                .frame(height: 12)
+            // Progress bar — always show it (remove the if-let to test if the
+            // guard was the issue). Use safe fallbacks.
+            let fraction = manager.progressFraction ?? 0.5
+            let prevName = manager.previousPrayerInfo?.kind.arabicShortName ?? "—"
+
+            // Simple inline bar — no nested custom view, no GeometryReader.
+            HStack(spacing: 4) {
+                Text(prevName)
+                    .font(QuranDesign.caption(8))
+                    .foregroundColor(QuranDesign.textTertiary)
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(QuranDesign.surfaceStroke)
+                        .frame(height: 5)
+                    Capsule()
+                        .fill(QuranDesign.accent)
+                        .frame(width: 80 * max(0.05, fraction), height: 5)
+                }
+                .frame(maxWidth: .infinity)
+                Text(next.kind.arabicShortName)
+                    .font(QuranDesign.caption(8))
+                    .foregroundColor(QuranDesign.textTertiary)
             }
         }
     }
@@ -193,7 +202,7 @@ struct PrayerTimesFullExpandedView: View {
     }
 
     private var heroCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             if let next = manager.nextPrayerInfo {
                 HStack(spacing: 12) {
                     ZStack {
@@ -219,6 +228,33 @@ struct PrayerTimesFullExpandedView: View {
                             .foregroundColor(QuranDesign.accent)
                     }
                     Spacer()
+                }
+
+                // Progress bar with previous→next labels — fits in the 180pt
+                // full-expanded height (unlike the 88pt expanded).
+                let fraction = manager.progressFraction ?? 0
+                let prevName = manager.previousPrayerInfo?.kind.arabicShortName ?? "—"
+                VStack(spacing: 3) {
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(QuranDesign.surfaceStroke)
+                            .frame(height: 6)
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [QuranDesign.accent.opacity(0.6), QuranDesign.accent],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(width: 100 * max(0.05, fraction), height: 6)
+                    }
+                    .frame(maxWidth: .infinity)
+                    HStack {
+                        Text(prevName).font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+                        Spacer()
+                        Text(next.kind.arabicShortName).font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+                    }
                 }
             } else {
                 Text(manager.isLoading ? "جارٍ التحميل…" : "لا توجد بيانات")
