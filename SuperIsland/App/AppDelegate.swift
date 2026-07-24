@@ -147,6 +147,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if state.ciMonitorEnabled { _ = CIManager.shared }
         if state.devServersEnabled { _ = DevServerManager.shared }
         if state.gitStatsEnabled { _ = GitStatsManager.shared }
+        if state.dockerEnabled { _ = DockerManager.shared }
 
         let extensions = ExtensionManager.shared
         extensions.discoverExtensions()
@@ -453,6 +454,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .ciMonitor: AppState.shared.ciMonitorEnabled = newState
         case .devServers: AppState.shared.devServersEnabled = newState
         case .gitStats: AppState.shared.gitStatsEnabled = newState
+        case .docker: AppState.shared.dockerEnabled = newState
         }
         sender.state = newState ? .on : .off
         rebuildStatusMenu()

@@ -32,6 +32,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
     case ciMonitor
     case devServers
     case gitStats
+    case docker
     var id: String { rawValue }
 
     var displayName: String {
@@ -51,6 +52,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .ciMonitor: return NSLocalizedString("CI Monitor", comment: "Module name")
         case .devServers: return NSLocalizedString("Dev Servers", comment: "Module name")
         case .gitStats: return NSLocalizedString("Git Stats", comment: "Module name")
+        case .docker: return NSLocalizedString("Docker", comment: "Module name")
         }
     }
 
@@ -71,6 +73,7 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .ciMonitor: return "checkmark.gearshape"
         case .devServers: return "server.rack"
         case .gitStats: return "arrow.triangle.branch"
+        case .docker: return "shippingbox"
         }
     }
 }
@@ -292,6 +295,7 @@ final class AppState: ObservableObject {
     @AppStorage("module.ciMonitor.enabled") var ciMonitorEnabled = false
     @AppStorage("module.devServers.enabled") var devServersEnabled = false
     @AppStorage("module.gitStats.enabled") var gitStatsEnabled = false
+    @AppStorage("module.docker.enabled") var dockerEnabled = false
     @AppStorage("module.shelf.autoOpenOnDrop") var shelfAutoOpenOnDrop = true
     @AppStorage("module.shelf.defaultToShelf") var shelfDefaultToShelf = false
 
@@ -958,6 +962,7 @@ final class AppState: ObservableObject {
         case .ciMonitor: return ciMonitorEnabled
         case .devServers: return devServersEnabled
         case .gitStats: return gitStatsEnabled
+        case .docker: return dockerEnabled
         }
     }
 
