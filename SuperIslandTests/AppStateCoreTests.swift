@@ -21,6 +21,7 @@ final class AppStateCoreTests: XCTestCase {
         XCTAssertEqual(ids, [
             "battery",
             "calendar",
+            "ciMonitor",
             "connectivity",
             "gitHub",
             "nowPlaying",

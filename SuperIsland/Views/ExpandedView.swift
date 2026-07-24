@@ -31,6 +31,8 @@ struct ExpandedView: View {
                     PrayerTimesExpandedView()
                 case .builtIn(.gitHub):
                     GitHubExpandedView()
+                case .builtIn(.ciMonitor):
+                    CIMonitorExpandedView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .expanded)
                 }

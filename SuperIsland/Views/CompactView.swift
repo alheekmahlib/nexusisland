@@ -88,6 +88,8 @@ struct CompactView: View {
                     PrayerTimesCompactView()
                 case .builtIn(.gitHub):
                     GitHubCompactView()
+                case .builtIn(.ciMonitor):
+                    CIMonitorCompactView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .compact)
                 }
