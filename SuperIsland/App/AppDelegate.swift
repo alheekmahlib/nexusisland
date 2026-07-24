@@ -429,6 +429,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if newState {
                 PermissionsManager.shared.requestTeleprompterWordTrackingAccess()
             }
+        case .quran: AppState.shared.quranEnabled = newState
         }
         sender.state = newState ? .on : .off
         rebuildStatusMenu()

@@ -50,6 +50,8 @@ struct FullExpandedView: View {
             NotificationExpandedView()
         case .builtIn(.teleprompter):
             TeleprompterExpandedView()
+        case .builtIn(.quran):
+            QuranFullExpandedView()
         case .builtIn(.nowPlaying), .builtIn(.connectivity):
             HomeScreenView()
         case .extension_(let extensionID):

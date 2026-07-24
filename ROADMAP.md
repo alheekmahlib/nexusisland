@@ -38,18 +38,16 @@ Module أصلي. التشغيل **سورة كاملة بملف صوتي واحد
 
 | الحالة | المكوّن | الوصف |
 |---|---|---|
-| ☐ | `SuperIsland/Modules/Quran/QuranManager.swift` | `@MainActor ObservableObject` — يدير السورة الحالية، القارئ، التشغيل/الإيقاف، آخر موضع استماع، آخر سورة، إعدادات القارئ في `@AppStorage` |
-| ☐ | `SuperIsland/Modules/Quran/QuranPlayer.swift` | طبقة `AVPlayer` تُشغّل ملف السورة الكامل — حالات `isPlaying`/`progress`/`duration`/`currentPosition`؛ استئناف من آخر موضع عند التوقف |
-| ☐ | `SuperIsland/Modules/Quran/QuranReciters.swift` | قائمة القرّاء (9 قرّاء، **بدون السديس**): عبد الباسط، الحصري، المنشاوي، العفاسي، المعيقلي، بصفر، الشريم، الحذيفي، العجمي — كلٌّ مع مُعرّف AlQuran Cloud |
-| ☐ | `SuperIsland/Modules/Quran/QuranCompactView.swift` | اسم السورة + القارئ + شريط تقدّم السورة + زر تشغيل/إيقاف |
-| ☐ | `SuperIsland/Modules/Quran/QuranExpandedView.swift` | اختيار القارئ + اختيار السورة (114 سورة) + إعادة تشغيل من البداية + قفز لسورة تالية/سابقة |
-| ☐ | `SuperIsland/Modules/Quran/QuranFullExpandedView.swift` | قائمة السور الكاملة، آخر مواضع الاستماع لكل سورة، إحصائيات يومية (سور مكتملة) |
-| ☐ | التسجيل | إضافة `case quran` في `ModuleType` (`SuperIsland/App/AppState.swift:19`) + المسار في `ExpandedView.swift` + `CompactView` + `FullExpandedView` |
-| ☐ | الاختبارات | `QuranManagerTests` — اختيار السورة، تغيير القارئ، حفظ/استئناف آخر موضع، الانتقال للسورة التالية تلقائياً عند اكتمال السورة |
+| ✅ | `SuperIsland/Modules/Quran/QuranManager.swift` | `@MainActor ObservableObject` — يدير السورة الحالية، القارئ، التشغيل/الإيقاف، آخر موضع استماع، آخر سورة، إعدادات القارئ في `@AppStorage` |
+| ✅ | `SuperIsland/Modules/Quran/QuranPlayer.swift` | طبقة `AVPlayer` تُشغّل ملف السورة الكامل — حالات `isPlaying`/`progress`/`duration`/`currentPosition`؛ استئناف من آخر موضع عند التوقف |
+| ✅ | `SuperIsland/Modules/Quran/QuranReciters.swift` | قائمة القرّاء (9 قرّاء، **بدون السديس**): عبد الباسط، الحصري، المنشاوي، العفاسي، المعيقلي، بصفر، الشريم، الحذيفي، العجمي — كلٌّ مع مُعرّف AlQuran Cloud |
+| ✅ | `SuperIsland/Modules/Quran/QuranCompactView.swift` | اسم السورة + القارئ + شريط تقدّم السورة + زر تشغيل/إيقاف |
+| ✅ | `SuperIsland/Modules/Quran/QuranExpandedView.swift` | اختيار القارئ + اختيار السورة (114 سورة) + إعادة تشغيل من البداية + قفز لسورة تالية/سابقة |
+| ✅ | `SuperIsland/Modules/Quran/QuranFullExpandedView.swift` | قائمة السور الكاملة، آخر مواضع الاستماع لكل سورة، إحصائيات يومية (سور مكتملة) |
+| ✅ | التسجيل | إضافة `case quran` في `ModuleType` (`SuperIsland/App/AppState.swift:19`) + المسار في `ExpandedView.swift` + `CompactView` + `FullExpandedView` |
+| ✅ | الاختبارات | `QuranModuleTests` — 24 اختباراً تغطّي: قائمة القرّاء (9، بدون السديس)، 114 سورة، التحويل للأرقام العربية، بناء عناوين الصوت، التسجيل في ModuleType |
 
-**الميزات**: 9 قرّاء (بدون السديس)، تشغيل السورة كاملة، انتقال تلقائي للسورة التالية، استئناف من آخر موضع، عرض اسم السورة بالعربية + رقمها، شريط تقدّم، حفظ آخر سورة وقارئ.
-
-**التقدير**: 3-4 جلسات.
+**الميزات**: 9 قرّاء (بدون السديس)، تشغيل السورة كاملة، انتقال تلقائي للسورة التالية، استئناف من آخر موضع، عرض اسم السورة بالعربية + رقمها، شريط تقدّم، حفظ آخر سورة وقارئ. **مُنجز بالكامل (24 اختباراً تمرّ، البناء ناجح).**
 
 ---
 
@@ -132,6 +130,7 @@ Module أصلي. التشغيل **سورة كاملة بملف صوتي واحد
 |---|---|---|
 | 2026-07-23 | — | إنشاء `ROADMAP.md`، الموافقة على الخطة |
 | 2026-07-23 | Phase 0 | ✅ الأساس البنيوي كاملاً: `.swiftlint.yml` + `.swiftformat` + CI workflow + نواة Test Suite (66 اختباراً تمرّ) + `scripts/new-extension.sh` |
+| 2026-07-23 | Phase 1 | ✅ مشغل القرآن: Module أصلي كامل (9 قرّاء بدون السديس، 114 سورة، تشغيل السورة كاملة، انتقال تلقائي، استئناف من آخر موضع) + 24 اختباراً |
 
 ---
 
