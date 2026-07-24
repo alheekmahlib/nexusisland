@@ -54,6 +54,8 @@ struct FullExpandedView: View {
             QuranFullExpandedView()
         case .builtIn(.prayerTimes):
             PrayerTimesFullExpandedView()
+        case .builtIn(.gitHub):
+            GitHubFullExpandedView()
         case .builtIn(.nowPlaying), .builtIn(.connectivity):
             HomeScreenView()
         case .extension_(let extensionID):

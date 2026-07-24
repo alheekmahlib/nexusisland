@@ -143,6 +143,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         if state.quranEnabled { _ = QuranManager.shared }
         if state.prayerTimesEnabled { _ = PrayerTimesManager.shared }
+        if state.gitHubEnabled { _ = GitHubManager.shared }
 
         let extensions = ExtensionManager.shared
         extensions.discoverExtensions()
@@ -445,6 +446,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 _ = PrayerTimesManager.shared
                 PrayerTimesManager.shared.settingsDidChange()
             }
+        case .gitHub: AppState.shared.gitHubEnabled = newState
         }
         sender.state = newState ? .on : .off
         rebuildStatusMenu()

@@ -22,6 +22,7 @@ final class AppStateCoreTests: XCTestCase {
             "battery",
             "calendar",
             "connectivity",
+            "gitHub",
             "nowPlaying",
             "notifications",
             "prayerTimes",
