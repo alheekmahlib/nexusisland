@@ -5,6 +5,7 @@ build-intel/*
 *.xcodeproj
 xcuserdata/
 build/
+.build/
 DerivedData/
 .env
 .DS_Store
@@ -13,3 +14,4 @@ DerivedData/
 *~
 Extensions/whatsapp-web/provider/node_modules/
 tmp/*
+.zcode/
