@@ -250,16 +250,12 @@ final class QuranManager: ObservableObject {
         player.load(reciter: currentReciter, surah: currentSurah, resumeAt: offset)
 
         if thenPlay {
-            // play() will be triggered either immediately (if ready) or via
-            // onItemReady once loading completes.
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                self.isPreparingSurah = false
-                self.play()
-            }
-        } else {
-            DispatchQueue.main.async { [weak self] in self?.isPreparingSurah = false }
+            // Start playback now. AVPlayer buffers and begins as soon as the
+            // item is ready; calling play() during .loading is the documented
+            // way to auto-start once media is available.
+            player.play()
         }
+        isPreparingSurah = false
     }
 
     /// Called by the player when a surah reaches its natural end.

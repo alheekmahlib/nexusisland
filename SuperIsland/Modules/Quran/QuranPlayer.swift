@@ -89,20 +89,25 @@ final class QuranPlayer: NSObject, ObservableObject {
         pendingResumeOffset = max(0, offset)
 
         let item = AVPlayerItem(url: url)
-        observe(item: item)
 
+        // IMPORTANT: create the AVPlayer and assign it to self.player BEFORE
+        // wiring observers. observe(item:) registers the periodic time observer
+        // on `player`; if the player is nil at that moment the token is nil and
+        // the progress UI never updates (the "slider doesn't move" bug).
         let avPlayer = AVPlayer(playerItem: item)
-        // Quran audio should keep playing with the screen locked and mix with
-        // (duck) other audio rather than interrupting it.
         avPlayer.actionAtItemEnd = .pause
         self.player = avPlayer
+
+        observe(item: item)
 
         state = .loading
         currentTime = max(0, offset)
         duration = 0
     }
 
-    /// Begin playback. If the item is still loading, playback starts when ready.
+    /// Begin playback. If the item is still loading, AVPlayer buffers and starts
+    /// automatically once ready — calling play() during .loading is the
+    /// documented auto-start path.
     func play() {
         guard let player else { return }
         switch state {
@@ -116,6 +121,8 @@ final class QuranPlayer: NSObject, ObservableObject {
             break
         }
         player.play()
+        // Reflect playing optimistically; the periodic time observer and
+        // timeControlStatus KVO will keep the UI truthful as buffering resolves.
         state = .playing
     }
 

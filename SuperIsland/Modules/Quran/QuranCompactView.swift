@@ -1,58 +1,64 @@
 import SwiftUI
 
 // MARK: - Quran Compact View (pill)
+//
+// The compact surface is only 200×36pt — narrower than most app icons. The
+// whole row must fit on a single line. Layout: [play] [surah name] [progress
+// hairline]. No vertical stacking; nothing that can wrap.
 
 struct QuranCompactView: View {
     @ObservedObject private var manager = QuranManager.shared
 
     var body: some View {
-        HStack(spacing: 8) {
-            reciterGlyph
-            surahLabel
-            Spacer(minLength: 0)
-            playbackButton
+        HStack(spacing: 6) {
+            playToggle
+            surahName
+            // Hairline progress fills the remaining width.
+            QuranHairlineProgress(progress: manager.progress)
+                .frame(maxWidth: .infinity)
+                .frame(height: 2)
         }
     }
 
-    /// Small circular badge with the Quran icon. Tinted while playing.
-    private var reciterGlyph: some View {
-        Image(systemName: "book.fill")
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundColor(.white.opacity(manager.isPlaying ? 1 : 0.85))
-            .frame(width: 22, height: 22)
-            .background(
-                Circle().fill(.white.opacity(manager.isPlaying ? 0.18 : 0.08))
-            )
-            .scaleEffect(manager.isPlaying ? 1.0 : 0.95)
-            .animation(.easeOut(duration: 0.2), value: manager.isPlaying)
-    }
-
-    /// Surah name (Arabic) with a thin progress underline.
-    private var surahLabel: some View {
-        VStack(alignment: .leading, spacing: 1) {
-            Text(manager.currentSurah.arabicName)
-                .font(.system(size: 12, weight: .medium, design: .default))
-                .foregroundColor(.white.opacity(0.92))
-                .lineLimit(1)
-                .environment(\.layoutDirection, .rightToLeft)
-
-            ProgressView(value: manager.progress)
-                .progressViewStyle(.linear)
-                .tint(.white.opacity(0.7))
-                .frame(width: 48, height: 2)
-        }
-    }
-
-    private var playbackButton: some View {
-        Button(action: { manager.togglePlayPause() }) {
-            Image(systemName: manager.isPlaying ? "pause.fill" : "play.fill")
-                .font(.system(size: 12, weight: .bold))
-                .foregroundColor(.white.opacity(0.9))
-                .frame(width: 22, height: 22)
+    private var playToggle: some View {
+        Button(action: manager.togglePlayPause) {
+            Image(systemName: manager.isLoading
+                  ? "circle.dashed"
+                  : (manager.isPlaying ? "pause.fill" : "play.fill"))
+                .font(.system(size: 10, weight: .black))
+                .foregroundColor(manager.isPlaying ? QuranDesign.accent : QuranDesign.textPrimary)
+                .frame(width: 20, height: 20)
+                .background(
+                    Circle().fill(manager.isPlaying ? QuranDesign.accentSoft : QuranDesign.surfaceFill)
+                )
         }
         .buttonStyle(.plain)
         .disabled(manager.isLoading)
-        .opacity(manager.isLoading ? 0.5 : 1)
-        .help(manager.isPlaying ? "Pause" : "Play")
+    }
+
+    private var surahName: some View {
+        Text(manager.currentSurah.arabicName)
+            .font(QuranDesign.surahName(12))
+            .foregroundColor(QuranDesign.textPrimary)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .environment(\.layoutDirection, .rightToLeft)
+    }
+}
+
+/// A non-interactive hairline that just visualizes progress in the tight
+/// compact row. Dragging lives in the expanded views where there's room.
+struct QuranHairlineProgress: View {
+    let progress: Double
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule().fill(QuranDesign.surfaceStroke)
+                Capsule()
+                    .fill(QuranDesign.accent.opacity(0.85))
+                    .frame(width: proxy.size.width * progress)
+            }
+        }
     }
 }
