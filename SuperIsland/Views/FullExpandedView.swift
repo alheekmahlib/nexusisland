@@ -60,6 +60,8 @@ struct FullExpandedView: View {
             CIMonitorFullExpandedView()
         case .builtIn(.devServers):
             DevServersFullExpandedView()
+        case .builtIn(.gitStats):
+            GitStatsFullExpandedView()
         case .builtIn(.nowPlaying), .builtIn(.connectivity):
             HomeScreenView()
         case .extension_(let extensionID):
