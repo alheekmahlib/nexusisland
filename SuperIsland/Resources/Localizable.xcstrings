@@ -14,6 +14,7 @@
     "Quran" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "القرآن" } } } },
     "Prayer Times" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "مواقيت الصلاة" } } } },
     "GitHub" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "غيت هب" } } } },
+    "CI Monitor" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "مراقب CI" } } } },
     "Use automatic location" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "استخدام الموقع التلقائي" } } } },
     "Latitude" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "خط العرض" } } } },
     "Longitude" : { "localizations" : { "ar" : { "stringUnit" : { "state" : "translated", "value" : "خط الطول" } } } },
