@@ -92,6 +92,8 @@ struct CompactView: View {
                     CIMonitorCompactView()
                 case .builtIn(.devServers):
                     DevServersCompactView()
+                case .builtIn(.gitStats):
+                    GitStatsCompactView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .compact)
                 }

@@ -35,6 +35,8 @@ struct ExpandedView: View {
                     CIMonitorExpandedView()
                 case .builtIn(.devServers):
                     DevServersExpandedView()
+                case .builtIn(.gitStats):
+                    GitStatsExpandedView()
                 case .extension_(let extensionID):
                     ExtensionRendererView(extensionID: extensionID, displayMode: .expanded)
                 }

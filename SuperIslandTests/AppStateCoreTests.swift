@@ -25,6 +25,7 @@ final class AppStateCoreTests: XCTestCase {
             "connectivity",
             "devServers",
             "gitHub",
+            "gitStats",
             "nowPlaying",
             "notifications",
             "prayerTimes",
