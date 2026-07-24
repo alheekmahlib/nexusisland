@@ -241,6 +241,12 @@ private struct HomeCalendarPanel: View {
                     .foregroundStyle(HomeTypography.primaryText)
                     .lineLimit(2)
 
+                // Hijri date beside the Gregorian one — small caption line.
+                Text(hijriToday)
+                    .font(HomeTypography.secondaryFont)
+                    .foregroundStyle(HomeTypography.secondaryText.opacity(0.8))
+                    .environment(\.layoutDirection, .rightToLeft) // Arabic shaping only
+
                 Text(todaySubtitle)
                     .font(HomeTypography.secondaryFont)
                     .foregroundStyle(HomeTypography.secondaryText)
@@ -274,6 +280,11 @@ private struct HomeCalendarPanel: View {
 
     private var todayTitle: String {
         Self.todayTitleFormatter.string(from: Date())
+    }
+
+    /// Today's Hijri date in Arabic, e.g. "15 محرم 1448".
+    private var hijriToday: String {
+        HijriDateFormatter.today() + " هـ"
     }
 
     private var todaySubtitle: String {
