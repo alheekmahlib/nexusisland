@@ -34,6 +34,9 @@ enum ModuleType: String, CaseIterable, Identifiable {
     case gitStats
     case docker
     case worldClock
+    case currency
+    case countdown
+    case stocks
     var id: String { rawValue }
 
     var displayName: String {
@@ -55,6 +58,9 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .gitStats: return NSLocalizedString("Git Stats", comment: "Module name")
         case .docker: return NSLocalizedString("Docker", comment: "Module name")
         case .worldClock: return NSLocalizedString("World Clock", comment: "Module name")
+        case .currency: return NSLocalizedString("Currency", comment: "Module name")
+        case .countdown: return NSLocalizedString("Countdown", comment: "Module name")
+        case .stocks: return NSLocalizedString("Stocks", comment: "Module name")
         }
     }
 
@@ -77,6 +83,9 @@ enum ModuleType: String, CaseIterable, Identifiable {
         case .gitStats: return "arrow.triangle.branch"
         case .docker: return "shippingbox"
         case .worldClock: return "clock"
+        case .currency: return "dollarsign.circle.fill"
+        case .countdown: return "calendar.badge.clock"
+        case .stocks: return "chart.line.uptrend.xyaxis"
         }
     }
 }
@@ -300,6 +309,9 @@ final class AppState: ObservableObject {
     @AppStorage("module.gitStats.enabled") var gitStatsEnabled = false
     @AppStorage("module.docker.enabled") var dockerEnabled = false
     @AppStorage("module.worldClock.enabled") var worldClockEnabled = false
+    @AppStorage("module.currency.enabled") var currencyEnabled = false
+    @AppStorage("module.countdown.enabled") var countdownEnabled = false
+    @AppStorage("module.stocks.enabled") var stocksEnabled = false
     @AppStorage("module.shelf.autoOpenOnDrop") var shelfAutoOpenOnDrop = true
     @AppStorage("module.shelf.defaultToShelf") var shelfDefaultToShelf = false
 
@@ -968,6 +980,9 @@ final class AppState: ObservableObject {
         case .gitStats: return gitStatsEnabled
         case .docker: return dockerEnabled
         case .worldClock: return worldClockEnabled
+        case .currency: return currencyEnabled
+        case .countdown: return countdownEnabled
+        case .stocks: return stocksEnabled
         }
     }
 
