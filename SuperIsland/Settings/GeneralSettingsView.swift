@@ -96,17 +96,17 @@ struct GeneralSettingsView: View {
         VStack(alignment: .leading, spacing: 16) {
 
             // Language
-            SettingSectionLabel(title: "Language")
+            SettingSectionLabel(title: NSLocalizedString("Language", comment: "Settings section"))
             SettingGroup {
                 HStack {
-                    Text("App language").font(.system(size: 13))
+                    Text(NSLocalizedString("App language", comment: "Settings label")).font(.system(size: 13))
                     Spacer()
                     Picker("", selection: Binding(
                         get: { appState.languageOverride },
                         set: { appState.languageOverride = $0 }
                     )) {
-                        Text("System").tag("system")
-                        Text("English").tag("en")
+                        Text(NSLocalizedString("System", comment: "Picker option")).tag("system")
+                        Text(NSLocalizedString("English", comment: "Picker option")).tag("en")
                         Text("العربية").tag("ar")
                     }
                     .pickerStyle(.menu)
@@ -117,7 +117,7 @@ struct GeneralSettingsView: View {
 
                 SettingRowDivider()
                 HStack {
-                    Text("Restart required to apply").font(.system(size: 11))
+                    Text(NSLocalizedString("Restart required to apply", comment: "Settings description")).font(.system(size: 11))
                         .foregroundColor(.secondary)
                     Spacer()
                 }
@@ -125,10 +125,10 @@ struct GeneralSettingsView: View {
             }
 
             // Startup
-            SettingSectionLabel(title: "Startup")
+            SettingSectionLabel(title: NSLocalizedString("Startup", comment: "Settings section"))
             SettingGroup {
                 HStack {
-                    Text("Launch at login").font(.system(size: 13))
+                    Text(NSLocalizedString("Launch at login", comment: "Settings label")).font(.system(size: 13))
                     Spacer()
                     Toggle("", isOn: $launchAtLogin)
                         .labelsHidden()
@@ -139,29 +139,29 @@ struct GeneralSettingsView: View {
                 .padding(.horizontal, 16).padding(.vertical, 11)
 
                 SettingRowDivider()
-                SettingToggleRow(title: "Show menu bar icon", isOn: $appState.showMenuBarIcon)
+                SettingToggleRow(title: NSLocalizedString("Show menu bar icon", comment: "Settings label"), isOn: $appState.showMenuBarIcon)
                 SettingRowDivider()
-                SettingToggleRow(title: "Show in screen recordings", isOn: $appState.showInScreenRecordings)
+                SettingToggleRow(title: NSLocalizedString("Show in screen recordings", comment: "Settings label"), isOn: $appState.showInScreenRecordings)
             }
 
             // Display
-            SettingSectionLabel(title: "Display")
+            SettingSectionLabel(title: NSLocalizedString("Display", comment: "Settings section"))
             SettingGroup {
-                SettingToggleRow(title: "Show on all Spaces", isOn: $appState.showOnAllSpaces)
+                SettingToggleRow(title: NSLocalizedString("Show on all Spaces", comment: "Settings label"), isOn: $appState.showOnAllSpaces)
                 if appState.presentationHasNotch {
                     SettingRowDivider()
-                    SettingToggleRow(title: "Hide side slots", isOn: $appState.hideSideSlots)
+                    SettingToggleRow(title: NSLocalizedString("Hide side slots", comment: "Settings label"), isOn: $appState.hideSideSlots)
                 }
                 SettingRowDivider()
-                SettingToggleRow(title: "Hide on fullscreen", isOn: $appState.hideOnFullscreen)
+                SettingToggleRow(title: NSLocalizedString("Hide on fullscreen", comment: "Settings label"), isOn: $appState.hideOnFullscreen)
                 SettingRowDivider()
                 HStack {
-                    Text("Animation Speed").font(.system(size: 13))
+                    Text(NSLocalizedString("Animation Speed", comment: "Settings label")).font(.system(size: 13))
                     Spacer()
                     Picker("", selection: $appState.animationSpeed) {
-                        Text("Normal").tag(1.0)
-                        Text("Reduced").tag(1.5)
-                        Text("Minimal").tag(2.0)
+                        Text(NSLocalizedString("Normal", comment: "Picker option")).tag(1.0)
+                        Text(NSLocalizedString("Reduced", comment: "Picker option")).tag(1.5)
+                        Text(NSLocalizedString("Minimal", comment: "Picker option")).tag(2.0)
                     }
                     .pickerStyle(.menu)
                     .labelsHidden()
@@ -171,11 +171,11 @@ struct GeneralSettingsView: View {
             }
 
             // Power
-            SettingSectionLabel(title: "Power")
+            SettingSectionLabel(title: NSLocalizedString("Power", comment: "Settings section"))
             SettingGroup {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Power mode").font(.system(size: 13))
+                        Text(NSLocalizedString("Power mode", comment: "Settings label")).font(.system(size: 13))
                         Text(appState.energyMode.description)
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
@@ -193,22 +193,22 @@ struct GeneralSettingsView: View {
 
                 SettingRowDivider()
                 SettingToggleRow(
-                    title: "Reduce animations",
-                    description: "Use simpler motion for island transitions and visual effects.",
+                    title: NSLocalizedString("Reduce animations", comment: "Settings label"),
+                    description: NSLocalizedString("Use simpler motion for island transitions and visual effects.", comment: "Settings description"),
                     isOn: $appState.reduceAnimations
                 )
 
                 SettingRowDivider()
                 SettingToggleRow(
-                    title: "Pause background extension refresh",
-                    description: "Keep inactive extensions quiet until they are visible or selected.",
+                    title: NSLocalizedString("Pause background extension refresh", comment: "Settings label"),
+                    description: NSLocalizedString("Keep inactive extensions quiet until they are visible or selected.", comment: "Settings description"),
                     isOn: $appState.disableBackgroundExtensionRefresh
                 )
 
                 SettingRowDivider()
                 SettingToggleRow(
-                    title: "Low Power suggestions",
-                    description: "Offer Low Power mode when the Mac switches to battery or refresh work stays busy.",
+                    title: NSLocalizedString("Low Power suggestions", comment: "Settings label"),
+                    description: NSLocalizedString("Offer Low Power mode when the Mac switches to battery or refresh work stays busy.", comment: "Settings description"),
                     isOn: lowPowerSuggestionBinding
                 )
             }
@@ -216,12 +216,12 @@ struct GeneralSettingsView: View {
             .onChange(of: appState.disableBackgroundExtensionRefresh) { _, _ in appState.refreshEnergyState() }
 
             // Behavior
-            SettingSectionLabel(title: "Behavior")
+            SettingSectionLabel(title: NSLocalizedString("Behavior", comment: "Settings section"))
             SettingGroup {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Expanded collapse delay").font(.system(size: 13))
-                        Text("How long expanded content stays visible")
+                        Text(NSLocalizedString("Expanded collapse delay", comment: "Settings label")).font(.system(size: 13))
+                        Text(NSLocalizedString("How long expanded content stays visible", comment: "Settings description"))
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer(minLength: 12)
@@ -236,8 +236,8 @@ struct GeneralSettingsView: View {
                 SettingRowDivider()
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Hover expand delay").font(.system(size: 13))
-                        Text("How long to hover the notch before it peeks open")
+                        Text(NSLocalizedString("Hover expand delay", comment: "Settings label")).font(.system(size: 13))
+                        Text(NSLocalizedString("How long to hover the notch before it peeks open", comment: "Settings description"))
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer(minLength: 12)
@@ -251,14 +251,14 @@ struct GeneralSettingsView: View {
             }
 
             // Interaction
-            SettingSectionLabel(title: "Interaction")
+            SettingSectionLabel(title: NSLocalizedString("Interaction", comment: "Settings section"))
             SettingGroup {
-                SettingToggleRow(title: "Island surface swipes", isOn: $appState.islandSurfaceSwipeEnabled)
+                SettingToggleRow(title: NSLocalizedString("Island surface swipes", comment: "Settings label"), isOn: $appState.islandSurfaceSwipeEnabled)
                 SettingRowDivider()
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Notch haptic intensity").font(.system(size: 13))
-                        Text("Feedback strength when entering the notch")
+                        Text(NSLocalizedString("Notch haptic intensity", comment: "Settings label")).font(.system(size: 13))
+                        Text(NSLocalizedString("Feedback strength when entering the notch", comment: "Settings description"))
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer(minLength: 12)
@@ -275,34 +275,34 @@ struct GeneralSettingsView: View {
 
                 SettingRowDivider()
                 SettingToggleRow(
-                    title: "Allow Command+Q to quit",
-                    description: "Turn this off to prevent accidental quits while interacting with the notch.",
+                    title: NSLocalizedString("Allow Command+Q to quit", comment: "Settings label"),
+                    description: NSLocalizedString("Turn this off to prevent accidental quits while interacting with the notch.", comment: "Settings description"),
                     isOn: $appState.allowQuitHotkey
                 )
             }
 
             // Permissions
-            SettingSectionLabel(title: "Permissions")
+            SettingSectionLabel(title: NSLocalizedString("Permissions", comment: "Settings section"))
             SettingGroup {
                 permissionRow(.accessibility,
-                    title: "Accessibility", icon: "figure.stand",
-                    description: "Gesture detection and system events")
+                    title: NSLocalizedString("Accessibility", comment: "Settings label"), icon: "figure.stand",
+                    description: NSLocalizedString("Gesture detection and system events", comment: "Settings description"))
                 SettingRowDivider()
                 permissionRow(.calendar,
-                    title: "Calendar", icon: "calendar",
-                    description: "Show upcoming events in the island")
+                    title: NSLocalizedString("Calendar", comment: "Settings label"), icon: "calendar",
+                    description: NSLocalizedString("Show upcoming events in the island", comment: "Settings description"))
                 SettingRowDivider()
                 permissionRow(.location,
-                    title: "Location", icon: "location.fill",
-                    description: "Weather information for your location")
+                    title: NSLocalizedString("Location", comment: "Settings label"), icon: "location.fill",
+                    description: NSLocalizedString("Weather information for your location", comment: "Settings description"))
                 SettingRowDivider()
                 permissionRow(.bluetooth,
-                    title: "Bluetooth", icon: "wave.3.right.circle.fill",
-                    description: "Connected device notifications")
+                    title: NSLocalizedString("Bluetooth", comment: "Settings label"), icon: "wave.3.right.circle.fill",
+                    description: NSLocalizedString("Connected device notifications", comment: "Settings description"))
             }
 
             // Mascot
-            SettingSectionLabel(title: "Mascot")
+            SettingSectionLabel(title: NSLocalizedString("Mascot", comment: "Settings section"))
             SettingGroup {
                 MascotGridPicker()
                     .padding(14)
@@ -317,7 +317,7 @@ struct GeneralSettingsView: View {
                 }
 
                 SettingRowDivider()
-                SettingToggleRow(title: "Show mascot in Pomodoro", isOn: $mascotManager.showInPomodoro)
+                SettingToggleRow(title: NSLocalizedString("Show mascot in Pomodoro", comment: "Settings label"), isOn: $mascotManager.showInPomodoro)
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -347,11 +347,11 @@ struct GeneralSettingsView: View {
             Spacer()
 
             if permissionGranted(permission) {
-                Label("Granted", systemImage: "checkmark.circle.fill")
+                Label(NSLocalizedString("Granted", comment: "Status label"), systemImage: "checkmark.circle.fill")
                     .font(.system(size: 11))
                     .foregroundColor(.green)
             } else {
-                Button("Grant Access") { requestPermission(permission) }
+                Button(NSLocalizedString("Grant Access", comment: "Button")) { requestPermission(permission) }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
             }

@@ -315,11 +315,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func buildStatusMenu() -> NSMenu {
         let menu = NSMenu()
-        menu.addItem(makeMenuItem(title: "Now Playing", action: #selector(showNowPlaying)))
-        menu.addItem(makeMenuItem(title: "Battery", action: #selector(showBattery)))
+        menu.addItem(makeMenuItem(title: NSLocalizedString("Now Playing", comment: "Menu item"), action: #selector(showNowPlaying)))
+        menu.addItem(makeMenuItem(title: NSLocalizedString("Battery", comment: "Menu item"), action: #selector(showBattery)))
         menu.addItem(NSMenuItem.separator())
 
-        let modulesItem = NSMenuItem(title: "Modules", action: nil, keyEquivalent: "")
+        let modulesItem = NSMenuItem(title: NSLocalizedString("Modules", comment: "Menu item"), action: nil, keyEquivalent: "")
         let modulesMenu = NSMenu()
 
         for module in ModuleType.allCases {
@@ -350,9 +350,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(modulesItem)
 
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(makeMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ","))
+        menu.addItem(makeMenuItem(title: NSLocalizedString("Settings...", comment: "Menu item"), action: #selector(openSettings), keyEquivalent: ","))
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(makeMenuItem(title: "Quit SuperIsland", action: #selector(quitApp), keyEquivalent: "q"))
+        menu.addItem(makeMenuItem(title: NSLocalizedString("Quit SuperIsland", comment: "Menu item"), action: #selector(quitApp), keyEquivalent: "q"))
         return menu
     }
 
@@ -478,7 +478,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let hostingController = NSHostingController(rootView: rootView)
 
         let window = NSWindow(contentViewController: hostingController)
-        window.title = "SuperIsland Settings"
+        window.title = NSLocalizedString("SuperIsland Settings", comment: "Window title")
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
         window.setContentSize(NSSize(width: 960, height: 680))
         window.minSize = NSSize(width: 800, height: 560)

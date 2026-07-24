@@ -253,7 +253,7 @@ struct FullExpandedTopBarView: View {
         }
         .buttonStyle(.plain)
         .hoverPointer()
-        .help("Settings")
+        .help(NSLocalizedString("Settings", comment: "Toolbar help"))
     }
 
     private var batteryButton: some View {
@@ -281,7 +281,7 @@ struct FullExpandedTopBarView: View {
         }
         .buttonStyle(.plain)
         .hoverPointer()
-        .help("Battery")
+        .help(NSLocalizedString("Battery", comment: "Toolbar help"))
     }
 
     private var lockButton: some View {
@@ -309,7 +309,7 @@ struct FullExpandedTopBarView: View {
         }
         .buttonStyle(.plain)
         .hoverPointer()
-        .help(isLocked ? "Unlock island" : "Lock island open")
+        .help(isLocked ? NSLocalizedString("Unlock island", comment: "Toolbar help") : NSLocalizedString("Lock island open", comment: "Toolbar help"))
     }
 
     private var trailingShoulderControls: some View {
@@ -358,7 +358,7 @@ struct FullExpandedTopBarView: View {
         }
         .buttonStyle(.plain)
         .hoverPointer()
-        .help("Notifications")
+        .help(NSLocalizedString("Notifications", comment: "Toolbar help"))
     }
 
     private var notificationCountBadge: some View {
@@ -430,7 +430,7 @@ struct FullExpandedTopBarView: View {
     private var notificationCountText: String {
         let count = notificationManager.recentNotifications.count
         if count > 99 {
-            return "99+"
+            return NSLocalizedString("99+", comment: "Notification count overflow badge")
         }
         return "\(count)"
     } 

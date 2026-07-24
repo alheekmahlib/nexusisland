@@ -23,7 +23,7 @@ struct NotificationCompactView: View {
                         .foregroundStyle(.white.opacity(0.7))
                 }
             } else {
-                Text("No notifications")
+                Text(NSLocalizedString("No notifications", comment: "Notification compact empty state"))
                     .font(.system(size: 11))
                     .foregroundColor(.white.opacity(0.5))
             }

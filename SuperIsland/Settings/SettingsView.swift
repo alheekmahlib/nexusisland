@@ -7,11 +7,11 @@ enum SettingsPane: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .general:    "General"
-        case .modules:    "Modules"
-        case .appearance: "Appearance"
-        case .extensions: "Extensions"
-        case .advanced:   "Advanced"
+        case .general:    NSLocalizedString("General", comment: "Settings pane")
+        case .modules:    NSLocalizedString("Modules", comment: "Settings pane")
+        case .appearance: NSLocalizedString("Appearance", comment: "Settings pane")
+        case .extensions: NSLocalizedString("Extensions", comment: "Settings pane")
+        case .advanced:   NSLocalizedString("Advanced", comment: "Settings pane")
         }
     }
 
@@ -100,7 +100,7 @@ struct SettingsView: View {
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
                     .frame(width: 18, alignment: .center)
-                Text("Quit")
+                Text(NSLocalizedString("Quit", comment: "Settings label"))
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
                 Spacer()

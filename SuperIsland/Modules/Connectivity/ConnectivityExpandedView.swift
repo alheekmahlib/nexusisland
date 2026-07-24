@@ -58,7 +58,7 @@ struct ConnectivityExpandedView: View {
         if let device = bluetooth.lastConnectedDevice {
             statusRow(
                 icon: device.deviceType.iconName,
-                status: "Connected",
+                status: NSLocalizedString("Connected", comment: "Connectivity status"),
                 statusColor: .green,
                 title: device.name,
                 detail: device.batteryLevel.map { "Battery \($0)%" }
@@ -66,7 +66,7 @@ struct ConnectivityExpandedView: View {
         } else if let disconnectedName = bluetooth.lastDisconnectedDeviceName {
             statusRow(
                 icon: "link.badge.plus",
-                status: "Disconnected",
+                status: NSLocalizedString("Disconnected", comment: "Connectivity status"),
                 statusColor: .red,
                 title: disconnectedName,
                 detail: "Bluetooth device"
@@ -74,7 +74,7 @@ struct ConnectivityExpandedView: View {
         } else if wifi.isConnected, let ssid = wifi.ssid {
             statusRow(
                 icon: wifi.signalIconName,
-                status: "Wi-Fi Connected",
+                status: NSLocalizedString("Wi-Fi Connected", comment: "Connectivity status"),
                 statusColor: .blue,
                 title: ssid,
                 detail: wifi.signalDescription
@@ -82,10 +82,10 @@ struct ConnectivityExpandedView: View {
         } else {
             statusRow(
                 icon: "wifi.slash",
-                status: "Offline",
+                status: NSLocalizedString("Offline", comment: "Connectivity status"),
                 statusColor: .white.opacity(0.45),
-                title: "No active connection",
-                detail: bluetooth.connectedDevices.isEmpty ? "Wi-Fi and Bluetooth are idle" : "\(bluetooth.connectedDevices.count) Bluetooth device\(bluetooth.connectedDevices.count == 1 ? "" : "s") connected"
+                title: NSLocalizedString("No active connection", comment: "Connectivity offline title"),
+                detail: bluetooth.connectedDevices.isEmpty ? NSLocalizedString("Wi-Fi and Bluetooth are idle", comment: "Connectivity offline detail") : "\(bluetooth.connectedDevices.count) Bluetooth device\(bluetooth.connectedDevices.count == 1 ? "" : "s") connected"
             )
         }
     }

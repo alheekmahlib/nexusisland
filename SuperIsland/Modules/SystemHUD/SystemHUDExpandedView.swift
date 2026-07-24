@@ -64,7 +64,7 @@ struct SystemHUDExpandedView: View {
 
                 VStack(alignment: .leading, spacing: 5) {
                     HStack {
-                        Text("System Volume")
+                        Text(NSLocalizedString("System Volume", comment: "System HUD volume header"))
                             .font(.system(size: 12, weight: .semibold))
                             .foregroundColor(.white)
                         Spacer()
@@ -84,12 +84,12 @@ struct SystemHUDExpandedView: View {
             Divider()
                 .overlay(.white.opacity(0.15))
 
-            Text("Media Apps")
+            Text(NSLocalizedString("Media Apps", comment: "System HUD media apps header"))
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundColor(.white.opacity(0.8))
 
             if volumeManager.mediaAppVolumes.isEmpty {
-                Text("No supported media apps are currently playing.")
+                Text(NSLocalizedString("No supported media apps are currently playing.", comment: "System HUD empty media apps state"))
                     .font(.system(size: 11))
                     .foregroundColor(.white.opacity(0.5))
                     .frame(maxWidth: .infinity, alignment: .leading)

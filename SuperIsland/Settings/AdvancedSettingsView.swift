@@ -11,12 +11,12 @@ struct AdvancedSettingsView: View {
         VStack(alignment: .leading, spacing: 16) {
 
             // ── Display ────────────────────────────────────────────────────
-            SettingSectionLabel(title: "Display")
+            SettingSectionLabel(title: NSLocalizedString("Display", comment: "Settings section"))
             SettingGroup {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Show island on").font(.system(size: 13))
-                        Text("Pick a specific display or let SuperIsland choose")
+                        Text(NSLocalizedString("Show island on", comment: "Settings label")).font(.system(size: 13))
+                        Text(NSLocalizedString("Pick a specific display or let SuperIsland choose", comment: "Settings description"))
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer(minLength: 8)
@@ -36,10 +36,10 @@ struct AdvancedSettingsView: View {
                 for: NSApplication.didChangeScreenParametersNotification
             )) { _ in refreshScreenOptions() }
 
-            SettingSectionLabel(title: "Energy Diagnostics")
+            SettingSectionLabel(title: NSLocalizedString("Energy Diagnostics", comment: "Settings section"))
             SettingGroup {
                 if scheduler.diagnostics.isEmpty {
-                    Text("No scheduled refresh jobs")
+                    Text(NSLocalizedString("No scheduled refresh jobs", comment: "Settings description"))
                         .font(.system(size: 12))
                         .foregroundColor(.secondary)
                         .padding(.horizontal, 16)
@@ -54,34 +54,34 @@ struct AdvancedSettingsView: View {
                 }
             }
 
-            SettingSectionLabel(title: "Debug")
+            SettingSectionLabel(title: NSLocalizedString("Debug", comment: "Settings section"))
             SettingGroup {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Reset All Settings").font(.system(size: 13))
-                        Text("Restore all settings to their defaults")
+                        Text(NSLocalizedString("Reset All Settings", comment: "Settings label")).font(.system(size: 13))
+                        Text(NSLocalizedString("Restore all settings to their defaults", comment: "Settings description"))
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer()
-                    Button("Reset") {
+                    Button(NSLocalizedString("Reset", comment: "Button")) {
                         showResetAlert = true
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.small)
-                    .alert("Reset Settings", isPresented: $showResetAlert) {
-                        Button("Cancel", role: .cancel) {}
-                        Button("Reset", role: .destructive) { resetAllSettings() }
+                    .alert(NSLocalizedString("Reset Settings", comment: "Alert title"), isPresented: $showResetAlert) {
+                        Button(NSLocalizedString("Cancel", comment: "Button"), role: .cancel) {}
+                        Button(NSLocalizedString("Reset", comment: "Button"), role: .destructive) { resetAllSettings() }
                     } message: {
-                        Text("This will reset all SuperIsland settings to their defaults.")
+                        Text(NSLocalizedString("This will reset all SuperIsland settings to their defaults.", comment: "Alert message"))
                     }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 12)
             }
 
-            SettingSectionLabel(title: "About")
+            SettingSectionLabel(title: NSLocalizedString("About", comment: "Settings section"))
             SettingGroup {
                 HStack {
-                    Text("Version").font(.system(size: 13))
+                    Text(NSLocalizedString("Version", comment: "Settings label")).font(.system(size: 13))
                     Spacer()
                     Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
                         .font(.system(size: 13, design: .monospaced))
@@ -92,7 +92,7 @@ struct AdvancedSettingsView: View {
                 SettingRowDivider()
 
                 HStack {
-                    Text("Build").font(.system(size: 13))
+                    Text(NSLocalizedString("Build", comment: "Settings label")).font(.system(size: 13))
                     Spacer()
                     Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1")
                         .font(.system(size: 13, design: .monospaced))
@@ -104,7 +104,7 @@ struct AdvancedSettingsView: View {
 
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Updates").font(.system(size: 13))
+                        Text(NSLocalizedString("Updates", comment: "Settings label")).font(.system(size: 13))
                         updateStatusText
                     }
                     Spacer()
@@ -122,9 +122,9 @@ struct AdvancedSettingsView: View {
         case .idle:
             EmptyView()
         case .checking:
-            Text("Checking...").font(.system(size: 11)).foregroundColor(.secondary)
+            Text(NSLocalizedString("Checking...", comment: "Settings label")).font(.system(size: 11)).foregroundColor(.secondary)
         case .upToDate:
-            Text("You're up to date").font(.system(size: 11)).foregroundColor(.green)
+            Text(NSLocalizedString("You're up to date", comment: "Settings label")).font(.system(size: 11)).foregroundColor(.green)
         case .updateAvailable(let version, _, _):
             Text("Version \(version) available").font(.system(size: 11)).foregroundColor(.orange)
         case .failed(let message):
@@ -138,7 +138,7 @@ struct AdvancedSettingsView: View {
         case .checking:
             ProgressView().controlSize(.small)
         case .updateAvailable(_, let releaseURL, let downloadURL):
-            Button("Update") {
+            Button(NSLocalizedString("Update", comment: "Button")) {
                 if let downloadURL {
                     AutoUpdater.shared.start(downloadURL: downloadURL, releaseURL: releaseURL)
                 } else {
@@ -148,7 +148,7 @@ struct AdvancedSettingsView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
         default:
-            Button("Check for Updates") { updateChecker.checkNow() }
+            Button(NSLocalizedString("Check for Updates", comment: "Button")) { updateChecker.checkNow() }
                 .buttonStyle(.bordered)
                 .controlSize(.small)
         }

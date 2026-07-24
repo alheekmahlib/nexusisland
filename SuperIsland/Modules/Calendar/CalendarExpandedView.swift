@@ -59,7 +59,7 @@ struct CalendarExpandedView: View {
 
                         if let url = manager.joinURL(for: event) {
                             Button(action: { NSWorkspace.shared.open(url) }) {
-                                Text("Join")
+                                Text(NSLocalizedString("Join", comment: "Calendar event join button"))
                                     .font(.system(size: 10, weight: .semibold))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 8)
@@ -71,7 +71,7 @@ struct CalendarExpandedView: View {
                         }
                     }
                 } else {
-                    Text("No more events today")
+                    Text(NSLocalizedString("No more events today", comment: "Calendar medium empty state"))
                         .font(.system(size: 12))
                         .foregroundColor(.white.opacity(0.5))
                 }
@@ -126,7 +126,7 @@ struct CalendarExpandedView: View {
                     Spacer(minLength: 4)
 
                     if !isCurrentMonthVisible {
-                        Button("Today") {
+                        Button(NSLocalizedString("Today", comment: "Calendar today button")) {
                             manager.resetDisplayedMonthToCurrent()
                             manager.selectDate(Date())
                         }
@@ -188,7 +188,7 @@ struct CalendarExpandedView: View {
 
             if manager.selectedDateEvents.isEmpty {
                 Spacer()
-                Text("No events")
+                Text(NSLocalizedString("No events", comment: "Calendar events panel empty state"))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.white.opacity(0.4))
                     .frame(maxWidth: .infinity)
@@ -210,14 +210,14 @@ struct CalendarExpandedView: View {
 
     private var upcomingPanel: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Upcoming")
+            Text(NSLocalizedString("Upcoming", comment: "Calendar upcoming panel title"))
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(.white)
                 .padding(.bottom, 8)
 
             if manager.upcomingWeekEvents.isEmpty {
                 Spacer()
-                Text("Nothing this week")
+                Text(NSLocalizedString("Nothing this week", comment: "Calendar upcoming empty state"))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.white.opacity(0.4))
                     .frame(maxWidth: .infinity)
@@ -247,7 +247,7 @@ struct CalendarExpandedView: View {
                         .fill(Color(cgColor: event.calendar.cgColor))
                         .frame(width: 2, height: 14)
 
-                    Text(event.title ?? "Untitled")
+                    Text(event.title ?? NSLocalizedString("Untitled", comment: "Calendar untitled event fallback"))
                         .font(.system(size: 11, weight: .medium))
                         .foregroundColor(.white.opacity(0.78))
                         .lineLimit(1)
@@ -255,7 +255,7 @@ struct CalendarExpandedView: View {
                     Spacer(minLength: 0)
 
                     if event.isAllDay {
-                        Text("All Day")
+                        Text(NSLocalizedString("All Day", comment: "Calendar all-day event label"))
                             .font(.system(size: 9, weight: .medium))
                             .foregroundColor(.white.opacity(0.35))
                     } else {
@@ -277,7 +277,7 @@ struct CalendarExpandedView: View {
 
     private func upcomingDayLabel(for date: Date) -> String {
         if calendar.isDateInTomorrow(date) {
-            return "Tomorrow"
+            return NSLocalizedString("Tomorrow", comment: "Calendar relative date label")
         }
         return Self.upcomingDayFormatter.string(from: date)
     }
@@ -321,20 +321,20 @@ struct CalendarExpandedView: View {
                         eventActionIcon("video.fill")
                     }
                     .buttonStyle(.plain)
-                    .help("Open meeting link")
+                    .help(NSLocalizedString("Open meeting link", comment: "Calendar event action help"))
 
                     Button { copy(url: url) } label: {
                         eventActionIcon("doc.on.doc")
                     }
                     .buttonStyle(.plain)
-                    .help("Copy meeting link")
+                    .help(NSLocalizedString("Copy meeting link", comment: "Calendar event action help"))
                 }
 
                 Button { manager.hideCalendar(for: event) } label: {
                     eventActionIcon("eye.slash")
                 }
                 .buttonStyle(.plain)
-                .help("Hide this calendar")
+                    .help(NSLocalizedString("Hide this calendar", comment: "Calendar event action help"))
             }
             .padding(.top, 4)
         }
@@ -435,13 +435,13 @@ struct CalendarExpandedView: View {
 
     private var selectedDateTitle: String {
         if calendar.isDateInToday(manager.selectedDate) {
-            return "Today"
+            return NSLocalizedString("Today", comment: "Calendar relative date label")
         }
         if calendar.isDateInYesterday(manager.selectedDate) {
-            return "Yesterday"
+            return NSLocalizedString("Yesterday", comment: "Calendar relative date label")
         }
         if calendar.isDateInTomorrow(manager.selectedDate) {
-            return "Tomorrow"
+            return NSLocalizedString("Tomorrow", comment: "Calendar relative date label")
         }
         return Self.selectedDateFormatter.string(from: manager.selectedDate)
     }
