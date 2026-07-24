@@ -23,6 +23,7 @@ final class AppStateCoreTests: XCTestCase {
             "calendar",
             "ciMonitor",
             "connectivity",
+            "devServers",
             "gitHub",
             "nowPlaying",
             "notifications",
