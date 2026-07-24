@@ -152,6 +152,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if state.currencyEnabled { _ = CurrencyManager.shared }
         if state.countdownEnabled { _ = CountdownManager.shared }
         if state.stocksEnabled { _ = StocksManager.shared }
+        if state.remindersEnabled { _ = RemindersManager.shared }
+        if state.clipboardEnabled { ClipboardManager.shared.startMonitoring() }
 
         let extensions = ExtensionManager.shared
         extensions.discoverExtensions()
@@ -463,6 +465,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .currency: AppState.shared.currencyEnabled = newState
         case .countdown: AppState.shared.countdownEnabled = newState
         case .stocks: AppState.shared.stocksEnabled = newState
+        case .reminders: AppState.shared.remindersEnabled = newState
+        case .clipboard:
+            AppState.shared.clipboardEnabled = newState
+            if newState { ClipboardManager.shared.startMonitoring() } else { ClipboardManager.shared.stopMonitoring() }
         }
         sender.state = newState ? .on : .off
         rebuildStatusMenu()
