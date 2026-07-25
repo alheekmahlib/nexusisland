@@ -1,5 +1,11 @@
 import SwiftUI
 
+// MARK: - Battery Expanded / FullExpanded Views
+//
+// Redesigned with NexusDesign: GlassCard surfaces, a gradient progress bar
+// that warms toward orange as the level rises, and Swift Charts sparkline
+// (SparklineChart) replacing the hand-rolled BatteryHistorySparkline Path.
+
 struct BatteryExpandedView: View {
     @ObservedObject private var manager = BatteryManager.shared
     @EnvironmentObject var appState: AppState
@@ -35,7 +41,7 @@ struct BatteryExpandedView: View {
                 if manager.isCharging {
                     Image(systemName: "bolt.fill")
                         .font(.system(size: 14))
-                        .foregroundColor(.yellow)
+                        .foregroundColor(NexusPalette.warning)
                         .offset(y: -1)
                 }
             }
@@ -44,21 +50,26 @@ struct BatteryExpandedView: View {
                 HStack {
                     Text("\(manager.batteryLevel)%")
                         .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                        .foregroundColor(NexusPalette.textPrimary)
 
                     Spacer()
 
                     Text(manager.powerSource)
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.5))
+                        .font(NexusTypography.caption)
+                        .foregroundColor(NexusPalette.textTertiary)
                 }
 
-                batteryBar
+                GradientProgressBar(
+                    progress: Double(manager.batteryLevel) / 100,
+                    style: .thick,
+                    height: 6,
+                    gradient: NexusGradient.progress(at: Double(manager.batteryLevel) / 100)
+                )
 
                 if !manager.timeRemaining.isEmpty {
                     Text(manager.timeRemaining)
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.6))
+                        .font(NexusTypography.caption)
+                        .foregroundColor(NexusPalette.textTertiary)
                 }
             }
         }
@@ -76,24 +87,24 @@ struct BatteryExpandedView: View {
                     if manager.isCharging {
                         Image(systemName: "bolt.fill")
                             .font(.system(size: 10))
-                            .foregroundColor(.yellow)
+                            .foregroundColor(NexusPalette.warning)
                     }
                 }
 
                 Text("\(manager.batteryLevel)%")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.numeric(28))
+                    .foregroundColor(NexusPalette.textPrimary)
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(manager.powerSource)
-                        .font(.system(size: 10))
-                        .foregroundColor(.white.opacity(0.62))
+                        .font(NexusTypography.caption)
+                        .foregroundColor(NexusPalette.textSecondary)
                     if !manager.timeRemaining.isEmpty {
                         Text(manager.timeRemaining)
-                            .font(.system(size: 10))
-                            .foregroundColor(.white.opacity(0.58))
+                            .font(NexusTypography.caption)
+                            .foregroundColor(NexusPalette.textTertiary)
                             .lineLimit(1)
                     }
                 }
@@ -101,124 +112,53 @@ struct BatteryExpandedView: View {
 
             Spacer(minLength: 12)
 
-            batteryBar
+            GradientProgressBar(
+                progress: Double(manager.batteryLevel) / 100,
+                style: .thick,
+                height: 8,
+                gradient: NexusGradient.progress(at: Double(manager.batteryLevel) / 100)
+            )
 
             Spacer(minLength: 12)
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(NSLocalizedString("Battery Trend", comment: "Battery trend sparkline title"))
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.82))
+                    .foregroundColor(NexusPalette.textSecondary)
 
-                BatteryHistorySparkline(samples: manager.batteryHistory)
+                batteryTrendChart
                     .frame(height: 52)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
-    private var batteryBar: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(.white.opacity(0.15))
-
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(batteryColor)
-                    .frame(width: geometry.size.width * CGFloat(manager.batteryLevel) / 100)
-                    .animation(.easeInOut(duration: 0.5), value: manager.batteryLevel)
+    /// Swift Charts sparkline when we have enough samples; empty-state otherwise.
+    @ViewBuilder
+    private var batteryTrendChart: some View {
+        let samples = manager.batteryHistory
+        if samples.count >= 2 {
+            ZStack {
+                RoundedRectangle(cornerRadius: NexusMetrics.cornerRadiusS)
+                    .fill(Color.white.opacity(0.08))
+                SparklineChart(values: samples.map { Double($0.level) })
+                    .padding(4)
+            }
+        } else {
+            ZStack {
+                RoundedRectangle(cornerRadius: NexusMetrics.cornerRadiusS)
+                    .fill(Color.white.opacity(0.08))
+                Text(NSLocalizedString("Need more samples", comment: "Battery sparkline empty state"))
+                    .font(.system(size: 9))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
         }
-        .frame(height: 8)
     }
 
     private var batteryColor: Color {
-        if manager.isCharging { return .green }
-        if manager.batteryLevel <= 10 { return .red }
-        if manager.batteryLevel <= 20 { return .yellow }
-        return .white
-    }
-}
-
-private struct BatteryHistorySparkline: View {
-    let samples: [BatteryHistorySample]
-
-    var body: some View {
-        GeometryReader { proxy in
-            ZStack {
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(.white.opacity(0.08))
-
-                if samples.count >= 2 {
-                    areaPath(in: proxy.size)
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.green.opacity(0.22), Color.green.opacity(0.04)],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-
-                    linePath(in: proxy.size)
-                        .stroke(Color.green.opacity(0.85), style: StrokeStyle(lineWidth: 1.4, lineCap: .round, lineJoin: .round))
-
-                    Circle()
-                        .fill(Color.green)
-                        .frame(width: 4, height: 4)
-                        .position(lastPoint(in: proxy.size))
-                } else {
-                    Text(NSLocalizedString("Need more samples", comment: "Battery sparkline empty state"))
-                        .font(.system(size: 9))
-                        .foregroundColor(.white.opacity(0.45))
-                }
-            }
-        }
-    }
-
-    private func linePath(in size: CGSize) -> Path {
-        Path { path in
-            for (index, sample) in samples.enumerated() {
-                let point = point(for: sample, at: index, in: size)
-                if index == 0 {
-                    path.move(to: point)
-                } else {
-                    path.addLine(to: point)
-                }
-            }
-        }
-    }
-
-    private func areaPath(in size: CGSize) -> Path {
-        Path { path in
-            guard !samples.isEmpty else { return }
-
-            let first = point(for: samples[0], at: 0, in: size)
-            path.move(to: CGPoint(x: first.x, y: size.height))
-
-            for (index, sample) in samples.enumerated() {
-                path.addLine(to: point(for: sample, at: index, in: size))
-            }
-
-            let last = point(for: samples[samples.count - 1], at: samples.count - 1, in: size)
-            path.addLine(to: CGPoint(x: last.x, y: size.height))
-            path.closeSubpath()
-        }
-    }
-
-    private func lastPoint(in size: CGSize) -> CGPoint {
-        guard let last = samples.last else { return .zero }
-        return point(for: last, at: samples.count - 1, in: size)
-    }
-
-    private func point(for sample: BatteryHistorySample, at index: Int, in size: CGSize) -> CGPoint {
-        let x: CGFloat
-        if samples.count <= 1 {
-            x = 0
-        } else {
-            x = size.width * CGFloat(index) / CGFloat(samples.count - 1)
-        }
-        let normalized = max(0, min(1, CGFloat(sample.level) / 100))
-        let y = size.height - (size.height * normalized)
-        return CGPoint(x: x, y: y)
+        if manager.isCharging { return NexusPalette.success }
+        if manager.batteryLevel <= 10 { return NexusPalette.danger }
+        if manager.batteryLevel <= 20 { return NexusPalette.warning }
+        return NexusPalette.textPrimary
     }
 }

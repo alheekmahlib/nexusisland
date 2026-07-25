@@ -1,5 +1,11 @@
 import SwiftUI
 
+// MARK: - Battery Compact View (pill)
+//
+// Redesigned with NexusDesign tokens. The compact row sits on the black notch
+// surface, so it stays legible and restrained: a status-tinted icon + the
+// percentage in the mono typeface.
+
 struct BatteryCompactView: View {
     @ObservedObject private var manager = BatteryManager.shared
 
@@ -11,15 +17,15 @@ struct BatteryCompactView: View {
                 .symbolEffect(.pulse, isActive: manager.isLowBattery)
 
             Text("\(manager.batteryLevel)%")
-                .font(.system(size: 12, weight: .medium, design: .monospaced))
-                .foregroundColor(.white)
+                .font(NexusTypography.mono)
+                .foregroundColor(NexusPalette.textPrimary)
         }
     }
 
     private var batteryColor: Color {
-        if manager.isCharging { return .green }
-        if manager.batteryLevel <= 10 { return .red }
-        if manager.batteryLevel <= 20 { return .yellow }
-        return .white
+        if manager.isCharging { return NexusPalette.success }
+        if manager.batteryLevel <= 10 { return NexusPalette.danger }
+        if manager.batteryLevel <= 20 { return NexusPalette.warning }
+        return NexusPalette.textPrimary
     }
 }
