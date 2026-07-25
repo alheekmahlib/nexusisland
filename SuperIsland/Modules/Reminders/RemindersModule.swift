@@ -109,15 +109,15 @@ struct RemindersCompactView: View {
 
     var body: some View {
         if !manager.hasAccess {
-            Image(systemName: "list.bullet.clipboard").font(.system(size: 11)).foregroundColor(.gray)
+            Image(systemName: "list.bullet.clipboard").font(.system(size: 11)).foregroundColor(NexusPalette.textTertiary)
         } else if let next = manager.reminders.first {
             HStack(spacing: 5) {
                 Image(systemName: next.isOverdue ? "exclamationmark.circle.fill" : "checklist")
-                    .font(.system(size: 10)).foregroundColor(next.isOverdue ? .red : QuranDesign.accent)
-                Text(next.title).font(QuranDesign.body(10)).foregroundColor(QuranDesign.textPrimary).lineLimit(1)
+                    .font(.system(size: 10)).foregroundColor(next.isOverdue ? NexusPalette.danger : NexusPalette.electricViolet)
+                Text(next.title).font(NexusTypography.body(10)).foregroundColor(NexusPalette.textPrimary).lineLimit(1)
             }
         } else {
-            Image(systemName: "checkmark.seal.fill").font(.system(size: 10)).foregroundColor(.green)
+            Image(systemName: "checkmark.seal.fill").font(.system(size: 10)).foregroundColor(NexusPalette.success)
         }
     }
 }
@@ -127,19 +127,19 @@ struct RemindersExpandedView: View {
 
     var body: some View {
         if !manager.hasAccess {
-            Text("امنح صلاحية التذكيرات").font(QuranDesign.body(10)).foregroundColor(QuranDesign.textSecondary)
+            Text("امنح صلاحية التذكيرات").font(NexusTypography.body(10)).foregroundColor(NexusPalette.textSecondary)
         } else if manager.reminders.isEmpty {
-            Text("لا توجد تذكيرات ✓").font(QuranDesign.body(10)).foregroundColor(.green)
+            Text("لا توجد تذكيرات ✓").font(NexusTypography.body(10)).foregroundColor(NexusPalette.success)
         } else {
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(manager.reminders.prefix(4))) { item in
                     Button(action: { manager.toggleComplete(item) }) {
                         HStack(spacing: 6) {
                             Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
-                                .font(.system(size: 9)).foregroundColor(item.isOverdue ? .red : QuranDesign.accent)
-                            Text(item.title).font(QuranDesign.body(10)).foregroundColor(QuranDesign.textPrimary).lineLimit(1)
+                                .font(.system(size: 9)).foregroundColor(item.isOverdue ? NexusPalette.danger : NexusPalette.electricViolet)
+                            Text(item.title).font(NexusTypography.body(10)).foregroundColor(NexusPalette.textPrimary).lineLimit(1)
                             if item.isOverdue {
-                                Text("متأخر").font(QuranDesign.caption(8)).foregroundColor(.red)
+                                Text("متأخر").font(NexusTypography.caption(8)).foregroundColor(NexusPalette.danger)
                             }
                         }
                     }.buttonStyle(.plain)
@@ -156,22 +156,22 @@ struct RemindersFullExpandedView: View {
     var body: some View {
         if !manager.hasAccess {
             VStack(spacing: 8) {
-                Image(systemName: "list.bullet.clipboard").font(.system(size: 20)).foregroundColor(.gray)
-                Text("امنح صلاحية التذكيرات من إعدادات النظام").font(QuranDesign.body(11)).foregroundColor(QuranDesign.textSecondary)
+                Image(systemName: "list.bullet.clipboard").font(.system(size: 20)).foregroundColor(NexusPalette.textTertiary)
+                Text("امنح صلاحية التذكيرات من إعدادات النظام").font(NexusTypography.body(11)).foregroundColor(NexusPalette.textSecondary)
             }.frame(maxWidth: .infinity, maxHeight: .infinity).environment(\.layoutDirection, .rightToLeft)
         } else {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Text("التذكيرات").font(QuranDesign.surahName(12)).foregroundColor(QuranDesign.textPrimary)
+                    Text("التذكيرات").font(NexusTypography.title(12)).foregroundColor(NexusPalette.textPrimary)
                     Spacer()
                     if manager.overdueCount > 0 {
-                        Text("\(manager.overdueCount) متأخر").font(QuranDesign.caption(9)).foregroundColor(.red)
+                        Text("\(manager.overdueCount) متأخر").font(NexusTypography.caption(9)).foregroundColor(NexusPalette.danger)
                     }
                 }.padding(.horizontal, 10).padding(.vertical, 7).environment(\.layoutDirection, .rightToLeft)
-                Divider().background(QuranDesign.surfaceStroke)
+                Divider().background(NexusPalette.glassTint.opacity(0.10))
 
                 if manager.reminders.isEmpty {
-                    Text("لا توجد تذكيرات معلقة ✓").font(QuranDesign.body(11)).foregroundColor(.green)
+                    Text("لا توجد تذكيرات معلقة ✓").font(NexusTypography.body(11)).foregroundColor(NexusPalette.success)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     ScrollView {
@@ -181,22 +181,22 @@ struct RemindersFullExpandedView: View {
                                     HStack(spacing: 8) {
                                         Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
                                             .font(.system(size: 10))
-                                            .foregroundColor(item.isOverdue ? .red : QuranDesign.accent)
+                                            .foregroundColor(item.isOverdue ? NexusPalette.danger : NexusPalette.electricViolet)
                                         VStack(alignment: .leading, spacing: 1) {
-                                            Text(item.title).font(QuranDesign.body(11)).foregroundColor(QuranDesign.textPrimary).lineLimit(1)
+                                            Text(item.title).font(NexusTypography.body(11)).foregroundColor(NexusPalette.textPrimary).lineLimit(1)
                                             HStack(spacing: 4) {
-                                                Text(item.listName).font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+                                                Text(item.listName).font(NexusTypography.caption(8)).foregroundColor(NexusPalette.textTertiary)
                                                 if let due = item.dueDate {
                                                     Text(due.formatted(date: .abbreviated, time: .shortened))
-                                                        .font(QuranDesign.caption(8))
-                                                        .foregroundColor(item.isOverdue ? .red : QuranDesign.textTertiary)
+                                                        .font(NexusTypography.caption(8))
+                                                        .foregroundColor(item.isOverdue ? NexusPalette.danger : NexusPalette.textTertiary)
                                                 }
                                             }
                                         }
                                         Spacer()
                                     }
                                     .padding(.horizontal, 8).padding(.vertical, 5)
-                                    .quranSurface(isActive: item.isOverdue, radius: QuranDesign.cornerRadiusS)
+                                    .nexusSurface(variant: .glass, isActive: item.isOverdue, radius: NexusMetrics.cornerRadiusS)
                                     .contentShape(Rectangle())
                                 }.buttonStyle(.plain)
                             }

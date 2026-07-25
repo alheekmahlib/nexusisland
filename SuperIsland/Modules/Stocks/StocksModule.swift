@@ -92,11 +92,11 @@ struct StocksCompactView: View {
     var body: some View {
         if let first = manager.prices.first {
             HStack(spacing: 4) {
-                Text(first.symbol).font(QuranDesign.caption(9)).foregroundColor(QuranDesign.textTertiary)
-                Text(first.formattedPrice).font(QuranDesign.mono(10)).foregroundColor(first.isUp ? .green : .red)
+                Text(first.symbol).font(NexusTypography.caption(9)).foregroundColor(NexusPalette.textTertiary)
+                Text(first.formattedPrice).font(NexusTypography.mono(10)).foregroundColor(first.isUp ? NexusPalette.success : NexusPalette.danger)
             }
         } else {
-            Image(systemName: "chart.line.uptrend.xyaxis").font(.system(size: 11)).foregroundColor(QuranDesign.textTertiary)
+            Image(systemName: "chart.line.uptrend.xyaxis").font(.system(size: 11)).foregroundColor(NexusPalette.textTertiary)
         }
     }
 }
@@ -107,16 +107,16 @@ struct StocksExpandedView: View {
     var body: some View {
         if manager.prices.isEmpty {
             Text(manager.isLoading ? "…" : "لا توجد بيانات")
-                .font(QuranDesign.body(10)).foregroundColor(QuranDesign.textSecondary)
+                .font(NexusTypography.body(10)).foregroundColor(NexusPalette.textSecondary)
         } else {
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(manager.prices.prefix(4))) { coin in
                     HStack(spacing: 6) {
-                        Text(coin.symbol).font(QuranDesign.body(10)).foregroundColor(QuranDesign.textSecondary)
+                        Text(coin.symbol).font(NexusTypography.body(10)).foregroundColor(NexusPalette.textSecondary)
                         Spacer()
-                        Text(coin.formattedPrice).font(QuranDesign.mono(11)).foregroundColor(QuranDesign.textPrimary)
-                        Text(coin.changeFormatted).font(QuranDesign.mono(9))
-                            .foregroundColor(coin.isUp ? .green : .red)
+                        Text(coin.formattedPrice).font(NexusTypography.mono(11)).foregroundColor(NexusPalette.textPrimary)
+                        Text(coin.changeFormatted).font(NexusTypography.mono(9))
+                            .foregroundColor(coin.isUp ? NexusPalette.success : NexusPalette.danger)
                     }.frame(width: 130)
                 }
             }
@@ -130,32 +130,32 @@ struct StocksFullExpandedView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("العملات الرقمية").font(QuranDesign.surahName(12)).foregroundColor(QuranDesign.textPrimary)
+                Text("العملات الرقمية").font(NexusTypography.title(12)).foregroundColor(NexusPalette.textPrimary)
                 Spacer()
                 if manager.isLoading { ProgressView().scaleEffect(0.6).frame(width: 12, height: 12) }
             }
             .padding(.horizontal, 10).padding(.vertical, 7)
             .environment(\.layoutDirection, .rightToLeft)
-            Divider().background(QuranDesign.surfaceStroke)
+            Divider().background(NexusPalette.glassTint.opacity(0.10))
 
             if manager.prices.isEmpty {
-                Text("لا توجد بيانات").font(QuranDesign.body(11)).foregroundColor(QuranDesign.textSecondary)
+                Text("لا توجد بيانات").font(NexusTypography.body(11)).foregroundColor(NexusPalette.textSecondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
                     VStack(spacing: 2) {
                         ForEach(manager.prices) { coin in
                             HStack(spacing: 10) {
-                                Text(coin.symbol).font(QuranDesign.surahName(13)).foregroundColor(QuranDesign.textPrimary)
+                                Text(coin.symbol).font(NexusTypography.title(13)).foregroundColor(NexusPalette.textPrimary)
                                     .frame(width: 50, alignment: .leading)
                                 Spacer()
-                                Text(coin.formattedPrice).font(QuranDesign.mono(13)).foregroundColor(QuranDesign.textPrimary)
-                                Text(coin.changeFormatted).font(QuranDesign.mono(10))
-                                    .foregroundColor(coin.isUp ? .green : .red)
+                                Text(coin.formattedPrice).font(NexusTypography.mono(13)).foregroundColor(NexusPalette.textPrimary)
+                                Text(coin.changeFormatted).font(NexusTypography.mono(10))
+                                    .foregroundColor(coin.isUp ? NexusPalette.success : NexusPalette.danger)
                                     .frame(width: 60, alignment: .trailing)
                             }
                             .padding(.horizontal, 10).padding(.vertical, 5)
-                            .quranSurface(radius: QuranDesign.cornerRadiusS)
+                            .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusS)
                         }
                     }
                     .padding(8)

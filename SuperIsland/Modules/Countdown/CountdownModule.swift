@@ -107,15 +107,15 @@ struct CountdownCompactView: View {
         if let next = manager.nextEvent {
             HStack(spacing: 5) {
                 Image(systemName: "calendar.badge.clock")
-                    .font(.system(size: 10)).foregroundColor(QuranDesign.accent)
+                    .font(.system(size: 10)).foregroundColor(NexusPalette.electricViolet)
                 Text("\(next.daysRemaining)")
-                    .font(QuranDesign.surahName(12)).foregroundColor(QuranDesign.textPrimary)
+                    .font(NexusTypography.title(12)).foregroundColor(NexusPalette.textPrimary)
                 Text("يوم")
-                    .font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.caption(8)).foregroundColor(NexusPalette.textTertiary)
             }
             .environment(\.layoutDirection, .rightToLeft)
         } else {
-            Image(systemName: "calendar.badge.clock").font(.system(size: 11)).foregroundColor(QuranDesign.textTertiary)
+            Image(systemName: "calendar.badge.clock").font(.system(size: 11)).foregroundColor(NexusPalette.textTertiary)
         }
     }
 }
@@ -125,16 +125,16 @@ struct CountdownExpandedView: View {
 
     var body: some View {
         if manager.events.isEmpty {
-            Text("لا توجد أحداث").font(QuranDesign.body(10)).foregroundColor(QuranDesign.textSecondary)
+            Text("لا توجد أحداث").font(NexusTypography.body(10)).foregroundColor(NexusPalette.textSecondary)
         } else {
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(manager.events.prefix(4))) { event in
                     HStack(spacing: 6) {
-                        Text(event.name).font(QuranDesign.body(10)).foregroundColor(QuranDesign.textPrimary)
+                        Text(event.name).font(NexusTypography.body(10)).foregroundColor(NexusPalette.textPrimary)
                         Spacer()
-                        Text("\(event.daysRemaining)").font(QuranDesign.mono(11))
-                            .foregroundColor(event.isPast ? QuranDesign.textTertiary : QuranDesign.accent)
-                        Text("يوم").font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+                        Text("\(event.daysRemaining)").font(NexusTypography.mono(11))
+                            .foregroundColor(event.isPast ? NexusPalette.textTertiary : NexusPalette.electricViolet)
+                        Text("يوم").font(NexusTypography.caption(8)).foregroundColor(NexusPalette.textTertiary)
                     }.frame(width: 120)
                 }
             }
@@ -149,15 +149,15 @@ struct CountdownFullExpandedView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("العد التنازلي").font(QuranDesign.surahName(12)).foregroundColor(QuranDesign.textPrimary)
+                Text("العد التنازلي").font(NexusTypography.title(12)).foregroundColor(NexusPalette.textPrimary)
                 Spacer()
             }
             .padding(.horizontal, 10).padding(.vertical, 7)
             .environment(\.layoutDirection, .rightToLeft)
-            Divider().background(QuranDesign.surfaceStroke)
+            Divider().background(NexusPalette.glassTint.opacity(0.10))
 
             if manager.events.isEmpty {
-                Text("أضف حدثاً من الإعدادات").font(QuranDesign.body(11)).foregroundColor(QuranDesign.textSecondary)
+                Text("أضف حدثاً من الإعدادات").font(NexusTypography.body(11)).foregroundColor(NexusPalette.textSecondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
@@ -165,17 +165,17 @@ struct CountdownFullExpandedView: View {
                         ForEach(manager.events) { event in
                             HStack(spacing: 10) {
                                 VStack(alignment: .leading, spacing: 1) {
-                                    Text(event.name).font(QuranDesign.body(12)).foregroundColor(QuranDesign.textPrimary)
+                                    Text(event.name).font(NexusTypography.body(12)).foregroundColor(NexusPalette.textPrimary)
                                     Text(event.date.formatted(date: .abbreviated, time: .omitted))
-                                        .font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+                                        .font(NexusTypography.caption(8)).foregroundColor(NexusPalette.textTertiary)
                                 }
                                 Spacer()
-                                Text("\(event.daysRemaining)").font(QuranDesign.surahName(16))
-                                    .foregroundColor(event.isPast ? QuranDesign.textTertiary : QuranDesign.accent)
-                                Text("يوم").font(QuranDesign.caption(9)).foregroundColor(QuranDesign.textTertiary)
+                                Text("\(event.daysRemaining)").font(NexusTypography.title(16))
+                                    .foregroundColor(event.isPast ? NexusPalette.textTertiary : NexusPalette.electricViolet)
+                                Text("يوم").font(NexusTypography.caption(9)).foregroundColor(NexusPalette.textTertiary)
                             }
                             .padding(.horizontal, 10).padding(.vertical, 6)
-                            .quranSurface(isActive: !event.isPast && manager.nextEvent?.id == event.id, radius: QuranDesign.cornerRadiusS)
+                            .nexusSurface(variant: .glass, isActive: !event.isPast && manager.nextEvent?.id == event.id, radius: NexusMetrics.cornerRadiusS)
                             .environment(\.layoutDirection, .rightToLeft)
                         }
                     }

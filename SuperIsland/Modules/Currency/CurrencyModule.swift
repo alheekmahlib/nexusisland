@@ -94,16 +94,16 @@ struct CurrencyCompactView: View {
         if let first = manager.rates.first {
             HStack(spacing: 5) {
                 Image(systemName: "dollarsign.circle.fill")
-                    .font(.system(size: 10)).foregroundColor(QuranDesign.accent)
+                    .font(.system(size: 10)).foregroundColor(NexusPalette.electricViolet)
                 Text("1$ = \(first.formattedRate)")
-                    .font(QuranDesign.mono(9))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(NexusTypography.mono(9))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Text(first.code)
-                    .font(QuranDesign.caption(9))
-                    .foregroundColor(QuranDesign.accent)
+                    .font(NexusTypography.caption(9))
+                    .foregroundColor(NexusPalette.electricViolet)
             }
         } else {
-            Image(systemName: "dollarsign.circle").font(.system(size: 11)).foregroundColor(QuranDesign.textTertiary)
+            Image(systemName: "dollarsign.circle").font(.system(size: 11)).foregroundColor(NexusPalette.textTertiary)
         }
     }
 }
@@ -114,15 +114,15 @@ struct CurrencyExpandedView: View {
     var body: some View {
         if manager.rates.isEmpty {
             Text(manager.isLoading ? "…" : "لا توجد بيانات")
-                .font(QuranDesign.body(10)).foregroundColor(QuranDesign.textSecondary)
+                .font(NexusTypography.body(10)).foregroundColor(NexusPalette.textSecondary)
         } else {
             VStack(alignment: .leading, spacing: 4) {
-                Text("1 دولار أمريكي =").font(QuranDesign.caption(9)).foregroundColor(QuranDesign.textTertiary)
+                Text("1 دولار أمريكي =").font(NexusTypography.caption(9)).foregroundColor(NexusPalette.textTertiary)
                 ForEach(manager.rates.prefix(4)) { rate in
                     HStack(spacing: 6) {
-                        Text(rate.code).font(QuranDesign.body(10)).foregroundColor(QuranDesign.accent)
+                        Text(rate.code).font(NexusTypography.body(10)).foregroundColor(NexusPalette.electricViolet)
                         Spacer()
-                        Text(rate.formattedRate).font(QuranDesign.mono(11)).foregroundColor(QuranDesign.textPrimary)
+                        Text(rate.formattedRate).font(NexusTypography.mono(11)).foregroundColor(NexusPalette.textPrimary)
                     }.frame(width: 120)
                 }
             }
@@ -137,31 +137,31 @@ struct CurrencyFullExpandedView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("أسعار الصرف").font(QuranDesign.surahName(12)).foregroundColor(QuranDesign.textPrimary)
+                Text("أسعار الصرف").font(NexusTypography.title(12)).foregroundColor(NexusPalette.textPrimary)
                 Spacer()
                 if manager.isLoading { ProgressView().scaleEffect(0.6).frame(width: 12, height: 12) }
             }
             .padding(.horizontal, 10).padding(.vertical, 7)
             .environment(\.layoutDirection, .rightToLeft)
-            Divider().background(QuranDesign.surfaceStroke)
+            Divider().background(NexusPalette.glassTint.opacity(0.10))
 
             if manager.rates.isEmpty {
-                Text("لا توجد بيانات").font(QuranDesign.body(11)).foregroundColor(QuranDesign.textSecondary)
+                Text("لا توجد بيانات").font(NexusTypography.body(11)).foregroundColor(NexusPalette.textSecondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
                     VStack(spacing: 2) {
-                        Text("1 دولار أمريكي =").font(QuranDesign.caption(9)).foregroundColor(QuranDesign.textTertiary)
+                        Text("1 دولار أمريكي =").font(NexusTypography.caption(9)).foregroundColor(NexusPalette.textTertiary)
                             .padding(.bottom, 4)
                         ForEach(manager.rates) { rate in
                             HStack(spacing: 10) {
-                                Text(rate.code).font(QuranDesign.body(12)).foregroundColor(QuranDesign.accent)
+                                Text(rate.code).font(NexusTypography.body(12)).foregroundColor(NexusPalette.electricViolet)
                                     .frame(width: 40, alignment: .leading)
                                 Spacer()
-                                Text(rate.formattedRate).font(QuranDesign.surahName(13)).foregroundColor(QuranDesign.textPrimary)
+                                Text(rate.formattedRate).font(NexusTypography.title(13)).foregroundColor(NexusPalette.textPrimary)
                             }
                             .padding(.horizontal, 10).padding(.vertical, 4)
-                            .quranSurface(radius: QuranDesign.cornerRadiusS)
+                            .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusS)
                             .environment(\.layoutDirection, .rightToLeft)
                         }
                     }

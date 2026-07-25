@@ -87,12 +87,12 @@ struct WorldClockCompactView: View {
         HStack(spacing: 5) {
             Image(systemName: "clock.fill")
                 .font(.system(size: 10))
-                .foregroundColor(QuranDesign.accent)
+                .foregroundColor(NexusPalette.electricViolet)
             // Show the first 2 zones' times in the tight pill.
             ForEach(Array(manager.zones.prefix(2))) { zone in
                 Text(zone.currentTime)
-                    .font(QuranDesign.mono(10))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(NexusTypography.mono(10))
+                    .foregroundColor(NexusPalette.textPrimary)
             }
         }
     }
@@ -115,19 +115,19 @@ struct WorldClockExpandedView: View {
         HStack(spacing: 8) {
             Image(systemName: zone.dayNightIcon)
                 .font(.system(size: 9))
-                .foregroundColor(zone.dayNightIcon == "sun.max.fill" ? .yellow : .indigo)
+                .foregroundColor(zone.dayNightIcon == "sun.max.fill" ? NexusPalette.amber : NexusPalette.electricViolet)
             Text(zone.label)
-                .font(QuranDesign.body(10))
-                .foregroundColor(QuranDesign.textSecondary)
+                .font(NexusTypography.body(10))
+                .foregroundColor(NexusPalette.textSecondary)
             Spacer()
             Text(zone.currentTime)
-                .font(QuranDesign.mono(11))
-                .foregroundColor(QuranDesign.textPrimary)
+                .font(NexusTypography.mono(11))
+                .foregroundColor(NexusPalette.textPrimary)
             let offset = zone.offsetFrom(local: localZone)
             if !offset.isEmpty {
                 Text(offset)
-                    .font(QuranDesign.caption(8))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.caption(8))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
         }
     }
@@ -141,16 +141,16 @@ struct WorldClockFullExpandedView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("الساعات العالمية")
-                    .font(QuranDesign.surahName(12))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(NexusTypography.title(12))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Spacer()
                 Image(systemName: "clock")
                     .font(.system(size: 10))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .foregroundColor(NexusPalette.textTertiary)
             }
             .padding(.horizontal, 10).padding(.vertical, 7)
 
-            Divider().background(QuranDesign.surfaceStroke)
+            Divider().background(NexusPalette.glassTint.opacity(0.10))
 
             ScrollView {
                 LazyVStack(spacing: 2) {
@@ -168,30 +168,30 @@ struct WorldClockFullExpandedView: View {
         HStack(spacing: 10) {
             Image(systemName: zone.dayNightIcon)
                 .font(.system(size: 11))
-                .foregroundColor(zone.dayNightIcon == "sun.max.fill" ? .yellow : .indigo)
+                .foregroundColor(zone.dayNightIcon == "sun.max.fill" ? NexusPalette.amber : NexusPalette.electricViolet)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(zone.label)
-                    .font(QuranDesign.body(11))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(NexusTypography.body(11))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Text(zone.id.replacingOccurrences(of: "_", with: " "))
-                    .font(QuranDesign.caption(8))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.caption(8))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
             Spacer()
             Text(zone.currentTime)
-                .font(QuranDesign.surahName(13))
-                .foregroundColor(QuranDesign.textPrimary)
+                .font(NexusTypography.title(13))
+                .foregroundColor(NexusPalette.textPrimary)
             let offset = zone.offsetFrom(local: localZone)
             if !offset.isEmpty {
                 Text(offset)
-                    .font(QuranDesign.caption(8))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.caption(8))
+                    .foregroundColor(NexusPalette.textTertiary)
                     .frame(width: 30)
             }
         }
         .padding(.horizontal, 8).padding(.vertical, 5)
-        .quranSurface(radius: QuranDesign.cornerRadiusS)
+        .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusS)
     }
 }
