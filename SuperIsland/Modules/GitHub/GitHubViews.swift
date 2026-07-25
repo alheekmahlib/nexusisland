@@ -9,22 +9,22 @@ struct GitHubCompactView: View {
 
     var body: some View {
         if !manager.isInstalled {
-            compactIcon(color: .gray, count: nil)
+            compactIcon(color: NexusPalette.textTertiary, count: nil)
         } else if !manager.isAuthenticated {
-            compactIcon(color: .orange, count: nil)
+            compactIcon(color: NexusPalette.warning, count: nil)
         } else if manager.summary.actionableCount > 0 {
             HStack(spacing: 6) {
                 Image(systemName: "curlybraces")
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(QuranDesign.accent)
+                    .foregroundColor(NexusPalette.electricViolet)
                     .frame(width: 20, height: 20)
-                    .background(Circle().fill(QuranDesign.accentSoft))
+                    .background(Circle().fill(NexusPalette.electricViolet.opacity(0.18)))
                 Text("\(manager.summary.actionableCount)")
-                    .font(QuranDesign.surahName(12))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(NexusTypography.title(12))
+                    .foregroundColor(NexusPalette.textPrimary)
             }
         } else {
-            compactIcon(color: .green, count: nil)
+            compactIcon(color: NexusPalette.success, count: nil)
         }
     }
 
@@ -33,7 +33,7 @@ struct GitHubCompactView: View {
             Image(systemName: "curlybraces")
                 .font(.system(size: 11))
                 .foregroundColor(color)
-            if let count { Text("\(count)").font(QuranDesign.mono(10)) }
+            if let count { Text("\(count)").font(NexusTypography.mono(10)) }
         }
     }
 }
@@ -51,7 +51,7 @@ struct GitHubExpandedView: View {
         } else {
             HStack(spacing: 12) {
                 statsColumn
-                Divider().background(QuranDesign.surfaceStroke).frame(maxHeight: 60)
+                Divider().background(NexusPalette.glassTint.opacity(0.10)).frame(maxHeight: 60)
                 topItems
             }
         }
@@ -61,10 +61,10 @@ struct GitHubExpandedView: View {
         VStack(alignment: .leading, spacing: 4) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 13))
-                .foregroundColor(.orange)
+                .foregroundColor(NexusPalette.warning)
             Text(manager.summary.errorMessage ?? "غير جاهز")
-                .font(QuranDesign.body(11))
-                .foregroundColor(QuranDesign.textSecondary)
+                .font(NexusTypography.body(11))
+                .foregroundColor(NexusPalette.textSecondary)
         }
     }
 
@@ -82,9 +82,9 @@ struct GitHubExpandedView: View {
 
     private func statRow(icon: String, count: Int, label: String) -> some View {
         HStack(spacing: 5) {
-            Image(systemName: icon).font(.system(size: 9)).foregroundColor(QuranDesign.textTertiary)
-            Text("\(count)").font(QuranDesign.mono(11)).foregroundColor(count > 0 ? QuranDesign.accent : QuranDesign.textSecondary)
-            Text(label).font(QuranDesign.caption(9)).foregroundColor(QuranDesign.textTertiary)
+            Image(systemName: icon).font(.system(size: 9)).foregroundColor(NexusPalette.textTertiary)
+            Text("\(count)").font(NexusTypography.mono(11)).foregroundColor(count > 0 ? NexusPalette.electricViolet : NexusPalette.textSecondary)
+            Text(label).font(NexusTypography.caption(9)).foregroundColor(NexusPalette.textTertiary)
         }
         .environment(\.layoutDirection, .rightToLeft)
     }
@@ -94,8 +94,8 @@ struct GitHubExpandedView: View {
             let top = Array(manager.summary.items.prefix(2))
             if top.isEmpty {
                 Text("كل شيء واضح ✓")
-                    .font(QuranDesign.body(11))
-                    .foregroundColor(.green)
+                    .font(NexusTypography.body(11))
+                    .foregroundColor(NexusPalette.success)
             } else {
                 ForEach(top) { item in
                     Button(action: { manager.openItem(item) }) {
@@ -104,8 +104,8 @@ struct GitHubExpandedView: View {
                                 .font(.system(size: 9))
                                 .foregroundColor(reasonColor(item.reason))
                             Text(item.title)
-                                .font(QuranDesign.body(10))
-                                .foregroundColor(QuranDesign.textPrimary)
+                                .font(NexusTypography.body(10))
+                                .foregroundColor(NexusPalette.textPrimary)
                                 .lineLimit(1)
                         }
                     }
@@ -117,11 +117,11 @@ struct GitHubExpandedView: View {
 
     private func reasonColor(_ reason: GitHubItemReason) -> Color {
         switch reason {
-        case .reviewRequested: return QuranDesign.accent
-        case .mentioned: return .orange
-        case .assigned: return .blue
-        case .ownedRepo: return .purple
-        case .authored: return QuranDesign.textTertiary
+        case .reviewRequested: return NexusPalette.electricViolet
+        case .mentioned: return NexusPalette.warning
+        case .assigned: return NexusPalette.royalPurple
+        case .ownedRepo: return NexusPalette.electricViolet
+        case .authored: return NexusPalette.textTertiary
         }
     }
 }
@@ -151,10 +151,10 @@ struct GitHubFullExpandedView: View {
         if !manager.isInstalled || !manager.isAuthenticated {
             HStack {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundColor(.orange)
+                    .foregroundColor(NexusPalette.warning)
                 Text(manager.summary.errorMessage ?? "غير جاهز")
-                    .font(QuranDesign.body(13))
-                    .foregroundColor(QuranDesign.textSecondary)
+                    .font(NexusTypography.body(13))
+                    .foregroundColor(NexusPalette.textSecondary)
             }
             .padding()
         } else {
@@ -162,7 +162,7 @@ struct GitHubFullExpandedView: View {
                 statsCard
                     .frame(width: 200)
                     .frame(maxHeight: .infinity)
-                Rectangle().fill(QuranDesign.surfaceStroke).frame(width: 0.5)
+                Rectangle().fill(NexusPalette.glassTint.opacity(0.10)).frame(width: 0.5)
                 itemsList
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -172,19 +172,19 @@ struct GitHubFullExpandedView: View {
     private var statsCard: some View {
         VStack(alignment: .leading, spacing: 7) {
             Text("GitHub")
-                .font(QuranDesign.surahName(13))
-                .foregroundColor(QuranDesign.textPrimary)
+                .font(NexusTypography.title(13))
+                .foregroundColor(NexusPalette.textPrimary)
                 .padding(.bottom, 2)
             bigStat(icon: "arrow.triangle.pull", count: manager.summary.reviewRequestedCount,
-                    label: "مراجعات مستحقة", color: QuranDesign.accent)
+                    label: "مراجعات مستحقة", color: NexusPalette.electricViolet)
             bigStat(icon: "exclamationmark.bubble.fill", count: manager.summary.unansweredCount,
-                    label: "بانتظار ردك", color: .orange)
+                    label: "بانتظار ردك", color: NexusPalette.warning)
             bigStat(icon: "smallcircle.filled", count: manager.summary.assignedCount,
-                    label: "مهام مسندة", color: .blue)
+                    label: "مهام مسندة", color: NexusPalette.royalPurple)
             bigStat(icon: "building.2.fill", count: manager.summary.ownedRepoCount,
-                    label: "في مستودعاتي", color: .purple)
+                    label: "في مستودعاتي", color: NexusPalette.electricViolet)
             bigStat(icon: "arrow.triangle.pull", count: manager.summary.authoredCount,
-                    label: "PRs مفتوحة لك", color: QuranDesign.textTertiary)
+                    label: "PRs مفتوحة لك", color: NexusPalette.textTertiary)
             Spacer(minLength: 0)
         }
         .padding(10)
@@ -193,8 +193,8 @@ struct GitHubFullExpandedView: View {
     private func bigStat(icon: String, count: Int, label: String, color: Color) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon).font(.system(size: 10)).foregroundColor(color)
-            Text("\(count)").font(QuranDesign.surahName(14)).foregroundColor(QuranDesign.textPrimary)
-            Text(label).font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+            Text("\(count)").font(NexusTypography.title(14)).foregroundColor(NexusPalette.textPrimary)
+            Text(label).font(NexusTypography.caption(8)).foregroundColor(NexusPalette.textTertiary)
         }
         .environment(\.layoutDirection, .rightToLeft)
     }
@@ -215,16 +215,16 @@ struct GitHubFullExpandedView: View {
             // Tab bar — switch between All / Reviews / Issues / PRs / Owned.
             tabBar
 
-            Divider().background(QuranDesign.surfaceStroke)
+            Divider().background(NexusPalette.glassTint.opacity(0.10))
 
             if filteredItems.isEmpty {
                 VStack(spacing: 6) {
                     Image(systemName: "checkmark.seal.fill")
                         .font(.system(size: 20))
-                        .foregroundColor(.green)
+                        .foregroundColor(NexusPalette.success)
                     Text("كل شيء واضح")
-                        .font(QuranDesign.body(11))
-                        .foregroundColor(QuranDesign.textSecondary)
+                        .font(NexusTypography.body(11))
+                        .foregroundColor(NexusPalette.textSecondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
@@ -247,18 +247,18 @@ struct GitHubFullExpandedView: View {
                 Button(action: { selectedTab = tab }) {
                     HStack(spacing: 3) {
                         Text(tab.label)
-                            .font(QuranDesign.caption(9))
+                            .font(NexusTypography.caption(9))
                         if count > 0 {
                             Text("\(count)")
-                                .font(QuranDesign.mono(8))
-                                .foregroundColor(QuranDesign.textTertiary)
+                                .font(NexusTypography.mono(8))
+                                .foregroundColor(NexusPalette.textTertiary)
                         }
                     }
-                    .foregroundColor(selectedTab == tab ? QuranDesign.textPrimary : QuranDesign.textTertiary)
+                    .foregroundColor(selectedTab == tab ? NexusPalette.textPrimary : NexusPalette.textTertiary)
                     .padding(.horizontal, 6).padding(.vertical, 4)
                     .background(
                         RoundedRectangle(cornerRadius: 5)
-                            .fill(selectedTab == tab ? QuranDesign.surfaceFillActive : Color.clear)
+                            .fill(selectedTab == tab ? NexusPalette.electricViolet.opacity(0.14) : Color.clear)
                     )
                 }
                 .buttonStyle(.plain)
@@ -283,7 +283,7 @@ struct GitHubFullExpandedView: View {
 
     private func itemRow(_ item: GitHubItem) -> some View {
         // Highlight unanswered items with a gold left bar; answered ones stay neutral.
-        let accentColor = item.isAnswered ? QuranDesign.textTertiary : QuranDesign.accent
+        let accentColor = item.isAnswered ? NexusPalette.textTertiary : NexusPalette.electricViolet
         return Button(action: { manager.openItem(item) }) {
             HStack(spacing: 8) {
                 // Unanswered indicator: a gold dot for unanswered, gray for answered.
@@ -300,36 +300,36 @@ struct GitHubFullExpandedView: View {
 
                 VStack(alignment: .leading, spacing: 1) {
                     Text(item.title)
-                        .font(QuranDesign.body(11))
-                        .foregroundColor(QuranDesign.textPrimary)
+                        .font(NexusTypography.body(11))
+                        .foregroundColor(NexusPalette.textPrimary)
                         .lineLimit(1)
                     HStack(spacing: 4) {
                         Text(item.repoName)
-                            .font(QuranDesign.caption(8))
-                            .foregroundColor(QuranDesign.textTertiary)
+                            .font(NexusTypography.caption(8))
+                            .foregroundColor(NexusPalette.textTertiary)
                         if item.number > 0 {
                             Text("#\(item.number)")
-                                .font(QuranDesign.mono(8))
-                                .foregroundColor(QuranDesign.textTertiary)
+                                .font(NexusTypography.mono(8))
+                                .foregroundColor(NexusPalette.textTertiary)
                         }
                         Text(reasonLabel(item.reason))
-                            .font(QuranDesign.caption(8))
+                            .font(NexusTypography.caption(8))
                             .foregroundColor(reasonColor(item.reason))
                         if !item.isAnswered {
                             Text("بدون رد")
-                                .font(QuranDesign.caption(8))
-                                .foregroundColor(QuranDesign.accent)
+                                .font(NexusTypography.caption(8))
+                                .foregroundColor(NexusPalette.electricViolet)
                         }
                     }
                 }
                 Spacer()
                 Image(systemName: "chevron.left")
                     .font(.system(size: 8))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .foregroundColor(NexusPalette.textTertiary)
             }
             .padding(.horizontal, 8).padding(.vertical, 5)
             // Unanswered rows get a subtle gold-tinted background.
-            .quranSurface(isActive: !item.isAnswered, radius: QuranDesign.cornerRadiusS)
+            .nexusSurface(variant: .glass, isActive: !item.isAnswered, radius: NexusMetrics.cornerRadiusS)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -337,11 +337,11 @@ struct GitHubFullExpandedView: View {
 
     private func reasonColor(_ reason: GitHubItemReason) -> Color {
         switch reason {
-        case .reviewRequested: return QuranDesign.accent
-        case .mentioned: return .orange
-        case .assigned: return .blue
-        case .ownedRepo: return .purple
-        case .authored: return QuranDesign.textTertiary
+        case .reviewRequested: return NexusPalette.electricViolet
+        case .mentioned: return NexusPalette.warning
+        case .assigned: return NexusPalette.royalPurple
+        case .ownedRepo: return NexusPalette.electricViolet
+        case .authored: return NexusPalette.textTertiary
         }
     }
 

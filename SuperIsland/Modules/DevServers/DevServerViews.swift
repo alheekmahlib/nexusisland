@@ -11,15 +11,15 @@ struct DevServersCompactView: View {
         if manager.servers.isEmpty {
             Image(systemName: "server.rack")
                 .font(.system(size: 11))
-                .foregroundColor(QuranDesign.textTertiary)
+                .foregroundColor(NexusPalette.textTertiary)
         } else {
             HStack(spacing: 5) {
                 Image(systemName: "server.rack")
                     .font(.system(size: 10))
-                    .foregroundColor(QuranDesign.accent)
+                    .foregroundColor(NexusPalette.electricViolet)
                 Text("\(manager.servers.count)")
-                    .font(QuranDesign.surahName(12))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(NexusTypography.title(12))
+                    .foregroundColor(NexusPalette.textPrimary)
             }
         }
     }
@@ -37,10 +37,10 @@ struct DevServersExpandedView: View {
             VStack(spacing: 4) {
                 Image(systemName: "server.rack")
                     .font(.system(size: 14))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .foregroundColor(NexusPalette.textTertiary)
                 Text("لا توجد خدمات محلية")
-                    .font(QuranDesign.body(10))
-                    .foregroundColor(QuranDesign.textSecondary)
+                    .font(NexusTypography.body(10))
+                    .foregroundColor(NexusPalette.textSecondary)
                     .environment(\.layoutDirection, .rightToLeft)
             }
         } else {
@@ -57,14 +57,14 @@ struct DevServersExpandedView: View {
         Button(action: { manager.openServer(server) }) {
             HStack(spacing: 6) {
                 Circle()
-                    .fill(Color.green)
+                    .fill(NexusPalette.success)
                     .frame(width: 6, height: 6)
                 Text(":\(server.port)")
-                    .font(QuranDesign.mono(10))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(NexusTypography.mono(10))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Text(server.displayLabel)
-                    .font(QuranDesign.caption(9))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.caption(9))
+                    .foregroundColor(NexusPalette.textTertiary)
                     .lineLimit(1)
             }
         }
@@ -82,19 +82,19 @@ struct DevServersFullExpandedView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             header
-            Divider().background(QuranDesign.surfaceStroke)
+            Divider().background(NexusPalette.glassTint.opacity(0.10))
 
             if manager.servers.isEmpty {
                 VStack(spacing: 8) {
                     Image(systemName: "server.rack")
                         .font(.system(size: 22))
-                        .foregroundColor(QuranDesign.textTertiary)
+                        .foregroundColor(NexusPalette.textTertiary)
                     Text("لا توجد خدمات محلية تعمل")
-                        .font(QuranDesign.body(12))
-                        .foregroundColor(QuranDesign.textSecondary)
+                        .font(NexusTypography.body(12))
+                        .foregroundColor(NexusPalette.textSecondary)
                     Text("شغّل خادم تطوير (npm run dev, python -m http.server, إلخ)")
-                        .font(QuranDesign.caption(9))
-                        .foregroundColor(QuranDesign.textTertiary)
+                        .font(NexusTypography.caption(9))
+                        .foregroundColor(NexusPalette.textTertiary)
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -116,12 +116,12 @@ struct DevServersFullExpandedView: View {
     private var header: some View {
         HStack {
             Text("الخدمات المحلية")
-                .font(QuranDesign.surahName(12))
-                .foregroundColor(QuranDesign.textPrimary)
+                .font(NexusTypography.title(12))
+                .foregroundColor(NexusPalette.textPrimary)
             Spacer()
             Text("\(manager.servers.count) نشط")
-                .font(QuranDesign.caption(9))
-                .foregroundColor(QuranDesign.accent)
+                .font(NexusTypography.caption(9))
+                .foregroundColor(NexusPalette.electricViolet)
             if manager.isLoading {
                 ProgressView().scaleEffect(0.6).frame(width: 12, height: 12).padding(.leading, 4)
             }
@@ -133,29 +133,29 @@ struct DevServersFullExpandedView: View {
         Button(action: { manager.openServer(server) }) {
             HStack(spacing: 8) {
                 Circle()
-                    .fill(Color.green)
+                    .fill(NexusPalette.success)
                     .frame(width: 7, height: 7)
 
                 VStack(alignment: .leading, spacing: 1) {
                     Text("localhost:\(server.port)")
-                        .font(QuranDesign.body(12))
-                        .foregroundColor(QuranDesign.textPrimary)
+                        .font(NexusTypography.body(12))
+                        .foregroundColor(NexusPalette.textPrimary)
                     HStack(spacing: 6) {
                         Text(server.displayLabel)
-                            .font(QuranDesign.caption(9))
-                            .foregroundColor(server.frameworkHint != nil ? QuranDesign.accent : QuranDesign.textTertiary)
+                            .font(NexusTypography.caption(9))
+                            .foregroundColor(server.frameworkHint != nil ? NexusPalette.electricViolet : NexusPalette.textTertiary)
                         Text(server.processName)
-                            .font(QuranDesign.caption(8))
-                            .foregroundColor(QuranDesign.textTertiary)
+                            .font(NexusTypography.caption(8))
+                            .foregroundColor(NexusPalette.textTertiary)
                     }
                 }
                 Spacer()
                 Image(systemName: "arrow.up.right.square")
                     .font(.system(size: 9))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .foregroundColor(NexusPalette.textTertiary)
             }
             .padding(.horizontal, 8).padding(.vertical, 6)
-            .quranSurface(radius: QuranDesign.cornerRadiusS)
+            .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusS)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
