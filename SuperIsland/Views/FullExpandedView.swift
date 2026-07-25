@@ -445,7 +445,7 @@ struct FullExpandedTopBarView: View {
         // capsules blend with the gradient surface instead of clashing black.
         LinearGradient(
             colors: [
-                NexusPalette.backgroundGlow,
+                NexusPalette.deepPurple,
                 NexusPalette.background
             ],
             startPoint: .top,

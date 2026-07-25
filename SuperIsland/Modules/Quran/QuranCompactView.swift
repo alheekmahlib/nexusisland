@@ -29,7 +29,7 @@ struct QuranCompactView: View {
                 .frame(width: 20, height: 20)
                 .background {
                     if manager.isPlaying {
-                        Circle().fill(NexusGradient.primary)
+                        Circle().fill(NexusGradient.purple)
                     } else {
                         Circle().fill(Color.white.opacity(0.14))
                     }

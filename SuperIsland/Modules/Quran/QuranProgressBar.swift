@@ -47,12 +47,12 @@ struct QuranProgressBar: View {
                     .shadow(color: NexusPalette.gradientMid.opacity(0.5), radius: 3, y: 1)
                     .animation(Constants.progressBar, value: displayedProgress)
 
-                // Knob.
+                // Knob — violet to match the palette (no gold/amber).
                 Circle()
-                    .fill(NexusPalette.accentGold)
+                    .fill(NexusPalette.electricViolet)
                     .frame(width: knobSize, height: knobSize)
                     .scaleEffect(knobScale)
-                    .shadow(color: NexusPalette.accentGold.opacity(0.6), radius: 3, y: 1)
+                    .shadow(color: NexusPalette.electricViolet.opacity(0.6), radius: 3, y: 1)
                     // Position the knob along the same axis as the fill edge.
                     .frame(maxWidth: .infinity, alignment: isRTL ? .trailing : .leading)
                     .padding(.leading, isRTL ? 0 : max(0, knobCenterX - knobSize / 2))

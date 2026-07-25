@@ -2,41 +2,53 @@ import SwiftUI
 
 // MARK: - NexusDesign: Palette
 //
-// One unified palette derived from the app icon (the dark purple radial
-// backdrop + neon notch symbol) merged with the design doc's vibrant
-// purple→magenta→orange gradient. Replaces the ad-hoc RGB literals that were
-// scattered across ~40 view files.
+// Exact palette derived from the app icon. Deep purple + neon magenta +
+// orange glow in the macOS Big Sur / Apple design idiom.
+// NOTE: no gold — amber (#FFB347) replaces the former accentGold everywhere.
 
 enum NexusPalette {
     // MARK: - Background (from the app icon)
-    /// Deep near-black purple — the island's expanded/fullExpanded base.
-    static let background     = Color(hex: "#1A0B2E")
-    /// Lighter purple used for the central radial glow.
-    static let backgroundGlow = Color(hex: "#2D1B4E")
+    /// Midnight Blue — the dark background base.
+    static let background     = Color(hex: "#141125")
+    /// Deep Purple — darker gradient stop.
+    static let deepPurple     = Color(hex: "#36206D")
 
-    // MARK: - Primary vibrant gradient (design doc)
-    /// Deep purple — start of the signature gradient.
-    static let gradientStart  = Color(hex: "#6A0DAD")
-    /// Vibrant magenta — middle of the signature gradient.
-    static let gradientMid    = Color(hex: "#E91E63")
-    /// Bright orange/yellow — end of the signature gradient.
-    static let gradientEnd    = Color(hex: "#FFC107")
+    // MARK: - Purple ramp (primary brand colors)
+    /// Royal Purple — the main purple.
+    static let royalPurple    = Color(hex: "#6A3FD6")
+    /// Electric Violet — lighter purple for highlights.
+    static let electricViolet = Color(hex: "#9B6DFF")
 
-    // MARK: - Accents
-    /// Warm gold, used sparingly for important numerals/icons.
-    static let accentGold     = Color(hex: "#FBA046")
-    /// Neon purple from the icon symbol.
-    static let neonPurple     = Color(hex: "#B833FF")
-    /// Neon orange from the icon symbol.
-    static let neonOrange     = Color(hex: "#FF6B35")
+    // MARK: - Neon accents (the vibrant glow)
+    /// Neon Pink.
+    static let neonPink       = Color(hex: "#FF2CCB")
+    /// Magenta.
+    static let magenta        = Color(hex: "#D13CFF")
+    /// Vibrant Orange — glowing accent.
+    static let vibrantOrange  = Color(hex: "#FF8A2A")
+    /// Amber — warm orange-yellow (replaces former accentGold).
+    static let amber          = Color(hex: "#FFB347")
 
-    // MARK: - Text
-    static let textPrimary    = Color(hex: "#FFFFFF")
-    static let textSecondary  = Color(hex: "#CCCCCC")
-    static let textTertiary   = Color.white.opacity(0.55)
+    // MARK: - Text & glass
+    /// Soft White for text and highlights.
+    static let textPrimary    = Color(hex: "#F2F3FF")
+    /// Secondary text (slightly dimmed primary).
+    static let textSecondary  = Color(hex: "#D9D6FF").opacity(0.85)
+    /// Tertiary text / metadata.
+    static let textTertiary   = Color(hex: "#D9D6FF").opacity(0.50)
+    /// Light Lavender — glass reflection tint.
+    static let glassTint      = Color(hex: "#D9D6FF")
 
     // MARK: - Status
     static let success        = Color(hex: "#4CAF50")
-    static let warning        = Color(hex: "#FFC107")
+    static let warning        = Color(hex: "#FFB347")
     static let danger         = Color(hex: "#F44336")
+
+    // MARK: - Back-compat aliases (map old gradient-stop names onto the new
+    // palette so glow/shadow call sites keep working). Prefer the named tokens
+    // above in new code.
+    /// Was the gradient's middle stop (magenta-pink) → now Neon Pink.
+    static let gradientMid    = neonPink
+    /// Was the gradient's end stop (orange/yellow) → now Vibrant Orange.
+    static let gradientEnd    = vibrantOrange
 }

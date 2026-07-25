@@ -43,14 +43,34 @@ struct IslandContainerView: View {
             islandShape
                 .fill(islandSurfaceBaseFill)
 
-            // Vibrant gradient overlay, only when expanded (compact stays black
-            // to blend with the real metal notch). Layered as an overlay so we
-            // can stack the radial glow under the signature purple→magenta→orange.
+            // Expanded surface fill: the dark-purple gradient backdrop from the
+            // app icon (`background` → `backgroundGlow`), with a radial glow
+            // layered beneath for depth. The vibrant purple→magenta→orange
+            // gradient lives only on ACCENTS (progress bars, medallions, tabs) —
+            // matching how the icon reserves bright color for its notch symbol.
+            // Compact stays black to blend with the real metal notch.
             if appState.currentState != .compact {
                 islandShape
                     .fill(NexusGradient.backgroundRadial)
                 islandShape
-                    .fill(NexusGradient.primary.opacity(0.92))
+                    .fill(NexusGradient.backgroundLinear)
+
+                // Glass specular sheen — a bright top highlight fading to clear,
+                // confined to the upper portion. This is what makes the pill read
+                // as curved, frosted glass (the macOS "liquid glass" cue).
+                islandShape
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.16),
+                                Color.white.opacity(0.04),
+                                Color.clear
+                            ],
+                            startPoint: .top,
+                            endPoint: .center
+                        )
+                    )
+                    .mask(islandShape.scaleEffect(y: 0.5, anchor: .top))
             }
 
             islandContent

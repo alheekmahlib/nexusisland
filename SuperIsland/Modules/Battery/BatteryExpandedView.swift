@@ -139,19 +139,17 @@ struct BatteryExpandedView: View {
         let samples = manager.batteryHistory
         if samples.count >= 2 {
             ZStack {
-                RoundedRectangle(cornerRadius: NexusMetrics.cornerRadiusS)
-                    .fill(Color.white.opacity(0.08))
                 SparklineChart(values: samples.map { Double($0.level) })
                     .padding(4)
             }
+            .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusS)
         } else {
             ZStack {
-                RoundedRectangle(cornerRadius: NexusMetrics.cornerRadiusS)
-                    .fill(Color.white.opacity(0.08))
                 Text(NSLocalizedString("Need more samples", comment: "Battery sparkline empty state"))
                     .font(.system(size: 9))
                     .foregroundColor(NexusPalette.textTertiary)
             }
+            .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusS)
         }
     }
 

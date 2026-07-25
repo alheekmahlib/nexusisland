@@ -15,7 +15,7 @@ struct PrayerTimesCompactView: View {
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(width: 20, height: 20)
-                    .background(Circle().fill(NexusGradient.primary))
+                    .background(Circle().fill(NexusGradient.purple))
 
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 4) {
@@ -90,7 +90,7 @@ struct PrayerTimesExpandedView: View {
 
     private var locationBadge: some View {
         HStack(spacing: 3) {
-            Image(systemName: "location.fill").font(.system(size: 7)).foregroundColor(NexusPalette.accentGold)
+            Image(systemName: "location.fill").font(.system(size: 7)).foregroundColor(NexusPalette.electricViolet)
             if !manager.locationName.isEmpty {
                 Text(manager.locationName)
                     .font(.system(size: 7))
@@ -98,13 +98,13 @@ struct PrayerTimesExpandedView: View {
             } else {
                 Text(String(format: "%.2f, %.2f", manager.resolvedLatitude, manager.resolvedLongitude))
                     .font(NexusTypography.mono)
-                    .foregroundColor(manager.hasLocationFix ? NexusPalette.accentGold : NexusPalette.textTertiary)
+                    .foregroundColor(manager.hasLocationFix ? NexusPalette.electricViolet : NexusPalette.textTertiary)
             }
         }
     }
 
     private func medallion(_ kind: PrayerKind) -> some View {
-        GradientMedallion(systemName: kind.iconName, size: 38, iconScale: 0.40)
+        GradientMedallion(systemName: kind.iconName, size: 38, iconScale: 0.40, gradient: NexusGradient.purple)
     }
 
     private var loadingInfo: some View {
@@ -167,7 +167,8 @@ struct PrayerTimesFullExpandedView: View {
         VStack(alignment: .leading, spacing: 10) {
             if let next = manager.nextPrayerInfo {
                 HStack(spacing: 12) {
-                    GradientMedallion(systemName: next.kind.iconName, size: 46, iconScale: 0.40, isActive: true)
+                    GradientMedallion(systemName: next.kind.iconName, size: 46, iconScale: 0.40,
+                                      gradient: NexusGradient.purple, isActive: true)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text("الصلاة القادمة")
@@ -179,7 +180,7 @@ struct PrayerTimesFullExpandedView: View {
                             .environment(\.layoutDirection, .rightToLeft)
                         Text("بعد " + next.countdown)
                             .font(NexusTypography.body)
-                            .foregroundColor(NexusPalette.accentGold)
+                            .foregroundColor(NexusPalette.electricViolet)
                     }
                     Spacer()
                 }
@@ -210,7 +211,7 @@ struct PrayerTimesFullExpandedView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "calendar.badge.clock")
                         .font(.system(size: 10))
-                        .foregroundColor(NexusPalette.accentGold)
+                        .foregroundColor(NexusPalette.electricViolet)
                     Text(hijri + " هـ")
                         .font(.system(size: 11))
                         .foregroundColor(NexusPalette.textSecondary)
@@ -222,7 +223,7 @@ struct PrayerTimesFullExpandedView: View {
             HStack(spacing: 6) {
                 Image(systemName: "location.fill")
                     .font(.system(size: 10))
-                    .foregroundColor(manager.hasLocationFix ? NexusPalette.accentGold : NexusPalette.warning)
+                    .foregroundColor(manager.hasLocationFix ? NexusPalette.electricViolet : NexusPalette.warning)
                 if !manager.locationName.isEmpty {
                     Text(manager.locationName)
                         .font(.system(size: 11))
@@ -281,7 +282,7 @@ struct PrayerTimesFullExpandedView: View {
                 .foregroundColor(isNext ? .white : NexusPalette.textTertiary)
                 .frame(width: 18, height: 18)
                 .background {
-                    Circle().fill(isNext ? AnyShapeStyle(NexusGradient.primary) : AnyShapeStyle(Color.white.opacity(0.06)))
+                    Circle().fill(isNext ? AnyShapeStyle(NexusGradient.purple) : AnyShapeStyle(Color.white.opacity(0.06)))
                 }
 
             Text(kind.arabicName)
@@ -293,7 +294,7 @@ struct PrayerTimesFullExpandedView: View {
             if let time = manager.schedule.times[kind] {
                 Text(Self.timeFormatter.string(from: time))
                     .font(NexusTypography.mono)
-                    .foregroundColor(isNext ? NexusPalette.accentGold : NexusPalette.textSecondary)
+                    .foregroundColor(isNext ? NexusPalette.electricViolet : NexusPalette.textSecondary)
             } else if !hasTime {
                 Text("--:--")
                     .font(NexusTypography.mono)
@@ -302,7 +303,8 @@ struct PrayerTimesFullExpandedView: View {
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 5)
-        .nexusSurface(isActive: isNext, radius: NexusMetrics.cornerRadiusS)
+        .nexusSurface(variant: .glass, isActive: isNext, radius: NexusMetrics.cornerRadiusS,
+                      gradient: isNext ? NexusGradient.purple : nil)
         .contentShape(Rectangle())
     }
 

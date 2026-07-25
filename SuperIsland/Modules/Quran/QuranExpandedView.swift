@@ -65,40 +65,37 @@ struct QuranExpandedView: View {
         }
     }
 
-    // MARK: - Medallion (surah number in a gradient ring)
+    // MARK: - Medallion (surah number in a purple-gradient ring)
 
     private var medallion: some View {
         ZStack {
             Circle()
-                .strokeBorder(NexusPalette.accentGold.opacity(0.5), lineWidth: 1)
-                .background(Circle().fill(NexusGradient.accentGold.opacity(0.18)))
+                .strokeBorder(NexusPalette.electricViolet.opacity(0.5), lineWidth: 1)
+                .background(Circle().fill(NexusGradient.purple.opacity(0.30)))
             Text(manager.currentSurah.arabicNumber)
                 .font(.system(size: 13, weight: .bold, design: .rounded))
-                .foregroundColor(NexusPalette.accentGold)
+                .foregroundColor(NexusPalette.textPrimary)
         }
         .frame(width: 38, height: 38)
     }
 
     // MARK: - Controls
+    //
+    // primaryPlay matches NowPlaying: a NeonButton with the vibrant gradient
+    // fill + press scale, instead of a hand-built circle.
 
     private var primaryPlay: some View {
-        Button(action: manager.togglePlayPause) {
-            ZStack {
-                Circle()
-                    .fill(NexusGradient.primary)
-                    .frame(width: 34, height: 34)
-                    .shadow(color: NexusPalette.gradientMid.opacity(0.4), radius: 5, y: 1)
-                Image(systemName: manager.isLoading
-                      ? "circle.dashed"
-                      : (manager.isPlaying ? "pause.fill" : "play.fill"))
-                    .font(.system(size: 13, weight: .black))
-                    .foregroundColor(.white)
-                    .offset(x: manager.isPlaying ? 0 : 1)
-            }
-            .frame(width: 34, height: 34)
+        NeonButton(
+            systemName: manager.isLoading
+                ? "circle.dashed"
+                : (manager.isPlaying ? "pause.fill" : "play.fill"),
+            size: 34,
+            gradient: NexusGradient.purple
+        ) {
+            manager.togglePlayPause()
         }
-        .buttonStyle(.plain)
         .disabled(manager.isLoading)
+        .opacity(manager.isLoading ? 0.5 : 1)
     }
 
     private func navButton(icon: String, action: @escaping () -> Void, disabled: Bool) -> some View {
