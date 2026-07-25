@@ -23,13 +23,13 @@ struct NowPlayingExpandedView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(manager.title)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.title)
+                    .foregroundColor(NexusPalette.textPrimary)
                     .lineLimit(1)
 
                 Text(manager.artist)
                     .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(NexusPalette.textSecondary)
                     .lineLimit(1)
 
                 // Progress bar
@@ -43,12 +43,12 @@ struct NowPlayingExpandedView: View {
             }
 
             // Play/Pause button
-            Button(action: { manager.togglePlayPause() }) {
-                Image(systemName: manager.isPlaying ? "pause.fill" : "play.fill")
-                    .font(.system(size: 18))
-                    .foregroundColor(.white)
+            NeonButton(
+                systemName: manager.isPlaying ? "pause.fill" : "play.fill",
+                size: 34
+            ) {
+                manager.togglePlayPause()
             }
-            .buttonStyle(.plain)
         }
     }
 
@@ -61,18 +61,18 @@ struct NowPlayingExpandedView: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(manager.title)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.white)
+                        .font(NexusTypography.subtitle)
+                        .foregroundColor(NexusPalette.textPrimary)
                         .lineLimit(2)
 
                     Text(manager.artist)
-                        .font(.system(size: 13))
-                        .foregroundColor(.white.opacity(0.7))
+                        .font(NexusTypography.body)
+                        .foregroundColor(NexusPalette.textSecondary)
                         .lineLimit(1)
 
                     Text(manager.album)
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.5))
+                        .font(NexusTypography.caption)
+                        .foregroundColor(NexusPalette.textTertiary)
                         .lineLimit(1)
                 }
 
@@ -91,36 +91,23 @@ struct NowPlayingExpandedView: View {
 
                 HStack {
                     Text(manager.formattedElapsedTime)
-                        .font(.system(size: 10))
-                        .foregroundColor(.white.opacity(0.5))
+                        .font(NexusTypography.mono)
+                        .foregroundColor(NexusPalette.textTertiary)
                     Spacer()
                     Text(manager.formattedDuration)
-                        .font(.system(size: 10))
-                        .foregroundColor(.white.opacity(0.5))
+                        .font(NexusTypography.mono)
+                        .foregroundColor(NexusPalette.textTertiary)
                 }
             }
 
             // Playback controls
-            HStack(spacing: 32) {
-                Button(action: { manager.previousTrack() }) {
-                    Image(systemName: "backward.fill")
-                        .font(.system(size: 18))
+            HStack(spacing: 24) {
+                NeonButton(systemName: "backward.fill", size: 30) { manager.previousTrack() }
+                NeonButton(systemName: manager.isPlaying ? "pause.fill" : "play.fill", size: 44) {
+                    manager.togglePlayPause()
                 }
-                .buttonStyle(.plain)
-
-                Button(action: { manager.togglePlayPause() }) {
-                    Image(systemName: manager.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                        .font(.system(size: 36))
-                }
-                .buttonStyle(.plain)
-
-                Button(action: { manager.nextTrack() }) {
-                    Image(systemName: "forward.fill")
-                        .font(.system(size: 18))
-                }
-                .buttonStyle(.plain)
+                NeonButton(systemName: "forward.fill", size: 30) { manager.nextTrack() }
             }
-            .foregroundColor(.white)
             .padding(.top, 6)
         }
     }
@@ -150,19 +137,20 @@ struct ProgressBar: View {
             ZStack {
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: trackHeight / 2)
-                        .fill(.white.opacity(0.2))
+                        .fill(Color.white.opacity(0.15))
                         .frame(height: trackHeight)
 
                     RoundedRectangle(cornerRadius: trackHeight / 2)
-                        .fill(.white)
+                        .fill(NexusGradient.progress(at: displayedProgress))
                         .frame(width: max(0, geometry.size.width * CGFloat(displayedProgress)), height: trackHeight)
+                        .shadow(color: NexusPalette.gradientMid.opacity(0.5), radius: 2, y: 1)
                         .animation(Constants.progressBar, value: displayedProgress)
 
                     Circle()
-                        .fill(.white)
+                        .fill(NexusPalette.accentGold)
                         .frame(width: knobSize, height: knobSize)
                         .scaleEffect(knobScale)
-                        .shadow(color: .black.opacity(0.22), radius: 2, y: 1)
+                        .shadow(color: NexusPalette.accentGold.opacity(0.6), radius: 3, y: 1)
                         .offset(x: knobCenterX - (knobSize / 2))
                         .opacity(knobVisible ? 1 : 0)
                         .animation(.easeOut(duration: 0.14), value: knobVisible)
