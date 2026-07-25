@@ -2,7 +2,8 @@ import SwiftUI
 
 // MARK: - Prayer Times Compact View (pill)
 //
-// 200×36pt — single row: next-prayer icon + name + countdown.
+// Redesigned with NexusDesign. 200×36pt — single row: next-prayer icon +
+// name + countdown, with a gradient hairline for the inter-prayer interval.
 
 struct PrayerTimesCompactView: View {
     @ObservedObject private var manager = PrayerTimesManager.shared
@@ -12,25 +13,25 @@ struct PrayerTimesCompactView: View {
             HStack(spacing: 6) {
                 Image(systemName: next.kind.iconName)
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundColor(QuranDesign.accent)
+                    .foregroundColor(.white)
                     .frame(width: 20, height: 20)
-                    .background(Circle().fill(QuranDesign.accentSoft))
+                    .background(Circle().fill(NexusGradient.primary))
 
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 4) {
                         Text(next.kind.arabicName)
-                            .font(QuranDesign.surahName(11))
-                            .foregroundColor(QuranDesign.textPrimary)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(NexusPalette.textPrimary)
                             .lineLimit(1)
                             .environment(\.layoutDirection, .rightToLeft)
                         Text(next.countdown)
-                            .font(QuranDesign.mono(9))
-                            .foregroundColor(QuranDesign.textSecondary)
+                            .font(NexusTypography.mono)
+                            .foregroundColor(NexusPalette.textSecondary)
                     }
                     // Progress hairline: elapsed fraction of the current
-                    // inter-prayer interval, gold fill.
+                    // inter-prayer interval, gradient fill.
                     if let fraction = manager.progressFraction {
-                        PrayerProgressHairline(progress: fraction)
+                        GradientProgressBar(progress: fraction, style: .hairline, animated: false)
                             .frame(width: 60, height: 2)
                     }
                 }
@@ -39,22 +40,23 @@ struct PrayerTimesCompactView: View {
             HStack(spacing: 6) {
                 Image(systemName: "moon.stars.fill")
                     .font(.system(size: 10))
-                    .foregroundColor(QuranDesign.textSecondary)
+                    .foregroundColor(NexusPalette.textSecondary)
                 Text("…")
-                    .font(QuranDesign.body(11))
-                    .foregroundColor(QuranDesign.textSecondary)
+                    .font(NexusTypography.body)
+                    .foregroundColor(NexusPalette.textSecondary)
             }
         } else {
             Image(systemName: "moon.stars.fill")
                 .font(.system(size: 12))
-                .foregroundColor(QuranDesign.textSecondary)
+                .foregroundColor(NexusPalette.textSecondary)
         }
     }
 }
 
 // MARK: - Prayer Times Expanded View (drawer)
 //
-// 408×88pt — HStack: next-prayer medallion + name/countdown + full day list.
+// Redesigned with NexusDesign. 408×88pt — HStack: gradient medallion +
+// name/countdown + full day list.
 
 struct PrayerTimesExpandedView: View {
     @ObservedObject private var manager = PrayerTimesManager.shared
@@ -63,13 +65,13 @@ struct PrayerTimesExpandedView: View {
         HStack(spacing: 12) {
             if let next = manager.nextPrayerInfo {
                 medallion(next.kind)
-                // Compact info: name + countdown only (no progress bar —
-                // the 88pt expanded height can't fit it alongside the day list).
-                // The progress bar lives in FullExpanded (180pt).
+                // Compact info: name + countdown only (the 88pt expanded height
+                // can't fit the progress bar alongside the day list). The
+                // progress bar lives in FullExpanded (180pt).
                 VStack(alignment: .leading, spacing: 1) {
                     Text(next.kind.arabicName + " · " + next.countdown)
-                        .font(QuranDesign.surahName(13))
-                        .foregroundColor(QuranDesign.textPrimary)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(NexusPalette.textPrimary)
                         .environment(\.layoutDirection, .rightToLeft)
                     locationBadge
                 }
@@ -78,7 +80,7 @@ struct PrayerTimesExpandedView: View {
                 loadingInfo
             }
 
-            Divider().background(QuranDesign.surfaceStroke).frame(maxHeight: 60)
+            Divider().background(Color.white.opacity(0.10)).frame(maxHeight: 60)
 
             // Compact list of the remaining prayers with their times.
             todayList
@@ -88,69 +90,28 @@ struct PrayerTimesExpandedView: View {
 
     private var locationBadge: some View {
         HStack(spacing: 3) {
-            Image(systemName: "location.fill").font(.system(size: 7)).foregroundColor(QuranDesign.accent)
+            Image(systemName: "location.fill").font(.system(size: 7)).foregroundColor(NexusPalette.accentGold)
             if !manager.locationName.isEmpty {
                 Text(manager.locationName)
-                    .font(QuranDesign.caption(7))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(.system(size: 7))
+                    .foregroundColor(NexusPalette.textTertiary)
             } else {
                 Text(String(format: "%.2f, %.2f", manager.resolvedLatitude, manager.resolvedLongitude))
-                    .font(QuranDesign.mono(7))
-                    .foregroundColor(manager.hasLocationFix ? QuranDesign.accent : QuranDesign.textTertiary)
+                    .font(NexusTypography.mono)
+                    .foregroundColor(manager.hasLocationFix ? NexusPalette.accentGold : NexusPalette.textTertiary)
             }
         }
     }
 
     private func medallion(_ kind: PrayerKind) -> some View {
-        ZStack {
-            Circle()
-                .strokeBorder(QuranDesign.accent.opacity(0.5), lineWidth: 1)
-                .background(Circle().fill(QuranDesign.accentSoft))
-            Image(systemName: kind.iconName)
-                .font(.system(size: 15))
-                .foregroundColor(QuranDesign.accent)
-        }
-        .frame(width: 38, height: 38)
-    }
-
-    private func nextInfo(_ next: (kind: PrayerKind, date: Date, countdown: String)) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(next.kind.arabicName + " · " + next.countdown)
-                .font(QuranDesign.surahName(13))
-                .foregroundColor(QuranDesign.textPrimary)
-                .environment(\.layoutDirection, .rightToLeft)
-
-            // Progress bar — always show it (remove the if-let to test if the
-            // guard was the issue). Use safe fallbacks.
-            let fraction = manager.progressFraction ?? 0.5
-            let prevName = manager.previousPrayerInfo?.kind.arabicShortName ?? "—"
-
-            // Simple inline bar — no nested custom view, no GeometryReader.
-            HStack(spacing: 4) {
-                Text(prevName)
-                    .font(QuranDesign.caption(8))
-                    .foregroundColor(QuranDesign.textTertiary)
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(QuranDesign.surfaceStroke)
-                        .frame(height: 5)
-                    Capsule()
-                        .fill(QuranDesign.accent)
-                        .frame(width: 80 * max(0.05, fraction), height: 5)
-                }
-                .frame(maxWidth: .infinity)
-                Text(next.kind.arabicShortName)
-                    .font(QuranDesign.caption(8))
-                    .foregroundColor(QuranDesign.textTertiary)
-            }
-        }
+        GradientMedallion(systemName: kind.iconName, size: 38, iconScale: 0.40)
     }
 
     private var loadingInfo: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("جارٍ التحميل")
-                .font(QuranDesign.body(12))
-                .foregroundColor(QuranDesign.textSecondary)
+                .font(NexusTypography.body)
+                .foregroundColor(NexusPalette.textSecondary)
         }
     }
 
@@ -160,12 +121,12 @@ struct PrayerTimesExpandedView: View {
                 if let time = manager.schedule.times[kind] {
                     HStack(spacing: 6) {
                         Text(kind.arabicName)
-                            .font(QuranDesign.body(10))
-                            .foregroundColor(QuranDesign.textSecondary)
+                            .font(.system(size: 10))
+                            .foregroundColor(NexusPalette.textSecondary)
                         Spacer(minLength: 4)
                         Text(Self.timeFormatter.string(from: time))
-                            .font(QuranDesign.mono(10))
-                            .foregroundColor(QuranDesign.textPrimary)
+                            .font(NexusTypography.mono)
+                            .foregroundColor(NexusPalette.textPrimary)
                     }
                     .frame(width: 90)
                 }
@@ -183,7 +144,8 @@ struct PrayerTimesExpandedView: View {
 
 // MARK: - Prayer Times Full Expanded View (detail panel)
 //
-// 658×180pt — two columns: next-prayer hero + all six prayers with Hijri date.
+// Redesigned with NexusDesign. 658×180pt — two columns: next-prayer hero
+// (gradient medallion + gradient progress) + all six prayers list.
 
 struct PrayerTimesFullExpandedView: View {
     @ObservedObject private var manager = PrayerTimesManager.shared
@@ -193,7 +155,7 @@ struct PrayerTimesFullExpandedView: View {
             heroCard
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             Rectangle()
-                .fill(QuranDesign.surfaceStroke)
+                .fill(Color.white.opacity(0.10))
                 .frame(width: 0.5)
                 .frame(maxHeight: .infinity)
             prayersList
@@ -205,71 +167,53 @@ struct PrayerTimesFullExpandedView: View {
         VStack(alignment: .leading, spacing: 10) {
             if let next = manager.nextPrayerInfo {
                 HStack(spacing: 12) {
-                    ZStack {
-                        Circle()
-                            .strokeBorder(QuranDesign.accent.opacity(0.5), lineWidth: 1.2)
-                            .background(Circle().fill(QuranDesign.accentSoft))
-                        Image(systemName: next.kind.iconName)
-                            .font(.system(size: 18))
-                            .foregroundColor(QuranDesign.accent)
-                    }
-                    .frame(width: 46, height: 46)
+                    GradientMedallion(systemName: next.kind.iconName, size: 46, iconScale: 0.40, isActive: true)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text("الصلاة القادمة")
-                            .font(QuranDesign.caption(10))
-                            .foregroundColor(QuranDesign.textTertiary)
+                            .font(NexusTypography.caption)
+                            .foregroundColor(NexusPalette.textTertiary)
                         Text(next.kind.arabicName)
-                            .font(QuranDesign.surahName(18))
-                            .foregroundColor(QuranDesign.textPrimary)
+                            .font(NexusTypography.subtitle)
+                            .foregroundColor(NexusPalette.textPrimary)
                             .environment(\.layoutDirection, .rightToLeft)
                         Text("بعد " + next.countdown)
-                            .font(QuranDesign.body(12))
-                            .foregroundColor(QuranDesign.accent)
+                            .font(NexusTypography.body)
+                            .foregroundColor(NexusPalette.accentGold)
                     }
                     Spacer()
                 }
 
-                // Progress bar with previous→next labels — fits in the 180pt
-                // full-expanded height (unlike the 88pt expanded).
+                // Progress bar — gradient that warms toward orange near completion.
                 let fraction = manager.progressFraction ?? 0
                 let prevName = manager.previousPrayerInfo?.kind.arabicShortName ?? "—"
                 VStack(spacing: 3) {
-                    ZStack(alignment: .leading) {
-                        Capsule()
-                            .fill(QuranDesign.surfaceStroke)
-                            .frame(height: 6)
-                        Capsule()
-                            .fill(
-                                LinearGradient(
-                                    colors: [QuranDesign.accent.opacity(0.6), QuranDesign.accent],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .frame(width: 100 * max(0.05, fraction), height: 6)
-                    }
-                    .frame(maxWidth: .infinity)
+                    GradientProgressBar(
+                        progress: max(0.05, fraction),
+                        style: .thick,
+                        height: 6,
+                        gradient: NexusGradient.progress(at: fraction)
+                    )
                     HStack {
-                        Text(prevName).font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+                        Text(prevName).font(.system(size: 8)).foregroundColor(NexusPalette.textTertiary)
                         Spacer()
-                        Text(next.kind.arabicShortName).font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+                        Text(next.kind.arabicShortName).font(.system(size: 8)).foregroundColor(NexusPalette.textTertiary)
                     }
                 }
             } else {
                 Text(manager.isLoading ? "جارٍ التحميل…" : "لا توجد بيانات")
-                    .font(QuranDesign.body(13))
-                    .foregroundColor(QuranDesign.textSecondary)
+                    .font(NexusTypography.body)
+                    .foregroundColor(NexusPalette.textSecondary)
             }
 
             if let hijri = manager.schedule.hijriDate {
                 HStack(spacing: 6) {
                     Image(systemName: "calendar.badge.clock")
                         .font(.system(size: 10))
-                        .foregroundColor(QuranDesign.accent)
+                        .foregroundColor(NexusPalette.accentGold)
                     Text(hijri + " هـ")
-                        .font(QuranDesign.body(11))
-                        .foregroundColor(QuranDesign.textSecondary)
+                        .font(.system(size: 11))
+                        .foregroundColor(NexusPalette.textSecondary)
                         .environment(\.layoutDirection, .rightToLeft)
                 }
             }
@@ -278,20 +222,20 @@ struct PrayerTimesFullExpandedView: View {
             HStack(spacing: 6) {
                 Image(systemName: "location.fill")
                     .font(.system(size: 10))
-                    .foregroundColor(manager.hasLocationFix ? QuranDesign.accent : .orange)
+                    .foregroundColor(manager.hasLocationFix ? NexusPalette.accentGold : NexusPalette.warning)
                 if !manager.locationName.isEmpty {
                     Text(manager.locationName)
-                        .font(QuranDesign.body(11))
-                        .foregroundColor(QuranDesign.textSecondary)
+                        .font(.system(size: 11))
+                        .foregroundColor(NexusPalette.textSecondary)
                 } else {
                     Text(String(format: "%.2f, %.2f", manager.resolvedLatitude, manager.resolvedLongitude))
-                        .font(QuranDesign.mono(10))
-                        .foregroundColor(QuranDesign.textTertiary)
+                        .font(NexusTypography.mono)
+                        .foregroundColor(NexusPalette.textTertiary)
                 }
                 if !manager.hasLocationFix && manager.useAutoLocation {
                     Text("— بانتظار الموقع")
-                        .font(QuranDesign.caption(9))
-                        .foregroundColor(.orange)
+                        .font(.system(size: 9))
+                        .foregroundColor(NexusPalette.warning)
                 }
             }
             .environment(\.layoutDirection, .rightToLeft)
@@ -305,8 +249,8 @@ struct PrayerTimesFullExpandedView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("مواقيت اليوم")
-                    .font(QuranDesign.surahName(12))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .environment(\.layoutDirection, .rightToLeft)
                 Spacer()
             }
@@ -314,7 +258,7 @@ struct PrayerTimesFullExpandedView: View {
             .padding(.top, 10)
             .padding(.bottom, 6)
 
-            Divider().background(QuranDesign.surfaceStroke)
+            Divider().background(Color.white.opacity(0.10))
 
             ScrollView {
                 LazyVStack(spacing: 2) {
@@ -334,29 +278,31 @@ struct PrayerTimesFullExpandedView: View {
         return HStack(spacing: 8) {
             Image(systemName: kind.iconName)
                 .font(.system(size: 10))
-                .foregroundColor(isNext ? QuranDesign.accent : QuranDesign.textTertiary)
+                .foregroundColor(isNext ? .white : NexusPalette.textTertiary)
                 .frame(width: 18, height: 18)
-                .background(Circle().fill(isNext ? QuranDesign.accentSoft : QuranDesign.surfaceFill))
+                .background {
+                    Circle().fill(isNext ? AnyShapeStyle(NexusGradient.primary) : AnyShapeStyle(Color.white.opacity(0.06)))
+                }
 
             Text(kind.arabicName)
-                .font(QuranDesign.body(isNext ? 12 : 11))
-                .foregroundColor(isNext ? QuranDesign.textPrimary : QuranDesign.textSecondary)
+                .font(.system(size: isNext ? 12 : 11))
+                .foregroundColor(isNext ? NexusPalette.textPrimary : NexusPalette.textSecondary)
                 .environment(\.layoutDirection, .rightToLeft)
 
             Spacer()
             if let time = manager.schedule.times[kind] {
                 Text(Self.timeFormatter.string(from: time))
-                    .font(QuranDesign.mono(10))
-                    .foregroundColor(isNext ? QuranDesign.accent : QuranDesign.textSecondary)
+                    .font(NexusTypography.mono)
+                    .foregroundColor(isNext ? NexusPalette.accentGold : NexusPalette.textSecondary)
             } else if !hasTime {
                 Text("--:--")
-                    .font(QuranDesign.mono(10))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.mono)
+                    .foregroundColor(NexusPalette.textTertiary)
             }
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 5)
-        .quranSurface(isActive: isNext, radius: QuranDesign.cornerRadiusS)
+        .nexusSurface(isActive: isNext, radius: NexusMetrics.cornerRadiusS)
         .contentShape(Rectangle())
     }
 
@@ -366,69 +312,4 @@ struct PrayerTimesFullExpandedView: View {
         f.locale = Locale(identifier: "en_US_POSIX")
         return f
     }()
-}
-
-// MARK: - Prayer Progress Bar (professional inter-prayer interval indicator)
-//
-// Shows the elapsed fraction of the current interval between two prayers as
-// a smooth gold gradient bar with a soft glowing knob, plus short endpoint
-// labels for the previous and next prayer. The fill animates with a gentle
-// ease so it feels alive as time passes.
-
-struct PrayerProgressBar: View {
-    let progress: Double                 // 0...1
-    var leadingLabel: String             // previous prayer short name
-    var trailingLabel: String            // next prayer short name
-
-    var body: some View {
-        VStack(spacing: 2) {
-            // Track with fill percentage as relative width — no GeometryReader
-            // (GeometryReader collapses to zero width inside tight HStack/VStack
-            // layouts in the 88pt expanded surface).
-            // Use the battle-tested QuranProgressBar which handles the
-            // GeometryReader sizing correctly in the island's tight layout.
-            QuranProgressBar(
-                progress: max(0.04, progress),
-                onSeek: nil,
-                isRTL: false
-            )
-            .frame(height: 12)
-
-            labels
-        }
-    }
-
-    private var labels: some View {
-        HStack(spacing: 0) {
-            Text(leadingLabel)
-                .font(QuranDesign.caption(8))
-                .foregroundColor(QuranDesign.textTertiary)
-            Spacer()
-            Text(trailingLabel)
-                .font(QuranDesign.caption(8))
-                .foregroundColor(QuranDesign.textTertiary)
-        }
-        .environment(\.layoutDirection, .rightToLeft)
-    }
-}
-
-// MARK: - Prayer Progress Hairline (compact pill)
-//
-// A non-interactive 2pt hairline for the tight 200×36 compact row — just the
-// fill, no knob or labels.
-
-struct PrayerProgressHairline: View {
-    let progress: Double
-
-    var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .leading) {
-                Capsule().fill(QuranDesign.surfaceStroke)
-                Capsule()
-                    .fill(QuranDesign.accent.opacity(0.85))
-                    .frame(width: proxy.size.width * progress)
-                    .animation(.easeOut(duration: 0.4), value: progress)
-            }
-        }
-    }
 }
