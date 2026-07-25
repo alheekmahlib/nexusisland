@@ -130,7 +130,7 @@ struct TeleprompterScrollingTextView: View {
 
         return Text(manager.scriptText)
             .font(.system(size: manager.fontSize, weight: .regular))
-            .foregroundColor(.white.opacity(0.92))
+            .foregroundColor(NexusPalette.textPrimary)
             .lineSpacing(manager.fontSize * 0.35)
             .multilineTextAlignment(manager.textAlignment)
             .fixedSize(horizontal: false, vertical: true)
@@ -186,8 +186,8 @@ private struct TeleprompterExpandedInner: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: "scroll")
-                .font(.system(size: 22))
-                .foregroundColor(.white.opacity(manager.isPlaying ? 0.85 : 0.28))
+                .font(NexusTypography.body(22))
+                .foregroundColor(manager.isPlaying ? NexusPalette.textSecondary : NexusPalette.textTertiary)
                 .symbolEffect(.pulse, isActive: manager.isPlaying)
                 .frame(width: 26)
 
@@ -203,11 +203,11 @@ private struct TeleprompterExpandedInner: View {
 
             VStack(spacing: 8) {
                 iconButton("arrow.counterclockwise", size: 12) { manager.reset() }
-                iconButton(
-                    manager.isPlaying || manager.isCountingDown ? "pause.fill" : "play.fill",
-                    size: 14, bold: true,
-                    annotationID: "teleprompter-play-control"
+                NeonButton(
+                    systemName: manager.isPlaying || manager.isCountingDown ? "pause.fill" : "play.fill",
+                    size: 18
                 ) { manager.togglePlayPause() }
+                .dataAnnotationID("teleprompter-play-control")
             }
         }
     }
@@ -236,8 +236,8 @@ private struct TeleprompterFullExpandedInner: View {
             // ── 3-2-1 Countdown overlay ───────────────────────────────────
             if let n = manager.countdownValue {
                 Text("\(n)")
-                    .font(.system(size: 64, weight: .bold, design: .rounded))
-                    .foregroundColor(.white.opacity(0.9))
+                    .font(NexusTypography.numeric(64))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     .transition(.asymmetric(
                         insertion: .scale(scale: 1.3).combined(with: .opacity),
@@ -285,11 +285,11 @@ private struct TeleprompterFullExpandedInner: View {
             // Left: reset + play/pause
             HStack(spacing: 14) {
                 iconButton("arrow.counterclockwise", size: 15) { manager.reset() }
-                iconButton(
-                    manager.isPlaying || manager.isCountingDown ? "pause.circle.fill" : "play.circle.fill",
-                    size: 26, bold: true,
-                    annotationID: "teleprompter-play-control"
+                NeonButton(
+                    systemName: manager.isPlaying || manager.isCountingDown ? "pause.circle.fill" : "play.circle.fill",
+                    size: 30
                 ) { manager.togglePlayPause() }
+                .dataAnnotationID("teleprompter-play-control")
             }
 
             Spacer()
@@ -327,14 +327,14 @@ private struct TeleprompterFullExpandedInner: View {
                 Button { TeleprompterScriptEditorWindowController.show() } label: {
                     HStack(spacing: 3) {
                         Image(systemName: "pencil")
-                            .font(.system(size: 9, weight: .semibold))
+                            .font(NexusTypography.caption(9, .semibold))
                         Text("Edit")
-                            .font(.system(size: 11, weight: .medium))
+                            .font(NexusTypography.caption(11, .medium))
                     }
-                    .foregroundColor(.white.opacity(0.38))
+                    .foregroundColor(NexusPalette.textTertiary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(Capsule(style: .continuous).fill(.white.opacity(0.07)))
+                    .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusS)
                 }
                 .buttonStyle(.plain)
                 .hoverPointer()
@@ -348,8 +348,8 @@ private struct TeleprompterFullExpandedInner: View {
         let active = manager.textAlignmentIndex == index
         Button { manager.textAlignmentIndex = index } label: {
             Image(systemName: icon)
-                .font(.system(size: 13))
-                .foregroundColor(.white.opacity(active ? 0.9 : 0.28))
+                .font(NexusTypography.caption(13))
+                .foregroundColor(active ? NexusPalette.textSecondary : NexusPalette.textTertiary)
         }
         .buttonStyle(.plain)
         .hoverPointer()
@@ -357,7 +357,7 @@ private struct TeleprompterFullExpandedInner: View {
 
     private var barDivider: some View {
         Rectangle()
-            .fill(.white.opacity(0.12))
+            .fill(NexusPalette.glassTint.opacity(0.12))
             .frame(width: 1, height: 12)
             .padding(.horizontal, 2)
     }
@@ -371,10 +371,10 @@ private func addScriptPrompt(size: CGFloat) -> some View {
         HStack(spacing: 5) {
             Image(systemName: "plus.circle")
             Text("Add script")
-                .font(.system(size: size, weight: .medium))
+                .font(NexusTypography.caption(size, .medium))
         }
-        .font(.system(size: size))
-        .foregroundColor(.white.opacity(0.25))
+        .font(NexusTypography.caption(size))
+        .foregroundColor(NexusPalette.textTertiary)
     }
     .buttonStyle(.plain)
     .hoverPointer()
@@ -391,8 +391,8 @@ private func iconButton(
 ) -> some View {
     let button = Button(action: action) {
         Image(systemName: icon)
-            .font(.system(size: size, weight: bold ? .bold : .regular))
-            .foregroundColor(.white.opacity(bold ? 1.0 : 0.55))
+            .font(NexusTypography.caption(size, bold ? .bold : .regular))
+            .foregroundColor(bold ? NexusPalette.textPrimary : NexusPalette.textSecondary)
     }
     .buttonStyle(.plain)
     .hoverPointer()
@@ -443,19 +443,19 @@ private struct TeleprompterSpeechStatus: View {
         if manager.listeningMode == .wordTracking {
             HStack(spacing: 5) {
                 Image(systemName: statusIcon)
-                    .font(.system(size: 9, weight: .medium))
+                    .font(NexusTypography.caption(9, .medium))
                 if manager.isPlaying, speech.isListening {
                     levelMeter
                 }
                 Text(statusText)
-                    .font(.system(size: 10, weight: .medium))
+                    .font(NexusTypography.caption(10, .medium))
                     .lineLimit(1)
                     .truncationMode(.tail)
             }
             .foregroundColor(statusColor)
             .padding(.horizontal, 7)
             .padding(.vertical, 3)
-            .background(Capsule(style: .continuous).fill(.black.opacity(0.28)))
+            .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusS)
             .dataAnnotationID("teleprompter-speech-status")
         }
     }
@@ -482,12 +482,12 @@ private struct TeleprompterSpeechStatus: View {
     }
 
     private var statusColor: Color {
-        if speech.error != nil { return .orange.opacity(0.9) }
+        if speech.error != nil { return NexusPalette.warning }
         if speech.matchConfidenceLabel.hasPrefix("Weak") || speech.matchConfidenceLabel.hasPrefix("No") {
-            return .orange.opacity(0.72)
+            return NexusPalette.warning.opacity(0.72)
         }
-        if manager.isPlaying, speech.inputLevel > 0.006 { return .white.opacity(0.62) }
-        return .white.opacity(0.42)
+        if manager.isPlaying, speech.inputLevel > 0.006 { return NexusPalette.textSecondary }
+        return NexusPalette.textTertiary
     }
 
     private var diagnosticLabel: String {
@@ -503,10 +503,10 @@ private struct TeleprompterSpeechStatus: View {
     private var levelMeter: some View {
         GeometryReader { geometry in
             Capsule(style: .continuous)
-                .fill(.white.opacity(0.12))
+                .fill(NexusPalette.glassTint.opacity(0.12))
                 .overlay(alignment: .leading) {
                     Capsule(style: .continuous)
-                        .fill(.white.opacity(0.56))
+                        .fill(NexusPalette.electricViolet.opacity(0.7))
                         .frame(width: max(2, geometry.size.width * min(max(speech.inputLevel, 0), 1)))
                 }
         }

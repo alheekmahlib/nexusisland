@@ -187,12 +187,12 @@ struct TeleprompterWordTrackingTextView: View {
     private func highlightedText(width: CGFloat) -> some View {
         let parts = textParts()
         let read = Text(parts.read)
-            .foregroundColor(.white.opacity(0.88))
+            .foregroundColor(NexusPalette.textPrimary)
         let current = Text(parts.current)
             .fontWeight(.semibold)
-            .foregroundColor(.white)
+            .foregroundColor(NexusPalette.textPrimary)
         let unread = Text(parts.unread)
-            .foregroundColor(.white.opacity(0.42))
+            .foregroundColor(NexusPalette.textTertiary)
 
         return (read + current + unread)
             .font(.system(size: manager.fontSize, weight: .regular))

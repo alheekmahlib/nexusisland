@@ -7,13 +7,13 @@ struct TeleprompterCompactView: View {
     var body: some View {
         HStack(spacing: 7) {
             Image(systemName: iconName)
-                .font(.system(size: 10, weight: .medium))
-                .foregroundColor(.white.opacity(manager.isPlaying ? 0.9 : 0.45))
+                .font(NexusTypography.caption(10, .medium))
+                .foregroundColor(manager.isPlaying ? NexusPalette.textPrimary : NexusPalette.textTertiary)
                 .symbolEffect(.pulse, isActive: manager.isPlaying)
 
             Text(label)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundColor(.white.opacity(manager.hasScript ? 0.8 : 0.35))
+                .font(NexusTypography.caption(11, .medium))
+                .foregroundColor(manager.hasScript ? NexusPalette.textSecondary : NexusPalette.textTertiary)
                 .lineLimit(1)
         }
     }
