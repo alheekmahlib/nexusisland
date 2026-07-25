@@ -2,17 +2,19 @@ import SwiftUI
 
 // MARK: - Settings Glass Kit
 //
-// Glassmorphism tokens + reusable modifiers for the Settings window, built on
-// the app's NexusDesign palette so the Settings feel like part of the same
-// product. Kept separate from NexusDesign because Settings surfaces (cards,
-// sidebar, rows) have different sizing/material needs than the Dynamic Island.
+// Design tokens + reusable modifiers for the Settings window, built on the
+// app's NexusDesign palette so the Settings feel like part of the same product.
+// Kept separate from NexusDesign because Settings surfaces (cards, sidebar,
+// rows) have different sizing needs than the Dynamic Island.
 //
-// Aesthetic: macOS Sequoia + Glassmorphism + premium SaaS dashboard —
-// translucent layered panels, subtle gradient borders, soft shadows, and a
-// vibrant purple backdrop that makes the glass read as glass.
+// Aesthetic: premium macOS SaaS dashboard — semi-solid translucent floating
+// cards with thin gradient hairlines and soft, wide-blur shadows. NO frosted
+// material blur and NO glossy specular sheen (the heavy glass look is gone);
+// depth instead comes from elevation, generous spacing, and layering. The
+// purple palette stays exactly as defined in NexusPalette.
 
 enum SettingsGlass {
-    // MARK: - Window backdrop (the rich base the glass floats over)
+    // MARK: - Window backdrop (the rich base the cards float over)
     /// Diagonal dark-purple gradient mirroring the app icon's backdrop.
     static var windowBackground: LinearGradient {
         LinearGradient(
@@ -25,7 +27,7 @@ enum SettingsGlass {
     /// Central radial glow layered above windowBackground for depth.
     static var windowGlow: RadialGradient {
         RadialGradient(
-            colors: [NexusPalette.deepPurple.opacity(0.55), .clear],
+            colors: [NexusPalette.deepPurple.opacity(0.40), .clear],
             center: .top,
             startRadius: 0,
             endRadius: 460
@@ -36,14 +38,14 @@ enum SettingsGlass {
     /// Translucent capsule fill for the active sidebar row.
     static var activeCapsule: LinearGradient {
         LinearGradient(
-            colors: [NexusPalette.royalPurple.opacity(0.40), NexusPalette.electricViolet.opacity(0.28)],
+            colors: [NexusPalette.royalPurple.opacity(0.32), NexusPalette.electricViolet.opacity(0.22)],
             startPoint: .leading,
             endPoint: .trailing
         )
     }
 
     /// Hover fill for non-active sidebar rows.
-    static var hoverCapsule: Color { Color.white.opacity(0.06) }
+    static var hoverCapsule: Color { Color.white.opacity(0.05) }
 
     static let activeIcon = NexusPalette.electricViolet
     static let idleIcon = NexusPalette.textTertiary
@@ -51,27 +53,49 @@ enum SettingsGlass {
     static let idleText = NexusPalette.textSecondary
 
     // MARK: - Card chrome
-    /// Subtle translucent fill layered over `.ultraThinMaterial`.
-    static let cardFill = Color.white.opacity(0.06)
-    static let cardFillHover = Color.white.opacity(0.10)
+    /// Semi-solid tinted card base — a translucent purple gradient instead of
+    /// frosted material. Reads as a floating panel, not glass.
+    static var cardFill: LinearGradient {
+        LinearGradient(
+            colors: [
+                NexusPalette.deepPurple.opacity(0.42),
+                NexusPalette.background.opacity(0.55)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
 
-    /// Gradient hairline border — bright top edge, dim bottom (glass depth cue).
+    /// Hover variant — slightly brighter, lifts the card on hover.
+    static var cardFillHover: LinearGradient {
+        LinearGradient(
+            colors: [
+                NexusPalette.deepPurple.opacity(0.52),
+                NexusPalette.background.opacity(0.60)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+
+    /// Gradient hairline border — bright top edge, dim bottom (the only
+    /// translucent-cue left, replacing the heavy glass sheen).
     static var cardStroke: LinearGradient {
         LinearGradient(
-            colors: [Color.white.opacity(0.22), Color.white.opacity(0.05)],
+            colors: [Color.white.opacity(0.16), Color.white.opacity(0.04)],
             startPoint: .top,
             endPoint: .bottom
         )
     }
 
     static let divider = NexusPalette.glassTint.opacity(0.10)
-    static let cornerRadius: CGFloat = 16
+    static let cornerRadius: CGFloat = 20
 
     // MARK: - Accents
     static let toggleTint = NexusPalette.royalPurple
 }
 
-// MARK: - Glass card modifier (the shared card treatment)
+// MARK: - Floating card modifier (the shared card treatment)
 
 struct SettingsGlassSurface: ViewModifier {
     var isActive: Bool = false
@@ -84,34 +108,24 @@ struct SettingsGlassSurface: ViewModifier {
         content
             .background(
                 ZStack {
-                    RoundedRectangle(cornerRadius: radius, style: .continuous)
-                        .fill(.ultraThinMaterial)
+                    // Semi-solid tinted base (no frosted material / no blur).
                     RoundedRectangle(cornerRadius: radius, style: .continuous)
                         .fill(isHovering ? SettingsGlass.cardFillHover : SettingsGlass.cardFill)
-                    // Top specular sheen — confined to the upper ~45% so the card
-                    // reads as curved, frosted glass.
+                    // Faint royal-purple lift at the top for a hint of color.
                     RoundedRectangle(cornerRadius: radius, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.white.opacity(0.14), Color.white.opacity(0.03), Color.clear],
-                                startPoint: .top,
-                                endPoint: .center
-                            )
-                        )
-                        .mask(
-                            RoundedRectangle(cornerRadius: radius, style: .continuous)
-                                .scaleEffect(y: 0.45, anchor: .top)
-                        )
+                        .fill(NexusPalette.royalPurple.opacity(0.08))
                 }
             )
             .overlay(
+                // Thin gradient hairline border — the translucent depth cue.
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .strokeBorder(SettingsGlass.cardStroke, lineWidth: 1)
+                    .strokeBorder(SettingsGlass.cardStroke, lineWidth: 0.5)
             )
-            // Two soft shadows: ambient + a faint violet key for the premium glow.
-            .shadow(color: .black.opacity(0.28), radius: 14, y: 8)
-            .shadow(color: NexusPalette.royalPurple.opacity(isHovering ? 0.16 : 0.08), radius: 10, y: 3)
-            .scaleEffect(isHovering && elevatesOnHover ? 1.008 : 1.0)
+            // Two soft, wide-blur shadows: ambient lift + faint violet key.
+            // Low opacity + large radius = "floating" depth, never harsh.
+            .shadow(color: .black.opacity(isHovering ? 0.36 : 0.32), radius: 20, y: 8)
+            .shadow(color: NexusPalette.royalPurple.opacity(isHovering ? 0.12 : 0.08), radius: 14, y: 3)
+            .scaleEffect(isHovering && elevatesOnHover ? 1.006 : 1.0)
             .onHover { hovering in
                 guard elevatesOnHover else { return }
                 withAnimation(.easeOut(duration: 0.2)) { isHovering = hovering }
@@ -121,7 +135,8 @@ struct SettingsGlassSurface: ViewModifier {
 }
 
 extension View {
-    /// Apply the Settings glass-card treatment (material + sheen + gradient border + soft shadow + hover elevation).
+    /// Apply the Settings floating-card treatment (tinted fill + hairline border
+    /// + soft layered shadows + optional hover elevation).
     func settingsGlassSurface(isActive: Bool = false,
                               radius: CGFloat = SettingsGlass.cornerRadius,
                               elevatesOnHover: Bool = true) -> some View {

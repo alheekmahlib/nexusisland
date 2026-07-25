@@ -331,50 +331,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(makeMenuItem(title: NSLocalizedString("Now Playing", comment: "Menu item"), action: #selector(showNowPlaying)))
         menu.addItem(makeMenuItem(title: NSLocalizedString("Battery", comment: "Menu item"), action: #selector(showBattery)))
         menu.addItem(NSMenuItem.separator())
-
-        let modulesItem = NSMenuItem(title: NSLocalizedString("Modules", comment: "Menu item"), action: nil, keyEquivalent: "")
-        let modulesMenu = NSMenu()
-
-        for module in ModuleType.allCases {
-            let moduleItem = NSMenuItem(title: module.displayName, action: #selector(toggleModule(_:)), keyEquivalent: "")
-            moduleItem.target = self
-            moduleItem.representedObject = module.rawValue
-            moduleItem.state = AppState.shared.isModuleEnabled(module) ? .on : .off
-            moduleItem.image = NSImage(systemSymbolName: module.iconName, accessibilityDescription: module.displayName)
-            modulesMenu.addItem(moduleItem)
-        }
-
-        let extensionModules = ExtensionManager.shared.installed
-            .filter { !$0.capabilities.notificationFeed }
-
-        if !extensionModules.isEmpty {
-            modulesMenu.addItem(.separator())
-            for manifest in extensionModules {
-                let extensionItem = NSMenuItem(title: manifest.name, action: #selector(toggleExtension(_:)), keyEquivalent: "")
-                extensionItem.target = self
-                extensionItem.representedObject = manifest.id
-                extensionItem.state = ExtensionManager.shared.runtimes[manifest.id] != nil ? .on : .off
-                extensionItem.image = menuIconImage(for: manifest)
-                modulesMenu.addItem(extensionItem)
-            }
-        }
-
-        modulesItem.submenu = modulesMenu
-        menu.addItem(modulesItem)
-
-        menu.addItem(NSMenuItem.separator())
+        // Module visibility & ordering now live exclusively in Settings → Island Display.
         menu.addItem(makeMenuItem(title: NSLocalizedString("Settings...", comment: "Menu item"), action: #selector(openSettings), keyEquivalent: ","))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(makeMenuItem(title: NSLocalizedString("Quit NexusIsland", comment: "Menu item"), action: #selector(quitApp), keyEquivalent: "q"))
         return menu
-    }
-
-    @MainActor
-    private func menuIconImage(for manifest: ExtensionManifest) -> NSImage? {
-        guard let image = manifest.iconImage?.copy() as? NSImage else { return nil }
-        image.isTemplate = false
-        image.size = NSSize(width: 16, height: 16)
-        return image
     }
 
     private func removeStatusItem() {
@@ -425,66 +386,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func showBattery() {
         AppState.shared.showHUD(module: .battery, autoDismiss: false)
-    }
-
-    @objc private func toggleModule(_ sender: NSMenuItem) {
-        guard let rawValue = sender.representedObject as? String,
-              let module = ModuleType(rawValue: rawValue) else { return }
-
-        let newState = !AppState.shared.isModuleEnabled(module)
-        switch module {
-        case .nowPlaying: AppState.shared.nowPlayingEnabled = newState
-        case .volumeHUD: AppState.shared.volumeHUDEnabled = newState
-        case .battery: AppState.shared.batteryEnabled = newState
-        case .shelf: AppState.shared.shelfEnabled = newState
-        case .connectivity: AppState.shared.connectivityEnabled = newState
-        case .calendar: AppState.shared.calendarEnabled = newState
-        case .weather: AppState.shared.weatherEnabled = newState
-        case .notifications: AppState.shared.notificationsEnabled = newState
-        case .teleprompter:
-            AppState.shared.teleprompterEnabled = newState
-            if newState {
-                PermissionsManager.shared.requestTeleprompterWordTrackingAccess()
-            }
-        case .quran: AppState.shared.quranEnabled = newState
-        case .prayerTimes:
-            AppState.shared.prayerTimesEnabled = newState
-            if newState {
-                // Touch the singleton so its init runs (CoreLocation auth
-                // request + first fetch). Without this the lazy singleton is
-                // never created and no permission prompt appears.
-                _ = PrayerTimesManager.shared
-                PrayerTimesManager.shared.settingsDidChange()
-            }
-        case .gitHub: AppState.shared.gitHubEnabled = newState
-        case .ciMonitor: AppState.shared.ciMonitorEnabled = newState
-        case .devServers: AppState.shared.devServersEnabled = newState
-        case .gitStats: AppState.shared.gitStatsEnabled = newState
-        case .docker: AppState.shared.dockerEnabled = newState
-        case .worldClock: AppState.shared.worldClockEnabled = newState
-        case .currency: AppState.shared.currencyEnabled = newState
-        case .countdown: AppState.shared.countdownEnabled = newState
-        case .stocks: AppState.shared.stocksEnabled = newState
-        case .reminders: AppState.shared.remindersEnabled = newState
-        case .clipboard:
-            AppState.shared.clipboardEnabled = newState
-            if newState { ClipboardManager.shared.startMonitoring() } else { ClipboardManager.shared.stopMonitoring() }
-        }
-        sender.state = newState ? .on : .off
-        rebuildStatusMenu()
-    }
-
-    @objc private func toggleExtension(_ sender: NSMenuItem) {
-        guard let extensionID = sender.representedObject as? String else { return }
-
-        if ExtensionManager.shared.runtimes[extensionID] != nil {
-            ExtensionManager.shared.disableByUser(extensionID: extensionID)
-        } else {
-            ExtensionManager.shared.activate(extensionID: extensionID)
-        }
-
-        sender.state = ExtensionManager.shared.runtimes[extensionID] != nil ? .on : .off
-        rebuildStatusMenu()
     }
 
     @objc private func openSettings() {

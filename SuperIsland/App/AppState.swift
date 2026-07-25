@@ -323,6 +323,15 @@ final class AppState: ObservableObject {
     @AppStorage("module.shelf.autoOpenOnDrop") var shelfAutoOpenOnDrop = true
     @AppStorage("module.shelf.defaultToShelf") var shelfDefaultToShelf = false
 
+    /// User-customizable display order for island modules.
+    ///
+    /// Stores a JSON-encoded `[String]` of module identifiers — either a
+    /// `ModuleType` rawValue (built-ins) or an extension ID. The computed
+    /// `moduleOrder` accessor reconciles this against the currently-available
+    /// modules so new built-ins/extensions appear automatically, and unknown
+    /// identifiers (e.g. an uninstalled extension) are dropped on read.
+    @AppStorage("module.order") private var moduleOrderRaw: Data = Data()
+
     // Appearance settings
     @AppStorage("appearance.animationSpeed") var animationSpeed: Double = 1.0
     @AppStorage("appearance.bounceAmount") var bounceAmount: Double = 0.25
@@ -1021,18 +1030,106 @@ final class AppState: ObservableObject {
         }
     }
 
+    // MARK: - Module Display Order
+    //
+    // The canonical order in which modules are presented in the island
+    // (cycling, full-expanded tab strip). Backed by `module.order` in
+    // UserDefaults; falls back to `ModuleType.allCases` order when unset.
+    // Built-ins and extensions share one ordered list so the user can interleave
+    // them freely.
+
+    /// Ordered string identifiers for every displayable module (built-ins +
+    /// installed extensions). New modules that aren't yet in the persisted
+    /// list are appended at the end, in their natural declaration/discovery
+    /// order; stale identifiers (an uninstalled extension) are dropped.
+    var moduleOrder: [String] {
+        get { reconciledModuleOrder() }
+        set { persistModuleOrder(newValue) }
+    }
+
+    /// Same as `moduleOrder`, typed as `ActiveModule` so consumers don't need
+    /// to re-parse identifiers. Includes both enabled and disabled modules —
+    /// callers filter by `isModuleEnabled` / runtime state as needed.
+    @MainActor
+    var moduleDisplayOrder: [ActiveModule] {
+        let order = reconciledModuleOrder()
+        return order.compactMap { identifier -> ActiveModule? in
+            if let builtIn = ModuleType(rawValue: identifier) {
+                return .builtIn(builtIn)
+            }
+            // Treat as extension id — only include if still installed.
+            return ExtensionManager.shared.installed.contains(where: { $0.id == identifier })
+                ? .extension_(identifier)
+                : nil
+        }
+    }
+
+    /// True if an `ActiveModule` is currently displayable in the island.
+    /// Built-ins consult their `@AppStorage` flag; extensions consult runtime state.
+    @MainActor
+    func isActiveModule(_ module: ActiveModule) -> Bool {
+        switch module {
+        case .builtIn(let builtIn):
+            return isModuleEnabled(builtIn)
+        case .extension_(let id):
+            return ExtensionManager.shared.runtimes[id] != nil
+        }
+    }
+
+    /// Reconcile the persisted order against the universe of known modules so
+    /// the result is always complete and never contains stale identifiers.
+    @MainActor
+    private func reconciledModuleOrder() -> [String] {
+        // Decode the persisted array; tolerate corrupt/empty data.
+        var persisted: [String] = []
+        if !moduleOrderRaw.isEmpty,
+           let decoded = try? JSONDecoder().decode([String].self, from: moduleOrderRaw) {
+            persisted = decoded
+        }
+
+        // Build the universe of known identifiers.
+        let builtInIDs = ModuleType.allCases.map(\.rawValue)
+        let extensionIDs = ExtensionManager.shared.installed
+            .filter { !$0.capabilities.notificationFeed }
+            .map(\.id)
+        let known = Set(builtInIDs + extensionIDs)
+
+        // Keep persisted entries that are still known, preserving their order,
+        // without duplicates.
+        var seen = Set<String>()
+        var ordered: [String] = []
+        for id in persisted where known.contains(id) && !seen.contains(id) {
+            ordered.append(id)
+            seen.insert(id)
+        }
+        // Append any known identifiers not yet present, in declaration/discovery order.
+        for id in builtInIDs where !seen.contains(id) {
+            ordered.append(id)
+            seen.insert(id)
+        }
+        for id in extensionIDs where !seen.contains(id) {
+            ordered.append(id)
+            seen.insert(id)
+        }
+        return ordered
+    }
+
+    private func persistModuleOrder(_ order: [String]) {
+        let deduped = NSOrderedSet(array: order).array as? [String] ?? order
+        moduleOrderRaw = (try? JSONEncoder().encode(deduped)) ?? Data()
+        objectWillChange.send()
+    }
+
     var availableModules: [ActiveModule] {
-        let builtIns = ModuleType.allCases
-            .filter { isCyclableIslandModule($0) && isModuleEnabled($0) }
-            .map(ActiveModule.builtIn)
-        return builtIns + ExtensionManager.shared.availableModules
+        moduleDisplayOrder.filter { module in
+            guard case .builtIn(let builtIn) = module else { return true }
+            return isCyclableIslandModule(builtIn)
+        }
+        .filter { isActiveModule($0) }
     }
 
     var fullExpandedModules: [ActiveModule] {
-        let builtIns = ModuleType.allCases
-            .filter { isCyclableIslandModule($0) && supportsFullExpandedModule(.builtIn($0)) && isModuleEnabled($0) }
-            .map(ActiveModule.builtIn)
-        return builtIns + ExtensionManager.shared.availableModules.filter(supportsFullExpandedModule)
+        moduleDisplayOrder.filter { isActiveModule($0) && supportsFullExpandedModule($0) }
     }
 
     var fullExpandedTabs: [FullExpandedTab] {

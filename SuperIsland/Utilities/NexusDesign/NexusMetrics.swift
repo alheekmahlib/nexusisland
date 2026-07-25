@@ -8,9 +8,9 @@ import SwiftUI
 // for the pill shape. These tokens are for cards, chips, and controls.
 
 enum NexusMetrics {
-    static let cornerRadiusS: CGFloat = 10
-    static let cornerRadiusM: CGFloat = 16
-    static let cornerRadiusL: CGFloat = 24
+    static let cornerRadiusS: CGFloat = 12
+    static let cornerRadiusM: CGFloat = 20
+    static let cornerRadiusL: CGFloat = 28
     static let blurStandard: CGFloat = 20
     static let strokeHairline: CGFloat = 0.5
     static let spacingUnit: CGFloat = 8

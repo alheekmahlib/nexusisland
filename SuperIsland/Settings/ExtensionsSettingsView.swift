@@ -25,10 +25,10 @@ struct ExtensionsSettingsView: View {
     @State private var listFilter: ExtensionListFilter = .all
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 16) {
             filterBar
 
-            HStack(spacing: 10) {
+            HStack(alignment: .top, spacing: 16) {
                 leftPane
                     .frame(width: 300)
 
@@ -53,9 +53,10 @@ struct ExtensionsSettingsView: View {
     }
 
     private var filterBar: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             Text(NSLocalizedString("Filter", comment: "Settings label"))
                 .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(NexusPalette.textPrimary)
 
             Picker("", selection: $listFilter) {
                 ForEach(ExtensionListFilter.allCases) { filter in
@@ -68,9 +69,9 @@ struct ExtensionsSettingsView: View {
 
             Spacer(minLength: 0)
 
-            Text("\(filteredManifests.count) shown")
-                .font(.caption)
-                .foregroundColor(.secondary)
+            Text("\(filteredManifests.count) " + NSLocalizedString("shown", comment: "Extension count"))
+                .font(.system(size: 11))
+                .foregroundColor(NexusPalette.textSecondary)
 
             Button {
                 manager.discoverExtensions()
@@ -82,14 +83,11 @@ struct ExtensionsSettingsView: View {
             .buttonStyle(.bordered)
             .controlSize(.small)
         }
-        .padding(.horizontal, 2)
-        .padding(.top, 2)
     }
 
     private var leftPane: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(NSLocalizedString("Extensions", comment: "Settings section"))
-                .font(.headline.weight(.semibold))
+        VStack(alignment: .leading, spacing: 12) {
+            SettingSectionLabel(title: NSLocalizedString("Extensions", comment: "Settings section"))
 
             ScrollView {
                 LazyVStack(spacing: 6) {
@@ -106,15 +104,15 @@ struct ExtensionsSettingsView: View {
                 .padding(.top, 2)
             }
         }
-        .padding(10)
-        .panelBackground()
+        .padding(16)
+        .settingsGlassSurface(elevatesOnHover: false)
     }
 
     @ViewBuilder
     private var rightPane: some View {
         if let manifest = selectedManifest {
             ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 16) {
                     extensionHeaderCard(for: manifest)
 
                     if manifest.id == "nexus.whatsapp-web" {
@@ -163,12 +161,12 @@ struct ExtensionsSettingsView: View {
                                     HStack(alignment: .top, spacing: 8) {
                                         Text(entry.timestamp.formatted(date: .omitted, time: .standard))
                                             .font(.system(size: 10, design: .monospaced))
-                                            .foregroundColor(.secondary)
+                                            .foregroundColor(NexusPalette.textTertiary)
                                             .frame(width: 72, alignment: .leading)
 
                                         Text("[\(entry.level.rawValue.uppercased())] \(entry.message)")
                                             .font(.system(size: 11, design: .monospaced))
-                                            .foregroundColor(entry.level == .error ? .red : .secondary)
+                                            .foregroundColor(entry.level == .error ? NexusPalette.danger : NexusPalette.textSecondary)
                                             .textSelection(.enabled)
                                     }
                                 }
@@ -179,52 +177,46 @@ struct ExtensionsSettingsView: View {
                 .padding(.bottom, 4)
             }
         } else {
-            VStack(spacing: 10) {
+            VStack(spacing: 12) {
                 Image(systemName: "puzzlepiece.extension")
                     .font(.system(size: 28))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(NexusPalette.textTertiary)
                 Text(NSLocalizedString("Select an extension", comment: "Settings label"))
-                    .font(.headline)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Text(NSLocalizedString("Choose an extension from the left panel.", comment: "Settings description"))
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 12))
+                    .foregroundColor(NexusPalette.textSecondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .panelBackground()
+            .settingsGlassSurface(elevatesOnHover: false)
         }
     }
 
     private func extensionHeaderCard(for manifest: ExtensionManifest) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top) {
-                HStack(alignment: .top, spacing: 10) {
-                    extensionIcon(for: manifest, size: 36)
+                HStack(alignment: .top, spacing: 12) {
+                    extensionIcon(for: manifest, size: 40)
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(manifest.name)
-                            .font(.title3.weight(.semibold))
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(NexusPalette.textPrimary)
                         Text("\(manifest.id) • v\(manifest.version)")
                             .font(.system(size: 11, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(NexusPalette.textSecondary)
                     }
                 }
 
                 Spacer()
 
-                Text(manager.runtimes[manifest.id] == nil ? NSLocalizedString("Inactive", comment: "Status label") : NSLocalizedString("Active", comment: "Status label"))
-                    .font(.caption.weight(.semibold))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(
-                        Capsule()
-                            .fill(manager.runtimes[manifest.id] == nil ? Color.secondary.opacity(0.15) : Color.green.opacity(0.15))
-                    )
-                    .foregroundColor(manager.runtimes[manifest.id] == nil ? .secondary : .green)
+                statusBadge(isActive: manager.runtimes[manifest.id] != nil)
             }
 
             Text(manifest.description)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundColor(.secondary)
+                .font(.system(size: 13))
+                .foregroundColor(NexusPalette.textSecondary)
 
             HStack(spacing: 10) {
                 Button(manager.runtimes[manifest.id] == nil ? NSLocalizedString("Activate", comment: "Button") : NSLocalizedString("Reload", comment: "Button")) {
@@ -235,6 +227,7 @@ struct ExtensionsSettingsView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(SettingsGlass.toggleTint)
 
                 if manager.runtimes[manifest.id] != nil {
                     Button(NSLocalizedString("Deactivate", comment: "Button")) {
@@ -244,13 +237,29 @@ struct ExtensionsSettingsView: View {
                 }
             }
         }
-        .padding(10)
-        .panelBackground()
+        .padding(16)
+        .settingsGlassSurface(elevatesOnHover: false)
+    }
+
+    private func statusBadge(isActive: Bool) -> some View {
+        Text(isActive
+             ? NSLocalizedString("Active", comment: "Status label")
+             : NSLocalizedString("Inactive", comment: "Status label"))
+            .font(.system(size: 11, weight: .semibold))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(
+                Capsule()
+                    .fill(isActive
+                          ? NexusPalette.success.opacity(0.18)
+                          : NexusPalette.deepPurple.opacity(0.30))
+            )
+            .foregroundColor(isActive ? NexusPalette.success : NexusPalette.textSecondary)
     }
 
     private func extensionListRow(for manifest: ExtensionManifest, isSelected: Bool) -> some View {
         HStack(spacing: 10) {
-            extensionIcon(for: manifest, size: 24)
+            extensionIcon(for: manifest, size: 26)
 
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 6) {
@@ -264,32 +273,39 @@ struct ExtensionsSettingsView: View {
                 Text(manifest.id)
                     .font(.system(size: 10, design: .monospaced))
                     .lineLimit(1)
-                    .foregroundColor(isSelected ? .white.opacity(0.85) : .secondary)
+                    .foregroundColor(isSelected ? NexusPalette.textPrimary : NexusPalette.textTertiary)
             }
 
             Spacer(minLength: 6)
 
             Circle()
-                .fill(manager.runtimes[manifest.id] == nil ? Color.secondary.opacity(isSelected ? 0.75 : 0.45) : Color.green)
+                .fill(manager.runtimes[manifest.id] == nil
+                      ? NexusPalette.textTertiary.opacity(isSelected ? 0.80 : 0.45)
+                      : NexusPalette.success)
                 .frame(width: 7, height: 7)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(
                     isSelected
                     ? selectedRowFillColor
-                    : Color(nsColor: .controlBackgroundColor).opacity(0.20)
+                    : Color.clear
                 )
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(isSelected ? selectedRowStrokeColor : Color.primary.opacity(0.06), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(
+                    isSelected
+                        ? LinearGradient(colors: [NexusPalette.electricViolet.opacity(0.40), .clear],
+                                         startPoint: .top, endPoint: .bottom)
+                        : LinearGradient(colors: [.clear, .clear], startPoint: .top, endPoint: .bottom),
+                    lineWidth: 0.5
+                )
         )
-        .shadow(color: isSelected ? selectedRowShadowColor : .clear, radius: 6, x: 0, y: 2)
-        .foregroundColor(isSelected ? .white : .primary)
+        .contentShape(Rectangle())
     }
 
     @ViewBuilder
@@ -301,7 +317,7 @@ struct ExtensionsSettingsView: View {
             .padding(.vertical, 2)
             .background(
                 Capsule()
-                    .fill(source.color.opacity(0.15))
+                    .fill(source.color.opacity(0.18))
             )
             .foregroundColor(source.color)
             .lineLimit(1)
@@ -310,24 +326,25 @@ struct ExtensionsSettingsView: View {
 
     @ViewBuilder
     private func extensionIcon(for manifest: ExtensionManifest, size: CGFloat) -> some View {
+        let radius = max(6, size * 0.24)
         if let image = extensionIconImage(for: manifest) {
             Image(nsImage: image)
                 .resizable()
                 .interpolation(.high)
                 .frame(width: size, height: size)
-                .clipShape(RoundedRectangle(cornerRadius: max(5, size * 0.22), style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
                 .overlay(
-                    RoundedRectangle(cornerRadius: max(5, size * 0.22), style: .continuous)
-                        .stroke(Color.secondary.opacity(0.24), lineWidth: 0.6)
+                    RoundedRectangle(cornerRadius: radius, style: .continuous)
+                        .stroke(NexusPalette.glassTint.opacity(0.18), lineWidth: 0.5)
                 )
         } else {
             Image(systemName: "puzzlepiece.extension")
                 .font(.system(size: size * 0.52, weight: .semibold))
-                .foregroundColor(.accentColor)
+                .foregroundColor(NexusPalette.electricViolet)
                 .frame(width: size, height: size)
                 .background(
-                    RoundedRectangle(cornerRadius: max(5, size * 0.22), style: .continuous)
-                        .fill(Color.accentColor.opacity(0.16))
+                    RoundedRectangle(cornerRadius: radius, style: .continuous)
+                        .fill(NexusPalette.royalPurple.opacity(0.18))
                 )
         }
     }
@@ -350,11 +367,11 @@ struct ExtensionsSettingsView: View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text(label)
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundColor(.secondary)
+                .foregroundColor(NexusPalette.textSecondary)
                 .frame(width: 90, alignment: .leading)
             Text(value)
                 .font(.system(size: 12))
-                .foregroundColor(.primary)
+                .foregroundColor(NexusPalette.textPrimary)
                 .textSelection(.enabled)
             Spacer(minLength: 0)
         }
@@ -381,9 +398,9 @@ struct ExtensionsSettingsView: View {
 
     private func extensionSource(for manifest: ExtensionManifest) -> (label: String, color: Color) {
         if isInstalledExtension(manifest) {
-            return (NSLocalizedString("Installed", comment: "Extension source badge"), Color.accentColor)
+            return (NSLocalizedString("Installed", comment: "Extension source badge"), NexusPalette.electricViolet)
         }
-        return (NSLocalizedString("Bundled", comment: "Extension source badge"), .secondary)
+        return (NSLocalizedString("Bundled", comment: "Extension source badge"), NexusPalette.textSecondary)
     }
 
     private func isInstalledExtension(_ manifest: ExtensionManifest) -> Bool {
@@ -408,15 +425,7 @@ struct ExtensionsSettingsView: View {
 
     private var selectedRowFillColor: Color {
         // Dark-only (window forces dark); brand the selection with the purple ramp.
-        NexusPalette.royalPurple.opacity(0.30)
-    }
-
-    private var selectedRowStrokeColor: Color {
-        NexusPalette.electricViolet.opacity(0.45)
-    }
-
-    private var selectedRowShadowColor: Color {
-        NexusPalette.royalPurple.opacity(0.30)
+        NexusPalette.royalPurple.opacity(0.28)
     }
 }
 
@@ -435,25 +444,27 @@ private struct LinearOAuthSettingsView: View {
                     .frame(width: 9, height: 9)
                 Text(statusTitle)
                     .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Spacer()
             }
 
             Text(statusMessage)
                 .font(.system(size: 12))
-                .foregroundColor(.secondary)
+                .foregroundColor(NexusPalette.textSecondary)
 
             HStack(spacing: 8) {
                 Button(primaryButtonTitle) {
                     openAuthorizeURL()
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(SettingsGlass.toggleTint)
 
                 if session != nil {
                     Button(NSLocalizedString("Disconnect", comment: "Button")) {
                         disconnect()
                     }
                     .buttonStyle(.bordered)
-                    .tint(.red)
+                    .tint(NexusPalette.danger)
                 }
             }
 
@@ -462,13 +473,13 @@ private struct LinearOAuthSettingsView: View {
                     if !session.scope.isEmpty {
                         Text("Scope: \(session.scope)")
                             .font(.system(size: 11))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(NexusPalette.textSecondary)
                     }
 
                     if let expiresAt = session.expiresAt {
                         Text(expirationLabel(expiresAt: expiresAt, isExpired: session.isExpired))
                             .font(.system(size: 11))
-                            .foregroundColor(session.isExpired ? .red : .secondary)
+                            .foregroundColor(session.isExpired ? NexusPalette.danger : NexusPalette.textSecondary)
                     }
                 }
             }
@@ -490,9 +501,9 @@ private struct LinearOAuthSettingsView: View {
 
     private var statusColor: Color {
         if let session {
-            return session.isExpired ? .orange : .green
+            return session.isExpired ? NexusPalette.warning : NexusPalette.success
         }
-        return .secondary
+        return NexusPalette.textTertiary
     }
 
     private var statusMessage: String {
@@ -612,25 +623,27 @@ private struct LastFmOAuthSettingsView: View {
                     .frame(width: 9, height: 9)
                 Text(statusTitle)
                     .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Spacer()
             }
 
             Text(statusMessage)
                 .font(.system(size: 12))
-                .foregroundColor(.secondary)
+                .foregroundColor(NexusPalette.textSecondary)
 
             HStack(spacing: 8) {
                 Button(primaryButtonTitle) {
                     openAuthorizeURL()
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(SettingsGlass.toggleTint)
 
                 if session != nil {
                     Button(NSLocalizedString("Disconnect", comment: "Button")) {
                         disconnect()
                     }
                     .buttonStyle(.bordered)
-                    .tint(.red)
+                    .tint(NexusPalette.danger)
                 }
             }
 
@@ -639,19 +652,19 @@ private struct LastFmOAuthSettingsView: View {
                     if !session.username.isEmpty {
                         Text("Account: \(session.username)")
                             .font(.system(size: 11))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(NexusPalette.textSecondary)
                     }
 
                     if !session.scope.isEmpty {
                         Text("Scope: \(session.scope)")
                             .font(.system(size: 11))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(NexusPalette.textSecondary)
                     }
 
                     if let expiresAt = session.expiresAt {
                         Text(expirationLabel(expiresAt: expiresAt, isExpired: session.isExpired))
                             .font(.system(size: 11))
-                            .foregroundColor(session.isExpired ? .red : .secondary)
+                            .foregroundColor(session.isExpired ? NexusPalette.danger : NexusPalette.textSecondary)
                     }
                 }
             }
@@ -673,9 +686,9 @@ private struct LastFmOAuthSettingsView: View {
 
     private var statusColor: Color {
         if let session {
-            return session.isExpired ? .orange : .green
+            return session.isExpired ? NexusPalette.warning : NexusPalette.success
         }
-        return .secondary
+        return NexusPalette.textTertiary
     }
 
     private var statusMessage: String {
@@ -797,12 +810,13 @@ private struct WhatsAppWebBridgeSettingsView: View {
                     .frame(width: 9, height: 9)
                 Text(stateTitle)
                     .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Spacer()
             }
 
             Text(bridge.statusText)
                 .font(.system(size: 12))
-                .foregroundColor(.secondary)
+                .foregroundColor(NexusPalette.textSecondary)
 
             HStack(spacing: 8) {
                 if bridge.connectionState == .loggedIn {
@@ -810,12 +824,13 @@ private struct WhatsAppWebBridgeSettingsView: View {
                         bridge.logout()
                     }
                     .buttonStyle(.bordered)
-                    .tint(.red)
+                    .tint(NexusPalette.danger)
                 } else {
                     Button(NSLocalizedString("Start Login", comment: "Button")) {
                         bridge.start()
                     }
                     .buttonStyle(.borderedProminent)
+                    .tint(SettingsGlass.toggleTint)
 
                     Button(NSLocalizedString("Refresh QR", comment: "Button")) {
                         bridge.refreshQRCode()
@@ -827,12 +842,12 @@ private struct WhatsAppWebBridgeSettingsView: View {
             if bridge.connectionState == .loggedIn {
                 Text(NSLocalizedString("Connected. New messages will be synced from this login.", comment: "Settings description"))
                     .font(.system(size: 11))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(NexusPalette.textSecondary)
             } else if let image = qrImage {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(NSLocalizedString("Scan this QR with WhatsApp on your phone", comment: "Settings label"))
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(NexusPalette.textSecondary)
 
                     Image(nsImage: image)
                         .resizable()
@@ -841,7 +856,7 @@ private struct WhatsAppWebBridgeSettingsView: View {
                         .frame(maxWidth: 220, maxHeight: 220)
                         .padding(8)
                         .background(
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
                                 .fill(Color.white)
                         )
                 }
@@ -851,14 +866,14 @@ private struct WhatsAppWebBridgeSettingsView: View {
                         .controlSize(.small)
                     Text(NSLocalizedString("Preparing secure login session...", comment: "Settings description"))
                         .font(.system(size: 11))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(NexusPalette.textSecondary)
                 }
             }
 
             if let error = bridge.lastError, !error.isEmpty {
                 Text(error)
                     .font(.system(size: 11))
-                    .foregroundColor(.red)
+                    .foregroundColor(NexusPalette.danger)
             }
         }
         .onAppear {
@@ -884,15 +899,15 @@ private struct WhatsAppWebBridgeSettingsView: View {
     private var stateColor: Color {
         switch bridge.connectionState {
         case .idle:
-            return .secondary
+            return NexusPalette.textTertiary
         case .loading:
-            return .orange
+            return NexusPalette.warning
         case .qrReady:
-            return .blue
+            return NexusPalette.electricViolet
         case .loggedIn:
-            return .green
+            return NexusPalette.success
         case .error:
-            return .red
+            return NexusPalette.danger
         }
     }
 
@@ -902,13 +917,5 @@ private struct WhatsAppWebBridgeSettingsView: View {
         let encoded = String(dataURL[dataURL.index(after: commaIndex)...])
         guard let data = Data(base64Encoded: encoded) else { return nil }
         return NSImage(data: data)
-    }
-}
-
-private extension View {
-    /// Unified with the rest of Settings: frosted glass + gradient border +
-    /// soft shadow, matching `SettingGroup` / `SettingsCard`.
-    func panelBackground() -> some View {
-        self.settingsGlassSurface(elevatesOnHover: false)
     }
 }

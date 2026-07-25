@@ -37,8 +37,10 @@ private struct MascotGridPicker: View {
         } label: {
             VStack(spacing: 4) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(isSelected ? Color.accentColor.opacity(0.15) : Color.primary.opacity(0.04))
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(isSelected
+                              ? NexusPalette.royalPurple.opacity(0.18)
+                              : NexusPalette.deepPurple.opacity(0.20))
                         .frame(height: 80)
 
                     AsyncImage(url: URL(string: entry.thumbnailURL)) { image in
@@ -60,7 +62,7 @@ private struct MascotGridPicker: View {
                                 } else {
                                     Image(systemName: "arrow.down.circle.fill")
                                         .font(.system(size: 14))
-                                        .foregroundColor(.accentColor)
+                                        .foregroundColor(NexusPalette.electricViolet)
                                         .padding(4)
                                 }
                             }
@@ -71,14 +73,14 @@ private struct MascotGridPicker: View {
 
                 Text(entry.name)
                     .font(.caption)
-                    .foregroundColor(isSelected ? .accentColor : .primary)
+                    .foregroundColor(isSelected ? NexusPalette.electricViolet : NexusPalette.textPrimary)
                     .lineLimit(1)
             }
         }
         .buttonStyle(.plain)
         .overlay(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 2)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(isSelected ? NexusPalette.electricViolet.opacity(0.85) : Color.clear, lineWidth: 1.5)
                 .frame(height: 80)
                 .offset(y: -10)
         )
@@ -100,6 +102,7 @@ struct GeneralSettingsView: View {
             SettingGroup {
                 HStack {
                     Text(NSLocalizedString("App language", comment: "Settings label")).font(.system(size: 13))
+                        .foregroundColor(NexusPalette.textPrimary)
                     Spacer()
                     Picker("", selection: Binding(
                         get: { appState.languageOverride },
@@ -113,15 +116,15 @@ struct GeneralSettingsView: View {
                     .labelsHidden()
                     .frame(width: 140)
                 }
-                .padding(.horizontal, 16).padding(.vertical, 11)
+                .padding(.horizontal, 24).padding(.vertical, 14)
 
                 SettingRowDivider()
                 HStack {
                     Text(NSLocalizedString("Restart required to apply", comment: "Settings description")).font(.system(size: 11))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(NexusPalette.textSecondary)
                     Spacer()
                 }
-                .padding(.horizontal, 16).padding(.vertical, 8)
+                .padding(.horizontal, 24).padding(.vertical, 10)
             }
 
             // Startup
@@ -129,14 +132,16 @@ struct GeneralSettingsView: View {
             SettingGroup {
                 HStack {
                     Text(NSLocalizedString("Launch at login", comment: "Settings label")).font(.system(size: 13))
+                        .foregroundColor(NexusPalette.textPrimary)
                     Spacer()
                     Toggle("", isOn: $launchAtLogin)
                         .labelsHidden()
+                        .tint(SettingsGlass.toggleTint)
                         .onChange(of: launchAtLogin) { _, newValue in
                             newValue ? LaunchAtLogin.enable() : LaunchAtLogin.disable()
                         }
                 }
-                .padding(.horizontal, 16).padding(.vertical, 11)
+                .padding(.horizontal, 24).padding(.vertical, 14)
 
                 SettingRowDivider()
                 SettingToggleRow(title: NSLocalizedString("Show menu bar icon", comment: "Settings label"), isOn: $appState.showMenuBarIcon)
@@ -157,6 +162,7 @@ struct GeneralSettingsView: View {
                 SettingRowDivider()
                 HStack {
                     Text(NSLocalizedString("Animation Speed", comment: "Settings label")).font(.system(size: 13))
+                        .foregroundColor(NexusPalette.textPrimary)
                     Spacer()
                     Picker("", selection: $appState.animationSpeed) {
                         Text(NSLocalizedString("Normal", comment: "Picker option")).tag(1.0)
@@ -167,7 +173,7 @@ struct GeneralSettingsView: View {
                     .labelsHidden()
                     .frame(width: 120)
                 }
-                .padding(.horizontal, 16).padding(.vertical, 11)
+                .padding(.horizontal, 24).padding(.vertical, 14)
             }
 
             // Power
@@ -176,8 +182,9 @@ struct GeneralSettingsView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(NSLocalizedString("Power mode", comment: "Settings label")).font(.system(size: 13))
+                            .foregroundColor(NexusPalette.textPrimary)
                         Text(appState.energyMode.description)
-                            .font(.system(size: 11)).foregroundColor(.secondary)
+                            .font(.system(size: 11)).foregroundColor(NexusPalette.textSecondary)
                     }
                     Spacer(minLength: 12)
                     Picker("", selection: energyModeBinding) {
@@ -189,7 +196,7 @@ struct GeneralSettingsView: View {
                     .labelsHidden()
                     .frame(width: 132)
                 }
-                .padding(.horizontal, 16).padding(.vertical, 12)
+                .padding(.horizontal, 24).padding(.vertical, 14)
 
                 SettingRowDivider()
                 SettingToggleRow(
@@ -221,8 +228,9 @@ struct GeneralSettingsView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(NSLocalizedString("Expanded collapse delay", comment: "Settings label")).font(.system(size: 13))
+                            .foregroundColor(NexusPalette.textPrimary)
                         Text(NSLocalizedString("How long expanded content stays visible", comment: "Settings description"))
-                            .font(.system(size: 11)).foregroundColor(.secondary)
+                            .font(.system(size: 11)).foregroundColor(NexusPalette.textSecondary)
                     }
                     Spacer(minLength: 12)
                     StepperField(
@@ -231,14 +239,15 @@ struct GeneralSettingsView: View {
                         range: 0.1...10.0
                     ) { "\(String(format: "%.1f", $0))s" }
                 }
-                .padding(.horizontal, 16).padding(.vertical, 12)
+                .padding(.horizontal, 24).padding(.vertical, 14)
 
                 SettingRowDivider()
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(NSLocalizedString("Hover expand delay", comment: "Settings label")).font(.system(size: 13))
+                            .foregroundColor(NexusPalette.textPrimary)
                         Text(NSLocalizedString("How long to hover the notch before it peeks open", comment: "Settings description"))
-                            .font(.system(size: 11)).foregroundColor(.secondary)
+                            .font(.system(size: 11)).foregroundColor(NexusPalette.textSecondary)
                     }
                     Spacer(minLength: 12)
                     StepperField(
@@ -247,7 +256,7 @@ struct GeneralSettingsView: View {
                         range: 0.0...1.5
                     ) { "\(String(format: "%.2f", $0))s" }
                 }
-                .padding(.horizontal, 16).padding(.vertical, 12)
+                .padding(.horizontal, 24).padding(.vertical, 14)
             }
 
             // Interaction
@@ -258,8 +267,9 @@ struct GeneralSettingsView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(NSLocalizedString("Notch haptic intensity", comment: "Settings label")).font(.system(size: 13))
+                            .foregroundColor(NexusPalette.textPrimary)
                         Text(NSLocalizedString("Feedback strength when entering the notch", comment: "Settings description"))
-                            .font(.system(size: 11)).foregroundColor(.secondary)
+                            .font(.system(size: 11)).foregroundColor(NexusPalette.textSecondary)
                     }
                     Spacer(minLength: 12)
                     Picker("", selection: $appState.notchHapticIntensity) {
@@ -271,7 +281,7 @@ struct GeneralSettingsView: View {
                     .labelsHidden()
                     .frame(width: 120)
                 }
-                .padding(.horizontal, 16).padding(.vertical, 12)
+                .padding(.horizontal, 24).padding(.vertical, 14)
 
                 SettingRowDivider()
                 SettingToggleRow(
@@ -305,15 +315,15 @@ struct GeneralSettingsView: View {
             SettingSectionLabel(title: NSLocalizedString("Mascot", comment: "Settings section"))
             SettingGroup {
                 MascotGridPicker()
-                    .padding(14)
+                    .padding(16)
 
                 if let loadError = mascotManager.loadError {
                     SettingRowDivider()
                     Text(loadError)
                         .font(.system(size: 11))
-                        .foregroundColor(.secondary)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .foregroundColor(NexusPalette.textSecondary)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 10)
                 }
 
                 SettingRowDivider()
@@ -336,12 +346,12 @@ struct GeneralSettingsView: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 13))
-                .foregroundColor(permissionGranted(permission) ? .green : .secondary)
+                .foregroundColor(permissionGranted(permission) ? NexusPalette.success : NexusPalette.textTertiary)
                 .frame(width: 18, alignment: .center)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 13))
-                Text(description).font(.system(size: 11)).foregroundColor(.secondary)
+                Text(title).font(.system(size: 13)).foregroundColor(NexusPalette.textPrimary)
+                Text(description).font(.system(size: 11)).foregroundColor(NexusPalette.textSecondary)
             }
 
             Spacer()
@@ -349,15 +359,15 @@ struct GeneralSettingsView: View {
             if permissionGranted(permission) {
                 Label(NSLocalizedString("Granted", comment: "Status label"), systemImage: "checkmark.circle.fill")
                     .font(.system(size: 11))
-                    .foregroundColor(.green)
+                    .foregroundColor(NexusPalette.success)
             } else {
                 Button(NSLocalizedString("Grant Access", comment: "Button")) { requestPermission(permission) }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 11)
+        .padding(.horizontal, 24)
+        .padding(.vertical, 14)
     }
 
     private func permissionGranted(_ permission: PermissionType) -> Bool {
