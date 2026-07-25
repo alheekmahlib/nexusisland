@@ -41,16 +41,17 @@ struct IslandContainerView: View {
         let surfaceSize = appState.currentSize
         return ZStack(alignment: .top) {
             islandShape
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color.black.opacity(0.98),
-                            Color.black.opacity(0.94)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
+                .fill(islandSurfaceBaseFill)
+
+            // Vibrant gradient overlay, only when expanded (compact stays black
+            // to blend with the real metal notch). Layered as an overlay so we
+            // can stack the radial glow under the signature purple→magenta→orange.
+            if appState.currentState != .compact {
+                islandShape
+                    .fill(NexusGradient.backgroundRadial)
+                islandShape
+                    .fill(NexusGradient.primary.opacity(0.92))
+            }
 
             islandContent
                 .frame(width: surfaceSize.width, height: surfaceSize.height, alignment: .top)
@@ -147,6 +148,19 @@ struct IslandContainerView: View {
         appState.shouldReduceMotion
             ? .opacity
             : .scale(scale: scale, anchor: .top).combined(with: .opacity)
+    }
+
+    /// Solid base fill. Black in compact (the notch-blend look); deep purple
+    /// `NexusPalette.background` when expanded so the vibrant gradient overlay
+    /// reads true. The vibrant gradient itself is layered in `islandSurface`.
+    private var islandSurfaceBaseFill: LinearGradient {
+        if appState.currentState == .compact {
+            return LinearGradient(colors: [Color.black.opacity(0.98), Color.black.opacity(0.94)],
+                                  startPoint: .top, endPoint: .bottom)
+        } else {
+            return LinearGradient(colors: [NexusPalette.background, NexusPalette.background.opacity(0.96)],
+                                  startPoint: .top, endPoint: .bottom)
+        }
     }
 
     // Shadows are intentionally disabled in the compact state. The island

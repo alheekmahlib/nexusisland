@@ -441,10 +441,12 @@ struct FullExpandedTopBarView: View {
     }
 
     private var islandSurfaceFill: LinearGradient {
+        // Matches the expanded island base (deep purple glow) so toolbar/tab
+        // capsules blend with the gradient surface instead of clashing black.
         LinearGradient(
             colors: [
-                Color.black.opacity(0.98),
-                Color.black.opacity(0.94)
+                NexusPalette.backgroundGlow,
+                NexusPalette.background
             ],
             startPoint: .top,
             endPoint: .bottom
