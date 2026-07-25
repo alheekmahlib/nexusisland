@@ -21,4 +21,16 @@ enum NexusTypography {
     static func numeric(_ size: CGFloat = 36) -> Font { .system(size: size, weight: .bold) }
     /// Monospaced numerics for time codes / percentages (10pt).
     static let mono = Font.system(size: 10, weight: .regular, design: .monospaced)
+
+    // MARK: - Size-parameterized variants
+    //
+    // For migrated modules that need exact pt sizes on the tight Dynamic Island
+    // surfaces (preserving prior layout). Prefer the fixed tokens above in new
+    // code; use these only when a module's existing size must be kept.
+
+    static func body(_ size: CGFloat) -> Font { .system(size: size, weight: .regular) }
+    static func caption(_ size: CGFloat) -> Font { .system(size: size, weight: .regular) }
+    static func caption(_ size: CGFloat, _ weight: Font.Weight) -> Font { .system(size: size, weight: weight) }
+    static func mono(_ size: CGFloat) -> Font { .system(size: size, weight: .regular, design: .monospaced) }
+    static func title(_ size: CGFloat) -> Font { .system(size: size, weight: .semibold) }
 }
