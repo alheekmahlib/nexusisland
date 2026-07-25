@@ -2,12 +2,10 @@ import SwiftUI
 
 // MARK: - Quran Full Expanded View (detail panel)
 //
-// The full-expanded surface is 658×180pt — short and wide. A two-column
-// horizontal split fits: a compact now-playing card on the left and a
-// scrollable surah list on the right (the user asked for the list on the side).
-//
-// Both columns are height-constrained to ~180pt, so the list scrolls
-// vertically and the now-playing card stays fixed.
+// Redesigned with NexusDesign tokens. The full-expanded surface (658×180pt)
+// is a two-column split: a GlassCard now-playing detail on the left and a
+// scrollable surah list on the right. RTL is applied to Arabic Text only.
+// The draggable QuranProgressBar is kept (it carries seek + RTL logic).
 
 struct QuranFullExpandedView: View {
     @ObservedObject private var manager = QuranManager.shared
@@ -20,7 +18,7 @@ struct QuranFullExpandedView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             // Divider
             Rectangle()
-                .fill(QuranDesign.surfaceStroke)
+                .fill(Color.white.opacity(0.10))
                 .frame(width: 0.5)
                 .frame(maxHeight: .infinity)
             // Right: surah list sidebar (fixed width).
@@ -56,12 +54,12 @@ struct QuranFullExpandedView: View {
 
             HStack {
                 Text(QuranDesign.formatTime(manager.currentTime))
-                    .font(QuranDesign.mono(9))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.mono)
+                    .foregroundColor(NexusPalette.textTertiary)
                 Spacer()
                 Text(manager.duration > 0 ? QuranDesign.formatTime(manager.duration) : "--:--:--")
-                    .font(QuranDesign.mono(9))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.mono)
+                    .foregroundColor(NexusPalette.textTertiary)
             }
 
             // Stat chips + auto-advance, in a tight row.
@@ -80,11 +78,11 @@ struct QuranFullExpandedView: View {
     private var medallion: some View {
         ZStack {
             Circle()
-                .strokeBorder(QuranDesign.accent.opacity(0.5), lineWidth: 1.2)
-                .background(Circle().fill(QuranDesign.accentSoft))
+                .strokeBorder(NexusPalette.accentGold.opacity(0.5), lineWidth: 1.2)
+                .background(Circle().fill(NexusGradient.accentGold.opacity(0.18)))
             Text(manager.currentSurah.arabicNumber)
                 .font(.system(size: 16, weight: .bold, design: .rounded))
-                .foregroundColor(QuranDesign.accent)
+                .foregroundColor(NexusPalette.accentGold)
         }
         .frame(width: 40, height: 40)
     }
@@ -92,13 +90,13 @@ struct QuranFullExpandedView: View {
     private var identity: some View {
         VStack(alignment: .leading, spacing: 1) {
             Text(manager.currentSurah.arabicName)
-                .font(QuranDesign.surahName(15))
-                .foregroundColor(QuranDesign.textPrimary)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(NexusPalette.textPrimary)
                 .lineLimit(1)
                 .environment(\.layoutDirection, .rightToLeft) // Arabic shaping only
             Text(manager.currentReciter.displayName)
-                .font(QuranDesign.body(10))
-                .foregroundColor(QuranDesign.textSecondary)
+                .font(.system(size: 10))
+                .foregroundColor(NexusPalette.textSecondary)
                 .lineLimit(1)
                 .environment(\.layoutDirection, .rightToLeft)
         }
@@ -107,13 +105,13 @@ struct QuranFullExpandedView: View {
     private var primaryPlay: some View {
         Button(action: manager.togglePlayPause) {
             ZStack {
-                Circle().fill(QuranDesign.accent).frame(width: 32, height: 32)
-                    .shadow(color: QuranDesign.accent.opacity(0.4), radius: 5, y: 1)
+                Circle().fill(NexusGradient.primary).frame(width: 32, height: 32)
+                    .shadow(color: NexusPalette.gradientMid.opacity(0.4), radius: 5, y: 1)
                 Image(systemName: manager.isLoading
                       ? "circle.dashed"
                       : (manager.isPlaying ? "pause.fill" : "play.fill"))
                     .font(.system(size: 12, weight: .black))
-                    .foregroundColor(Color(red: 0.10, green: 0.08, blue: 0.04))
+                    .foregroundColor(.white)
                     .offset(x: manager.isPlaying ? 0 : 1)
             }
             .frame(width: 32, height: 32)
@@ -124,13 +122,13 @@ struct QuranFullExpandedView: View {
 
     private func statChip(icon: String, value: String, label: String) -> some View {
         HStack(spacing: 4) {
-            Image(systemName: icon).font(.system(size: 8)).foregroundColor(QuranDesign.accent)
-            Text(value).font(QuranDesign.body(10)).foregroundColor(QuranDesign.textPrimary)
-            Text(label).font(QuranDesign.caption(8)).foregroundColor(QuranDesign.textTertiary)
+            Image(systemName: icon).font(.system(size: 8)).foregroundColor(NexusPalette.accentGold)
+            Text(value).font(.system(size: 10)).foregroundColor(NexusPalette.textPrimary)
+            Text(label).font(.system(size: 8)).foregroundColor(NexusPalette.textTertiary)
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 3)
-        .quranSurface(radius: QuranDesign.cornerRadiusS)
+        .nexusSurface(radius: NexusMetrics.cornerRadiusS)
     }
 
     private var autoAdvanceToggle: some View {
@@ -141,11 +139,11 @@ struct QuranFullExpandedView: View {
             ))
             .toggleStyle(.switch)
             .controlSize(.mini)
-            .tint(QuranDesign.accent) // gold, matching the design system
+            .tint(NexusPalette.gradientMid)
             .labelsHidden()
             Text("تلقائي")
-                .font(QuranDesign.caption(8))
-                .foregroundColor(QuranDesign.textTertiary)
+                .font(.system(size: 8))
+                .foregroundColor(NexusPalette.textTertiary)
         }
     }
 
@@ -154,7 +152,7 @@ struct QuranFullExpandedView: View {
     private var sidebar: some View {
         VStack(spacing: 0) {
             sidebarHeader
-            Divider().background(QuranDesign.surfaceStroke)
+            Divider().background(Color.white.opacity(0.10))
             surahScrollList
         }
     }
@@ -163,13 +161,13 @@ struct QuranFullExpandedView: View {
         VStack(spacing: 6) {
             HStack {
                 Text("السور")
-                    .font(QuranDesign.surahName(12))
-                    .foregroundColor(QuranDesign.textPrimary)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .environment(\.layoutDirection, .rightToLeft)
                 Spacer()
                 Text("\(QuranSurahs.all.count)")
-                    .font(QuranDesign.mono(9))
-                    .foregroundColor(QuranDesign.textTertiary)
+                    .font(NexusTypography.mono)
+                    .foregroundColor(NexusPalette.textTertiary)
             }
             searchBar
         }
@@ -182,15 +180,15 @@ struct QuranFullExpandedView: View {
         HStack(spacing: 5) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 9))
-                .foregroundColor(QuranDesign.textTertiary)
+                .foregroundColor(NexusPalette.textTertiary)
             TextField("بحث…", text: $searchText)
                 .textFieldStyle(.plain)
-                .font(QuranDesign.body(10))
-                .foregroundColor(QuranDesign.textPrimary)
+                .font(.system(size: 10))
+                .foregroundColor(NexusPalette.textPrimary)
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 4)
-        .quranSurface(radius: QuranDesign.cornerRadiusS)
+        .nexusSurface(radius: NexusMetrics.cornerRadiusS)
     }
 
     private var filteredSurahs: [Surah] {
@@ -221,24 +219,24 @@ struct QuranFullExpandedView: View {
             HStack(spacing: 6) {
                 Text(surah.arabicNumber)
                     .font(.system(size: 9, weight: .bold, design: .rounded))
-                    .foregroundColor(isSelected ? QuranDesign.accent : QuranDesign.textTertiary)
+                    .foregroundColor(isSelected ? NexusPalette.accentGold : NexusPalette.textTertiary)
                     .frame(width: 18, height: 18)
-                    .background(Circle().fill(isSelected ? QuranDesign.accentSoft : QuranDesign.surfaceFill))
+                    .background(Circle().fill(isSelected ? NexusPalette.accentGold.opacity(0.18) : Color.white.opacity(0.06)))
                 Text(surah.arabicName)
-                    .font(QuranDesign.body(isSelected ? 12 : 11))
-                    .foregroundColor(isSelected ? QuranDesign.textPrimary : QuranDesign.textSecondary)
+                    .font(.system(size: isSelected ? 12 : 11))
+                    .foregroundColor(isSelected ? NexusPalette.textPrimary : NexusPalette.textSecondary)
                     .lineLimit(1)
                     .environment(\.layoutDirection, .rightToLeft)
                 Spacer()
                 if isSelected && manager.isPlaying {
                     Image(systemName: "waveform")
                         .font(.system(size: 8))
-                        .foregroundColor(QuranDesign.accent)
+                        .foregroundColor(NexusPalette.accentGold)
                 }
             }
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
-            .quranSurface(isActive: isSelected, radius: QuranDesign.cornerRadiusS)
+            .nexusSurface(isActive: isSelected, radius: NexusMetrics.cornerRadiusS)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

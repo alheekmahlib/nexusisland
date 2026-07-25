@@ -36,22 +36,23 @@ struct QuranProgressBar: View {
             ZStack {
                 // Track (full width, subtle).
                 Capsule()
-                    .fill(QuranDesign.surfaceStroke)
+                    .fill(Color.white.opacity(0.12))
                     .frame(height: trackHeight)
 
-                // Fill — in RTL we anchor it to the trailing (right) edge.
+                // Fill — gradient, anchored to the trailing (right) edge in RTL.
                 Capsule()
-                    .fill(QuranDesign.accent.opacity(0.9))
+                    .fill(NexusGradient.progress(at: displayedProgress))
                     .frame(width: max(0, rawX), height: trackHeight)
                     .frame(maxWidth: .infinity, alignment: isRTL ? .trailing : .leading)
+                    .shadow(color: NexusPalette.gradientMid.opacity(0.5), radius: 3, y: 1)
                     .animation(Constants.progressBar, value: displayedProgress)
 
                 // Knob.
                 Circle()
-                    .fill(QuranDesign.accent)
+                    .fill(NexusPalette.accentGold)
                     .frame(width: knobSize, height: knobSize)
                     .scaleEffect(knobScale)
-                    .shadow(color: QuranDesign.accent.opacity(0.5), radius: 3, y: 1)
+                    .shadow(color: NexusPalette.accentGold.opacity(0.6), radius: 3, y: 1)
                     // Position the knob along the same axis as the fill edge.
                     .frame(maxWidth: .infinity, alignment: isRTL ? .trailing : .leading)
                     .padding(.leading, isRTL ? 0 : max(0, knobCenterX - knobSize / 2))

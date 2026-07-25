@@ -2,9 +2,8 @@ import SwiftUI
 
 // MARK: - Quran Compact View (pill)
 //
-// The compact surface is only 200×36pt — narrower than most app icons. The
-// whole row must fit on a single line. Layout: [play] [surah name] [progress
-// hairline]. No vertical stacking; nothing that can wrap.
+// Redesigned with NexusDesign tokens. The compact surface is only 200×36pt,
+// so the row must fit on a single line: [play] [surah name] [gradient hairline].
 
 struct QuranCompactView: View {
     @ObservedObject private var manager = QuranManager.shared
@@ -13,8 +12,8 @@ struct QuranCompactView: View {
         HStack(spacing: 6) {
             playToggle
             surahName
-            // Hairline progress fills the remaining width.
-            QuranHairlineProgress(progress: manager.progress)
+            // Gradient hairline fills the remaining width.
+            GradientProgressBar(progress: manager.progress, style: .hairline, animated: false)
                 .frame(maxWidth: .infinity)
                 .frame(height: 2)
         }
@@ -26,11 +25,15 @@ struct QuranCompactView: View {
                   ? "circle.dashed"
                   : (manager.isPlaying ? "pause.fill" : "play.fill"))
                 .font(.system(size: 10, weight: .black))
-                .foregroundColor(manager.isPlaying ? QuranDesign.accent : QuranDesign.textPrimary)
+                .foregroundColor(.white)
                 .frame(width: 20, height: 20)
-                .background(
-                    Circle().fill(manager.isPlaying ? QuranDesign.accentSoft : QuranDesign.surfaceFill)
-                )
+                .background {
+                    if manager.isPlaying {
+                        Circle().fill(NexusGradient.primary)
+                    } else {
+                        Circle().fill(Color.white.opacity(0.14))
+                    }
+                }
         }
         .buttonStyle(.plain)
         .disabled(manager.isLoading)
@@ -38,27 +41,10 @@ struct QuranCompactView: View {
 
     private var surahName: some View {
         Text(manager.currentSurah.arabicName)
-            .font(QuranDesign.surahName(12))
-            .foregroundColor(QuranDesign.textPrimary)
+            .font(NexusTypography.body)
+            .foregroundColor(NexusPalette.textPrimary)
             .lineLimit(1)
             .fixedSize(horizontal: true, vertical: false)
             .environment(\.layoutDirection, .rightToLeft)
-    }
-}
-
-/// A non-interactive hairline that just visualizes progress in the tight
-/// compact row. Dragging lives in the expanded views where there's room.
-struct QuranHairlineProgress: View {
-    let progress: Double
-
-    var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .leading) {
-                Capsule().fill(QuranDesign.surfaceStroke)
-                Capsule()
-                    .fill(QuranDesign.accent.opacity(0.85))
-                    .frame(width: proxy.size.width * progress)
-            }
-        }
     }
 }
