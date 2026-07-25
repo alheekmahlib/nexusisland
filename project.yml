@@ -17,6 +17,12 @@ packages:
   Aptabase:
     url: https://github.com/aptabase/aptabase-swift
     from: "0.3.0"
+  Pow:
+    url: https://github.com/EmergeTools/Pow
+    from: "1.0.0"
+  Lottie:
+    url: https://github.com/airbnb/lottie-ios
+    from: "4.4.0"
 targets:
   NexusIsland:
     type: application
@@ -31,6 +37,8 @@ targets:
           - "**/*.md"
     dependencies:
       - package: Aptabase
+      - package: Pow
+      - package: Lottie
     scheme:
       buildImplicitDependencies: true
       testTargets:
