@@ -19,7 +19,6 @@ private enum ExtensionListFilter: String, CaseIterable, Identifiable {
 }
 
 struct ExtensionsSettingsView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var manager = ExtensionManager.shared
     @ObservedObject private var logger = ExtensionLogger.shared
     @State private var selectedExtensionID: String?
@@ -408,21 +407,16 @@ struct ExtensionsSettingsView: View {
     }
 
     private var selectedRowFillColor: Color {
-        colorScheme == .light
-            ? Color(nsColor: .selectedContentBackgroundColor)
-            : .accentColor
+        // Dark-only (window forces dark); brand the selection with the purple ramp.
+        NexusPalette.royalPurple.opacity(0.30)
     }
 
     private var selectedRowStrokeColor: Color {
-        colorScheme == .light
-            ? Color(nsColor: .selectedControlColor).opacity(0.42)
-            : Color.white.opacity(0.15)
+        NexusPalette.electricViolet.opacity(0.45)
     }
 
     private var selectedRowShadowColor: Color {
-        colorScheme == .light
-            ? Color(nsColor: .selectedControlColor).opacity(0.20)
-            : Color.accentColor.opacity(0.25)
+        NexusPalette.royalPurple.opacity(0.30)
     }
 }
 
@@ -912,16 +906,9 @@ private struct WhatsAppWebBridgeSettingsView: View {
 }
 
 private extension View {
+    /// Unified with the rest of Settings: frosted glass + gradient border +
+    /// soft shadow, matching `SettingGroup` / `SettingsCard`.
     func panelBackground() -> some View {
-        self
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor).opacity(0.86))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Color.primary.opacity(0.10), lineWidth: 1)
-            )
-            .shadow(color: Color.black.opacity(0.12), radius: 5, x: 0, y: 2)
+        self.settingsGlassSurface(elevatesOnHover: false)
     }
 }

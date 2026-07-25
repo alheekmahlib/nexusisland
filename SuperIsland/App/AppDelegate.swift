@@ -514,7 +514,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let window = NSWindow(contentViewController: hostingController)
         window.title = NSLocalizedString("NexusIsland Settings", comment: "Window title")
-        window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
+        window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
+        // Transparent, edge-to-edge title bar so the vibrant glass backdrop
+        // runs behind the traffic-light buttons (full-glass look).
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.backgroundColor = .clear
+        window.isMovableByWindowBackground = true
         window.setContentSize(NSSize(width: 960, height: 680))
         window.minSize = NSSize(width: 800, height: 560)
         window.isReleasedWhenClosed = false
