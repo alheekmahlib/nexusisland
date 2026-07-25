@@ -24,22 +24,20 @@ struct SystemHUDExpandedView: View {
 
     private var defaultHUDView: some View {
         HStack(spacing: 16) {
-            Image(systemName: iconName)
-                .font(.system(size: 24, weight: .semibold))
-                .foregroundColor(.white)
+            GradientMedallion(systemName: iconName, size: 38, gradient: NexusGradient.purple)
                 .scaleEffect(overshootScale)
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
                     Text(label)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.white)
+                        .font(NexusTypography.title(13))
+                        .foregroundColor(NexusPalette.textPrimary)
 
                     Spacer()
 
                     Text("\(currentPercentage)%")
-                        .font(.system(size: 13, weight: .medium, design: .monospaced))
-                        .foregroundColor(.white.opacity(0.7))
+                        .font(NexusTypography.mono(13))
+                        .foregroundColor(NexusPalette.textSecondary)
                 }
 
                 SliderBar(value: currentBinding)
@@ -47,8 +45,8 @@ struct SystemHUDExpandedView: View {
 
                 if appState.activeBuiltInModule == .volumeHUD {
                     Text(volumeManager.outputDeviceName)
-                        .font(.system(size: 10))
-                        .foregroundColor(.white.opacity(0.4))
+                        .font(NexusTypography.mono(10))
+                        .foregroundColor(NexusPalette.textTertiary)
                 }
             }
         }
@@ -58,19 +56,19 @@ struct SystemHUDExpandedView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 12) {
                 Image(systemName: volumeManager.volumeIconName)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.title(18))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .scaleEffect(overshootScale)
 
                 VStack(alignment: .leading, spacing: 5) {
                     HStack {
                         Text(NSLocalizedString("System Volume", comment: "System HUD volume header"))
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(.white)
+                            .font(NexusTypography.title(12))
+                            .foregroundColor(NexusPalette.textPrimary)
                         Spacer()
                         Text("\(volumeManager.volumePercentage)%")
-                            .font(.system(size: 12, weight: .medium, design: .monospaced))
-                            .foregroundColor(.white.opacity(0.7))
+                            .font(NexusTypography.mono(12))
+                            .foregroundColor(NexusPalette.textSecondary)
                     }
                     SliderBar(value: currentBinding)
                         .frame(height: 6)
@@ -78,20 +76,20 @@ struct SystemHUDExpandedView: View {
             }
 
             Text(volumeManager.outputDeviceName)
-                .font(.system(size: 10))
-                .foregroundColor(.white.opacity(0.45))
+                .font(NexusTypography.mono(10))
+                .foregroundColor(NexusPalette.textTertiary)
 
             Divider()
-                .overlay(.white.opacity(0.15))
+                .overlay(NexusPalette.glassTint.opacity(0.15))
 
             Text(NSLocalizedString("Media Apps", comment: "System HUD media apps header"))
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundColor(.white.opacity(0.8))
+                .font(NexusTypography.caption(11, .semibold))
+                .foregroundColor(NexusPalette.textPrimary)
 
             if volumeManager.mediaAppVolumes.isEmpty {
                 Text(NSLocalizedString("No supported media apps are currently playing.", comment: "System HUD empty media apps state"))
-                    .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.5))
+                    .font(NexusTypography.caption(11))
+                    .foregroundColor(NexusPalette.textTertiary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 ScrollView(.vertical, showsIndicators: false) {
@@ -176,24 +174,24 @@ private struct MediaAppVolumeRow: View {
                         .clipShape(RoundedRectangle(cornerRadius: 3))
                 } else {
                     Image(systemName: app.iconName)
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.white.opacity(0.85))
+                        .font(NexusTypography.caption(10, .semibold))
+                        .foregroundColor(NexusPalette.textSecondary)
                         .frame(width: 14)
                 }
 
                 Text(app.appName)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.caption(11, .medium))
+                    .foregroundColor(NexusPalette.textPrimary)
 
                 Spacer()
 
                 Text(app.statusText)
-                    .font(.system(size: 10))
-                    .foregroundColor(app.isPlaying ? .green : .white.opacity(0.55))
+                    .font(NexusTypography.mono(10))
+                    .foregroundColor(app.isPlaying ? NexusPalette.success : NexusPalette.textSecondary)
 
                 Text("\(Int(app.volume * 100))%")
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
-                    .foregroundColor(.white.opacity(0.72))
+                    .font(NexusTypography.mono(10))
+                    .foregroundColor(NexusPalette.textSecondary)
             }
 
             SliderBar(
@@ -223,10 +221,10 @@ struct SliderBar: View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(.white.opacity(0.2))
+                    .fill(Color.white.opacity(0.12))
 
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(.white)
+                    .fill(NexusGradient.primary)
                     .frame(width: max(0, geometry.size.width * CGFloat(min(value, 1.0))))
                     .animation(Constants.progressBar, value: value)
             }

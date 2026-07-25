@@ -29,12 +29,12 @@ struct CalendarExpandedView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(headerDate)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.numeric(14))
+                    .foregroundColor(NexusPalette.textPrimary)
                 Spacer()
                 Text("\(manager.todayEvents.count) events")
-                    .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.5))
+                    .font(NexusTypography.caption(11))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
 
             Group {
@@ -45,35 +45,34 @@ struct CalendarExpandedView: View {
                             .frame(width: 8, height: 8)
 
                         Text(event.title ?? "")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.white)
+                            .font(NexusTypography.caption(12, .medium))
+                            .foregroundColor(NexusPalette.textPrimary)
                             .lineLimit(1)
 
                         Spacer()
 
                         if let countdown = manager.nextEventCountdown {
                             Text(countdown)
-                                .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(.white.opacity(0.7))
+                                .font(NexusTypography.mono(11))
+                                .foregroundColor(NexusPalette.textSecondary)
                         }
 
                         if let url = manager.joinURL(for: event) {
                             Button(action: { NSWorkspace.shared.open(url) }) {
                                 Text(NSLocalizedString("Join", comment: "Calendar event join button"))
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .font(NexusTypography.caption(10, .semibold))
+                                    .foregroundColor(NexusPalette.textPrimary)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 3)
-                                    .background(Color.blue)
-                                    .cornerRadius(4)
+                                    .nexusSurface(variant: .filled, radius: 4, gradient: NexusGradient.purple)
                             }
                             .buttonStyle(.plain)
                         }
                     }
                 } else {
                     Text(NSLocalizedString("No more events today", comment: "Calendar medium empty state"))
-                        .font(.system(size: 12))
-                        .foregroundColor(.white.opacity(0.5))
+                        .font(NexusTypography.body(12))
+                        .foregroundColor(NexusPalette.textTertiary)
                 }
             }
         }
@@ -102,7 +101,7 @@ struct CalendarExpandedView: View {
 
     private var panelDivider: some View {
         Rectangle()
-            .fill(Color.white.opacity(0.08))
+            .fill(NexusPalette.glassTint.opacity(0.10))
             .frame(width: 1)
             .padding(.vertical, 4)
     }
@@ -120,8 +119,8 @@ struct CalendarExpandedView: View {
                     }
 
                     Text(monthTitle)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.white)
+                        .font(NexusTypography.title(13))
+                        .foregroundColor(NexusPalette.textPrimary)
 
                     Spacer(minLength: 4)
 
@@ -131,11 +130,11 @@ struct CalendarExpandedView: View {
                             manager.selectDate(Date())
                         }
                         .buttonStyle(.plain)
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(.white.opacity(0.82))
+                        .font(NexusTypography.caption(10, .medium))
+                        .foregroundColor(NexusPalette.textPrimary)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 3)
-                        .background(Color.white.opacity(0.1))
+                        .background(NexusPalette.glassTint.opacity(0.18))
                         .clipShape(Capsule())
                     }
 
@@ -148,8 +147,8 @@ struct CalendarExpandedView: View {
                 LazyVGrid(columns: dayColumns, spacing: metrics.gridSpacing) {
                     ForEach(Array(orderedWeekdaySymbols.enumerated()), id: \.offset) { _, symbol in
                         Text(symbol)
-                            .font(.system(size: 9, weight: .medium))
-                            .foregroundColor(.white.opacity(0.55))
+                            .font(NexusTypography.caption(9, .medium))
+                            .foregroundColor(NexusPalette.textTertiary)
                             .frame(maxWidth: .infinity, minHeight: metrics.weekdayHeight)
                     }
                 }
@@ -175,22 +174,22 @@ struct CalendarExpandedView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text(selectedDateTitle)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.title(14))
+                    .foregroundColor(NexusPalette.textPrimary)
 
                 Spacer()
 
                 Text(eventCountLabel)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(.white.opacity(0.45))
+                    .font(NexusTypography.caption(10, .medium))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
             .padding(.bottom, 8)
 
             if manager.selectedDateEvents.isEmpty {
                 Spacer()
                 Text(NSLocalizedString("No events", comment: "Calendar events panel empty state"))
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.white.opacity(0.4))
+                    .font(NexusTypography.caption(12, .medium))
+                    .foregroundColor(NexusPalette.textTertiary)
                     .frame(maxWidth: .infinity)
                 Spacer()
             } else {
@@ -211,15 +210,15 @@ struct CalendarExpandedView: View {
     private var upcomingPanel: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(NSLocalizedString("Upcoming", comment: "Calendar upcoming panel title"))
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(.white)
+                .font(NexusTypography.title(14))
+                .foregroundColor(NexusPalette.textPrimary)
                 .padding(.bottom, 8)
 
             if manager.upcomingWeekEvents.isEmpty {
                 Spacer()
                 Text(NSLocalizedString("Nothing this week", comment: "Calendar upcoming empty state"))
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.white.opacity(0.4))
+                    .font(NexusTypography.caption(12, .medium))
+                    .foregroundColor(NexusPalette.textTertiary)
                     .frame(maxWidth: .infinity)
                 Spacer()
             } else {
@@ -238,8 +237,8 @@ struct CalendarExpandedView: View {
     private func upcomingDaySection(date: Date, events: [EKEvent]) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(upcomingDayLabel(for: date))
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundColor(.white.opacity(0.55))
+                .font(NexusTypography.caption(10, .semibold))
+                .foregroundColor(NexusPalette.textTertiary)
 
             ForEach(Array(events.prefix(3).enumerated()), id: \.offset) { _, event in
                 HStack(spacing: 6) {
@@ -248,28 +247,28 @@ struct CalendarExpandedView: View {
                         .frame(width: 2, height: 14)
 
                     Text(event.title ?? NSLocalizedString("Untitled", comment: "Calendar untitled event fallback"))
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundColor(.white.opacity(0.78))
+                        .font(NexusTypography.caption(11, .medium))
+                        .foregroundColor(NexusPalette.textSecondary)
                         .lineLimit(1)
 
                     Spacer(minLength: 0)
 
                     if event.isAllDay {
                         Text(NSLocalizedString("All Day", comment: "Calendar all-day event label"))
-                            .font(.system(size: 9, weight: .medium))
-                            .foregroundColor(.white.opacity(0.35))
+                            .font(NexusTypography.caption(9, .medium))
+                            .foregroundColor(NexusPalette.textTertiary)
                     } else {
                         Text(timeFormatter.string(from: event.startDate))
-                            .font(.system(size: 9, weight: .medium))
-                            .foregroundColor(.white.opacity(0.35))
+                            .font(NexusTypography.caption(9, .medium))
+                            .foregroundColor(NexusPalette.textTertiary)
                     }
                 }
             }
 
             if events.count > 3 {
                 Text("+\(events.count - 3) more")
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(.white.opacity(0.3))
+                    .font(NexusTypography.caption(9, .medium))
+                    .foregroundColor(NexusPalette.textTertiary)
                     .padding(.leading, 8)
             }
         }
@@ -291,24 +290,24 @@ struct CalendarExpandedView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(event.title ?? "Untitled")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.white.opacity(0.88))
+                    .font(NexusTypography.caption(12, .medium))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .lineLimit(1)
 
                 if event.isAllDay {
                     Text("All Day")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(.white.opacity(0.45))
+                        .font(NexusTypography.caption(10, .medium))
+                        .foregroundColor(NexusPalette.textTertiary)
                 } else {
                     Text("\(timeFormatter.string(from: event.startDate)) – \(timeFormatter.string(from: event.endDate))")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(.white.opacity(0.45))
+                        .font(NexusTypography.caption(10, .medium))
+                        .foregroundColor(NexusPalette.textTertiary)
                 }
 
                 if let location = event.location, !location.isEmpty {
                     Text(location)
-                        .font(.system(size: 10))
-                        .foregroundColor(.white.opacity(0.35))
+                        .font(NexusTypography.body(10))
+                        .foregroundColor(NexusPalette.textTertiary)
                         .lineLimit(1)
                 }
             }
@@ -340,10 +339,7 @@ struct CalendarExpandedView: View {
         }
         .padding(.vertical, 4)
         .padding(.horizontal, 6)
-        .background(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color.white.opacity(isEventActive(event) ? 0.06 : 0))
-        )
+        .nexusSurface(variant: .glass, isActive: isEventActive(event), radius: NexusMetrics.cornerRadiusS)
     }
 
     private func isEventActive(_ event: EKEvent) -> Bool {
@@ -353,11 +349,10 @@ struct CalendarExpandedView: View {
 
     private func eventActionIcon(_ name: String) -> some View {
         Image(systemName: name)
-            .font(.system(size: 9, weight: .bold))
-            .foregroundColor(.white.opacity(0.88))
+            .font(NexusTypography.caption(9, .bold))
+            .foregroundColor(NexusPalette.textPrimary)
             .frame(width: 24, height: 24)
-            .background(Color.white.opacity(0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+            .nexusSurface(variant: .filled, radius: NexusMetrics.cornerRadiusS)
     }
 
     private func copy(url: URL) {
@@ -381,13 +376,13 @@ struct CalendarExpandedView: View {
         } label: {
             VStack(spacing: contentSpacing) {
                 Text("\(dayNumber)")
-                    .font(.system(size: 11, weight: isToday || isSelected ? .semibold : .regular))
+                    .font(NexusTypography.caption(11, isToday || isSelected ? .semibold : .regular))
                     .foregroundColor(dayForeground(isInDisplayedMonth: isInDisplayedMonth, isToday: isToday, isSelected: isSelected))
                     .lineLimit(1)
                     .minimumScaleFactor(0.85)
 
                 Circle()
-                    .fill(hasEvents && isInDisplayedMonth ? Color.white.opacity(0.4) : Color.clear)
+                    .fill(hasEvents && isInDisplayedMonth ? NexusPalette.neonPink : Color.clear)
                     .frame(width: indicatorSize, height: indicatorSize)
             }
             .frame(maxWidth: .infinity, minHeight: height, maxHeight: height)
@@ -401,20 +396,20 @@ struct CalendarExpandedView: View {
 
     private func dayForeground(isInDisplayedMonth: Bool, isToday: Bool, isSelected: Bool) -> Color {
         if !isInDisplayedMonth {
-            return .white.opacity(0.25)
+            return NexusPalette.textTertiary
         }
         if isSelected || isToday {
-            return .white
+            return NexusPalette.textPrimary
         }
-        return .white.opacity(0.9)
+        return NexusPalette.textPrimary
     }
 
     private func dayCellBackground(isToday: Bool, isSelected: Bool) -> Color {
         if isSelected {
-            return Color.blue.opacity(0.4)
+            return NexusPalette.royalPurple.opacity(0.4)
         }
         if isToday {
-            return Color.white.opacity(0.12)
+            return NexusPalette.glassTint.opacity(0.18)
         }
         return .clear
     }
@@ -422,11 +417,10 @@ struct CalendarExpandedView: View {
     private func monthButton(icon: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: icon)
-                .font(.system(size: 10, weight: .bold))
-                .foregroundColor(.white.opacity(0.9))
+                .font(NexusTypography.caption(10, .bold))
+                .foregroundColor(NexusPalette.textPrimary)
                 .frame(width: 20, height: 20)
-                .background(Color.white.opacity(0.08))
-                .clipShape(Circle())
+                .nexusSurface(variant: .filled, radius: 10)
         }
         .buttonStyle(.plain)
     }

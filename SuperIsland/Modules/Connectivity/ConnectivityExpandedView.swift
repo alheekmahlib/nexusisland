@@ -12,23 +12,23 @@ struct ConnectivityExpandedView: View {
 
             // Connected devices list (full expanded)
             if appState.currentState == .fullExpanded && (!bluetooth.connectedDevices.isEmpty || wifi.isConnected) {
-                Divider().background(.white.opacity(0.2))
+                Divider().background(NexusPalette.glassTint.opacity(0.2))
 
                 ForEach(bluetooth.connectedDevices) { device in
                     HStack(spacing: 8) {
                         Image(systemName: device.deviceType.iconName)
-                            .font(.system(size: 14))
-                            .foregroundColor(.white.opacity(0.7))
+                            .font(NexusTypography.body(14))
+                            .foregroundColor(NexusPalette.textSecondary)
                             .frame(width: 20)
 
                         Text(device.name)
-                            .font(.system(size: 12))
-                            .foregroundColor(.white.opacity(0.8))
+                            .font(NexusTypography.body(12))
+                            .foregroundColor(NexusPalette.textPrimary)
 
                         Spacer()
 
                         Circle()
-                            .fill(.green)
+                            .fill(NexusPalette.success)
                             .frame(width: 6, height: 6)
                     }
                 }
@@ -37,13 +37,13 @@ struct ConnectivityExpandedView: View {
                 if wifi.isConnected, let ssid = wifi.ssid {
                     HStack(spacing: 8) {
                         Image(systemName: wifi.signalIconName)
-                            .font(.system(size: 14))
-                            .foregroundColor(.white.opacity(0.7))
+                            .font(NexusTypography.body(14))
+                            .foregroundColor(NexusPalette.electricViolet)
                             .frame(width: 20)
 
                         Text(ssid)
-                            .font(.system(size: 12))
-                            .foregroundColor(.white.opacity(0.8))
+                            .font(NexusTypography.body(12))
+                            .foregroundColor(NexusPalette.textPrimary)
 
                         Spacer()
                     }
@@ -59,7 +59,8 @@ struct ConnectivityExpandedView: View {
             statusRow(
                 icon: device.deviceType.iconName,
                 status: NSLocalizedString("Connected", comment: "Connectivity status"),
-                statusColor: .green,
+                statusColor: NexusPalette.success,
+                isActive: true,
                 title: device.name,
                 detail: device.batteryLevel.map { "Battery \($0)%" }
             )
@@ -67,7 +68,8 @@ struct ConnectivityExpandedView: View {
             statusRow(
                 icon: "link.badge.plus",
                 status: NSLocalizedString("Disconnected", comment: "Connectivity status"),
-                statusColor: .red,
+                statusColor: NexusPalette.danger,
+                isActive: false,
                 title: disconnectedName,
                 detail: "Bluetooth device"
             )
@@ -75,7 +77,8 @@ struct ConnectivityExpandedView: View {
             statusRow(
                 icon: wifi.signalIconName,
                 status: NSLocalizedString("Wi-Fi Connected", comment: "Connectivity status"),
-                statusColor: .blue,
+                statusColor: NexusPalette.electricViolet,
+                isActive: true,
                 title: ssid,
                 detail: wifi.signalDescription
             )
@@ -83,7 +86,8 @@ struct ConnectivityExpandedView: View {
             statusRow(
                 icon: "wifi.slash",
                 status: NSLocalizedString("Offline", comment: "Connectivity status"),
-                statusColor: .white.opacity(0.45),
+                statusColor: NexusPalette.textTertiary,
+                isActive: false,
                 title: NSLocalizedString("No active connection", comment: "Connectivity offline title"),
                 detail: bluetooth.connectedDevices.isEmpty ? NSLocalizedString("Wi-Fi and Bluetooth are idle", comment: "Connectivity offline detail") : "\(bluetooth.connectedDevices.count) Bluetooth device\(bluetooth.connectedDevices.count == 1 ? "" : "s") connected"
             )
@@ -94,29 +98,27 @@ struct ConnectivityExpandedView: View {
         icon: String,
         status: String,
         statusColor: Color,
+        isActive: Bool = false,
         title: String,
         detail: String?
     ) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 28))
-                .foregroundColor(.white)
-                .frame(width: 32)
+            GradientMedallion(systemName: icon, size: 38, gradient: NexusGradient.purple, isActive: isActive)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(status)
-                    .font(.system(size: 10))
+                    .font(NexusTypography.mono(10))
                     .foregroundColor(statusColor)
 
                 Text(title)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.title(14))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .lineLimit(1)
 
                 if let detail, !detail.isEmpty {
                     Text(detail)
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.6))
+                        .font(NexusTypography.caption(11))
+                        .foregroundColor(NexusPalette.textSecondary)
                         .lineLimit(1)
                 }
             }

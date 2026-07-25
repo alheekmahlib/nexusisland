@@ -8,32 +8,32 @@ struct ConnectivityCompactView: View {
         HStack(spacing: 6) {
             if let device = bluetooth.lastConnectedDevice {
                 Image(systemName: device.deviceType.iconName)
-                    .font(.system(size: 12))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.caption(12, .medium))
+                    .foregroundColor(NexusPalette.textPrimary)
 
                 Text(device.name)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.caption(11, .medium))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .lineLimit(1)
             } else if let disconnectedName = bluetooth.lastDisconnectedDeviceName {
                 Image(systemName: "link.badge.plus")
-                    .font(.system(size: 12))
-                    .foregroundColor(.white.opacity(0.5))
+                    .font(NexusTypography.caption(12, .medium))
+                    .foregroundColor(NexusPalette.textTertiary)
 
                 Text(disconnectedName)
-                    .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.5))
+                    .font(NexusTypography.caption(11))
+                    .foregroundColor(NexusPalette.textTertiary)
                     .lineLimit(1)
                     .strikethrough()
             } else {
                 Image(systemName: wifi.signalIconName)
-                    .font(.system(size: 12))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.caption(12, .medium))
+                    .foregroundColor(NexusPalette.textPrimary)
 
                 if let ssid = wifi.ssid {
                     Text(ssid)
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundColor(.white)
+                        .font(NexusTypography.caption(11, .medium))
+                        .foregroundColor(NexusPalette.textPrimary)
                         .lineLimit(1)
                 }
             }

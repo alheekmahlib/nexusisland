@@ -33,16 +33,16 @@ struct NotificationExpandedView: View {
         VStack(spacing: 8) {
             Image(systemName: "bell.slash")
                 .font(.system(size: 18))
-                .foregroundColor(.white.opacity(0.4))
+                .foregroundColor(NexusPalette.textTertiary)
 
             Text(NSLocalizedString("No Notifications", comment: "Notification expanded empty state title"))
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.white.opacity(0.5))
+                .font(NexusTypography.caption(13, .medium))
+                .foregroundColor(NexusPalette.textTertiary)
 
             if appState.currentState == .fullExpanded {
                 Text(NSLocalizedString("Supported sources will appear here", comment: "Notification expanded empty state subtitle"))
-                    .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.3))
+                    .font(NexusTypography.caption(11))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
         }
         .multilineTextAlignment(.center)
@@ -114,15 +114,15 @@ struct NotificationExpandedView: View {
     private var footerBar: some View {
         HStack(spacing: 6) {
             Text("\(manager.recentNotifications.count) notification\(manager.recentNotifications.count == 1 ? "" : "s")")
-                .font(.system(size: 9, weight: .medium))
-                .foregroundColor(.white.opacity(0.34))
+                .font(NexusTypography.caption(9, .medium))
+                .foregroundColor(NexusPalette.textTertiary)
 
             Spacer(minLength: 0)
 
             Button(action: { manager.clearAll() }) {
                 Text(NSLocalizedString("Clear All", comment: "Notification clear all button"))
-                    .font(.system(size: 9, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.58))
+                    .font(NexusTypography.caption(9, .semibold))
+                    .foregroundColor(NexusPalette.textSecondary)
             }
             .buttonStyle(.plain)
         }
@@ -130,7 +130,7 @@ struct NotificationExpandedView: View {
         .padding(.top, 2)
         .overlay(alignment: .top) {
             Capsule()
-                .fill(.white.opacity(0.06))
+                .fill(NexusPalette.glassTint.opacity(0.06))
                 .frame(height: 1)
         }
     }
@@ -163,30 +163,30 @@ struct NotificationExpandedView: View {
                         VStack(alignment: .leading, spacing: 1) {
                             if featured {
                                 Text(notification.appName)
-                                    .font(.system(size: 9))
-                                    .foregroundColor(.white.opacity(0.46))
+                                    .font(NexusTypography.caption(9))
+                                    .foregroundColor(NexusPalette.textTertiary)
                                     .lineLimit(1)
                             }
 
                             Text(headline(for: notification))
-                                .font(.system(size: featured ? 11.5 : 11, weight: .semibold))
-                                .foregroundColor(.white.opacity(featured ? 1 : 0.9))
+                                .font(NexusTypography.title(featured ? 11.5 : 11))
+                                .foregroundColor(NexusPalette.textPrimary)
                                 .lineLimit(1)
                         }
 
                         Spacer(minLength: 0)
 
                         Text(timeAgo(notification.timestamp))
-                            .font(.system(size: featured ? 9 : 9))
-                            .foregroundColor(.white.opacity(featured ? 0.4 : 0.3))
+                            .font(NexusTypography.caption(9))
+                            .foregroundColor(NexusPalette.textTertiary)
                             .lineLimit(1)
                             .fixedSize()
                     }
 
                     if let message = message(for: notification) {
                         Text(message)
-                            .font(.system(size: 9.5))
-                            .foregroundColor(.white.opacity(0.72))
+                            .font(NexusTypography.caption(9.5))
+                            .foregroundColor(NexusPalette.textSecondary)
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
                     }
@@ -279,7 +279,7 @@ struct NotificationExpandedView: View {
                 .overlay {
                     if showsRing {
                         Circle()
-                            .stroke(.white.opacity(0.14), lineWidth: 0.8)
+                            .stroke(NexusPalette.glassTint.opacity(0.2), lineWidth: 0.8)
                     }
                 }
         } else if let iconImage = image(from: notification.appIconURL) {
@@ -295,10 +295,7 @@ struct NotificationExpandedView: View {
                 .frame(width: size, height: size)
                 .clipShape(RoundedRectangle(cornerRadius: size * 0.25, style: .continuous))
         } else {
-            Image(systemName: notification.appIcon)
-                .font(.system(size: max(10, size * 0.58)))
-                .foregroundColor(.white.opacity(0.85))
-                .frame(width: size, height: size)
+            GradientMedallion(systemName: notification.appIcon, size: size, gradient: NexusGradient.purple)
         }
     }
 
@@ -406,12 +403,8 @@ private struct SwipeToDismissNotificationRow<Content: View>: View {
         case .plain:
             Color.clear
         case .card:
-            RoundedRectangle(cornerRadius: featured ? 16 : 12, style: .continuous)
-                .fill(.white.opacity(featured ? 0.045 : 0.035))
-                .overlay(
-                    RoundedRectangle(cornerRadius: featured ? 16 : 12, style: .continuous)
-                        .stroke(.white.opacity(featured ? 0.09 : 0.06), lineWidth: 1)
-                )
+            Color.clear
+                .nexusSurface(variant: .glass, isActive: featured, radius: featured ? NexusMetrics.cornerRadiusM : NexusMetrics.cornerRadiusS)
         }
     }
 
@@ -435,7 +428,7 @@ private struct SwipeToDismissNotificationRow<Content: View>: View {
 
     private var swipeBackground: some View {
         RoundedRectangle(cornerRadius: chrome == .card ? (featured ? 16 : 12) : 10, style: .continuous)
-            .fill(.white.opacity(chrome == .card ? 0.04 : 0.025))
+            .fill(NexusPalette.glassTint.opacity(chrome == .card ? 0.04 : 0.025))
             .overlay {
                 HStack {
                     swipeIndicator(visible: dragOffset > 0)
@@ -449,12 +442,12 @@ private struct SwipeToDismissNotificationRow<Content: View>: View {
 
     private func swipeIndicator(visible: Bool) -> some View {
         Image(systemName: "xmark")
-            .font(.system(size: 10, weight: .bold))
-            .foregroundColor(.white.opacity(visible ? 0.88 : 0))
+            .font(NexusTypography.numeric(10))
+            .foregroundColor(NexusPalette.textPrimary.opacity(visible ? 0.88 : 0))
             .frame(width: 22, height: 22)
             .background(
                 Circle()
-                    .fill(.white.opacity(visible ? 0.12 : 0))
+                    .fill(NexusPalette.glassTint.opacity(visible ? 0.15 : 0))
             )
     }
 

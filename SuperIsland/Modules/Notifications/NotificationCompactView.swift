@@ -11,21 +11,21 @@ struct NotificationCompactView: View {
                 notificationLeadingView(notif, size: 14)
 
                 Text(headline(for: notif))
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.caption(11, .medium))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .lineLimit(1)
 
                 Spacer(minLength: 0)
 
                 if manager.recentNotifications.count > 1 {
                     Text("\(manager.recentNotifications.count)")
-                        .font(.system(size: 10, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.7))
+                        .font(NexusTypography.numeric(10))
+                        .foregroundStyle(NexusPalette.textSecondary)
                 }
             } else {
                 Text(NSLocalizedString("No notifications", comment: "Notification compact empty state"))
-                    .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.5))
+                    .font(NexusTypography.caption(11))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
         }
     }
@@ -74,10 +74,7 @@ struct NotificationCompactView: View {
                 .frame(width: size, height: size)
                 .clipShape(RoundedRectangle(cornerRadius: size * 0.24, style: .continuous))
         } else {
-            Image(systemName: notification.appIcon)
-                .font(.system(size: max(9, size * 0.58)))
-                .foregroundColor(.white.opacity(0.9))
-                .frame(width: size, height: size)
+            GradientMedallion(systemName: notification.appIcon, size: size, gradient: NexusGradient.purple)
         }
     }
 

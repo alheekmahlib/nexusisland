@@ -15,41 +15,39 @@ struct WeatherExpandedView: View {
         VStack(alignment: .leading, spacing: 8) {
             // Current weather
             HStack(spacing: 12) {
-                Image(systemName: manager.weather.conditionIcon)
-                    .font(.system(size: 28))
-                    .foregroundColor(.white)
+                GradientMedallion(systemName: manager.weather.conditionIcon, size: 38, gradient: NexusGradient.purple)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(temp(manager.weather.temperature))
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                        .font(NexusTypography.numeric(22))
+                        .foregroundColor(NexusPalette.textPrimary)
 
                     Text(manager.weather.condition)
-                        .font(.system(size: 12))
-                        .foregroundColor(.white.opacity(0.7))
+                        .font(NexusTypography.body(12))
+                        .foregroundColor(NexusPalette.textSecondary)
                 }
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 2) {
                     Text("H:\(temp(manager.weather.temperatureHigh))")
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.6))
+                        .font(NexusTypography.caption(11))
+                        .foregroundColor(NexusPalette.textSecondary)
                     Text("L:\(temp(manager.weather.temperatureLow))")
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.6))
+                        .font(NexusTypography.caption(11))
+                        .foregroundColor(NexusPalette.textSecondary)
                 }
             }
 
             // Location
             if !manager.weather.locationName.isEmpty {
                 Text(manager.weather.locationName)
-                    .font(.system(size: 10))
-                    .foregroundColor(.white.opacity(0.4))
+                    .font(NexusTypography.mono(10))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
 
             if appState.currentState == .fullExpanded {
-                Divider().background(.white.opacity(0.2))
+                Divider().background(NexusPalette.glassTint.opacity(0.2))
 
                 // Hourly forecast + details side by side
                 HStack(alignment: .top, spacing: 0) {
@@ -60,16 +58,16 @@ struct WeatherExpandedView: View {
                                 ForEach(manager.weather.hourlyForecast) { hour in
                                     VStack(spacing: 4) {
                                         Text(hour.hour)
-                                            .font(.system(size: 10))
-                                            .foregroundColor(.white.opacity(0.6))
+                                            .font(NexusTypography.mono(10))
+                                            .foregroundColor(NexusPalette.textSecondary)
 
                                         Image(systemName: hour.conditionIcon)
-                                            .font(.system(size: 14))
-                                            .foregroundColor(.white)
+                                            .font(NexusTypography.body(14))
+                                            .foregroundColor(NexusPalette.textPrimary)
 
                                         Text(temp(hour.temperature))
-                                            .font(.system(size: 11, weight: .medium))
-                                            .foregroundColor(.white)
+                                            .font(NexusTypography.numeric(11))
+                                            .foregroundColor(NexusPalette.textPrimary)
                                     }
                                 }
                             }
@@ -103,17 +101,17 @@ struct WeatherExpandedView: View {
     private func weatherDetailCell(icon: String, title: String, value: String) -> some View {
         HStack(spacing: 8) {
             Image(systemName: icon)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundColor(.white.opacity(0.45))
+                .font(NexusTypography.caption(11, .medium))
+                .foregroundColor(NexusPalette.textTertiary)
                 .frame(width: 16, alignment: .center)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(title)
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(.white.opacity(0.4))
+                    .font(NexusTypography.caption(9, .medium))
+                    .foregroundColor(NexusPalette.textTertiary)
                 Text(value)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.85))
+                    .font(NexusTypography.title(12))
+                    .foregroundColor(NexusPalette.textSecondary)
             }
         }
     }

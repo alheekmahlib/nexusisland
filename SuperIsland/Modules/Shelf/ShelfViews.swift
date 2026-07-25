@@ -8,29 +8,29 @@ struct ShelfCompactView: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: shelf.items.isEmpty ? "tray" : "tray.full.fill")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(.white.opacity(0.92))
+                .font(NexusTypography.title(13))
+                .foregroundStyle(NexusPalette.textPrimary)
 
             if let latest = latestItem {
                 Text(latest.displayName)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(NexusTypography.title(12))
+                    .foregroundStyle(NexusPalette.textPrimary)
                     .lineLimit(1)
             } else {
                 Text("Shelf")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.72))
+                    .font(NexusTypography.title(12))
+                    .foregroundStyle(NexusPalette.textSecondary)
             }
 
             if !shelf.items.isEmpty {
                 Text("\(shelf.items.count)")
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .font(NexusTypography.numeric(10))
+                    .foregroundStyle(NexusPalette.textPrimary)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(
                         Capsule(style: .continuous)
-                            .fill(Color.white.opacity(0.12))
+                            .fill(NexusPalette.glassTint.opacity(0.15))
                     )
             }
         }
@@ -48,27 +48,27 @@ struct ShelfExpandedView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Label("Shelf", systemImage: "tray.full.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(NexusTypography.title(13))
+                    .foregroundStyle(NexusPalette.textPrimary)
 
                 Text(shelf.items.isEmpty ? "Drop files, links, images, or text" : "\(shelf.items.count) saved")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.58))
+                    .font(NexusTypography.caption(11, .medium))
+                    .foregroundStyle(NexusPalette.textSecondary)
             }
 
             if shelf.items.isEmpty {
                 HStack(spacing: 10) {
                     Image(systemName: "tray.and.arrow.down.fill")
                         .font(.system(size: 18))
-                        .foregroundStyle(.white.opacity(0.78))
+                        .foregroundStyle(NexusPalette.textSecondary)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Drop onto the island")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(.white)
+                            .font(NexusTypography.title(14))
+                            .foregroundStyle(NexusPalette.textPrimary)
                         Text("Items stay here until you remove them.")
-                            .font(.system(size: 11))
-                            .foregroundStyle(.white.opacity(0.56))
+                            .font(NexusTypography.caption(11))
+                            .foregroundStyle(NexusPalette.textSecondary)
                     }
                 }
             } else {
@@ -144,25 +144,18 @@ private struct AirDropDropPane: View {
             shelf.openAirDropPicker()
         } label: {
             VStack(spacing: 10) {
-                Circle()
-                    .fill(Color.white.opacity(isTargeted ? 0.12 : 0.08))
-                    .frame(width: 54, height: 54)
-                    .overlay {
-                        Image(systemName: "airplayaudio")
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundStyle(.white.opacity(isTargeted ? 0.96 : 0.84))
-                    }
+                GradientMedallion(systemName: "airplayaudio", size: 54, gradient: NexusGradient.purple, isActive: isTargeted)
 
                 Text("AirDrop")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(NexusTypography.title(13))
+                    .foregroundStyle(NexusPalette.textPrimary)
 
                 Text("Drop to share")
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.46))
+                    .font(NexusTypography.caption(9, .medium))
+                    .foregroundStyle(NexusPalette.textTertiary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(panelBackground)
+            .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusL)
             .overlay(panelStroke)
         }
         .buttonStyle(.plain)
@@ -172,15 +165,10 @@ private struct AirDropDropPane: View {
         }
     }
 
-    private var panelBackground: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .fill(Color.white.opacity(0.03))
-    }
-
     private var panelStroke: some View {
         RoundedRectangle(cornerRadius: 24, style: .continuous)
             .stroke(
-                isTargeted ? Color.accentColor.opacity(0.92) : Color.white.opacity(0.12),
+                isTargeted ? NexusPalette.neonPink.opacity(0.92) : Color.clear,
                 style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [8])
             )
     }
@@ -198,12 +186,12 @@ private struct TrayDropPane: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color.white.opacity(0.03))
+            Color.clear
+                .nexusSurface(variant: .glass, radius: NexusMetrics.cornerRadiusL)
                 .overlay(
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .stroke(
-                            isTargeted ? Color.accentColor.opacity(0.92) : Color.white.opacity(0.12),
+                            isTargeted ? NexusPalette.neonPink.opacity(0.92) : Color.clear,
                             style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [8])
                         )
                 )
@@ -211,42 +199,35 @@ private struct TrayDropPane: View {
             if totalCount == 0 {
                 VStack(spacing: 12) {
                     Image(systemName: "tray.and.arrow.down")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.82))
+                        .font(NexusTypography.title(20))
+                        .foregroundStyle(NexusPalette.textSecondary)
 
                     Text("Drop files here")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.78))
+                        .font(NexusTypography.title(13))
+                        .foregroundStyle(NexusPalette.textSecondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         Text("Shelf")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(.white.opacity(0.72))
+                            .font(NexusTypography.title(12))
+                            .foregroundStyle(NexusPalette.textSecondary)
 
                         Text(totalCount == 1 ? "1 item" : "\(totalCount) items")
-                            .font(.system(size: 10, weight: .medium))
-                            .foregroundStyle(.white.opacity(0.42))
+                            .font(NexusTypography.caption(10, .medium))
+                            .foregroundStyle(NexusPalette.textTertiary)
 
                         Spacer(minLength: 8)
 
                         TextField("Search", text: $searchText)
                             .textFieldStyle(.plain)
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundStyle(.white.opacity(0.86))
+                            .font(NexusTypography.caption(11, .medium))
+                            .foregroundStyle(NexusPalette.textPrimary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 5)
                             .frame(width: 150)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .fill(Color.white.opacity(0.06))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .stroke(Color.white.opacity(0.08), lineWidth: 1)
-                            )
+                            .nexusSurface(variant: .outlined, radius: NexusMetrics.cornerRadiusS)
 
                         Menu("Clear") {
                             Button("Clear Unpinned") {
@@ -260,19 +241,19 @@ private struct TrayDropPane: View {
                         }
                         .menuStyle(.borderlessButton)
                         .fixedSize()
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.78))
+                        .font(NexusTypography.caption(11, .semibold))
+                        .foregroundStyle(NexusPalette.textSecondary)
                         .hoverPointer()
                     }
 
                     if items.isEmpty && isFiltering {
                         VStack(spacing: 8) {
                             Image(systemName: "magnifyingglass")
-                                .font(.system(size: 17, weight: .semibold))
-                                .foregroundStyle(.white.opacity(0.64))
+                                .font(NexusTypography.title(17))
+                                .foregroundStyle(NexusPalette.textTertiary)
                             Text("No matches")
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(.white.opacity(0.68))
+                                .font(NexusTypography.title(12))
+                                .foregroundStyle(NexusPalette.textTertiary)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
@@ -335,12 +316,12 @@ private struct ExpandedShelfChip: View {
 
                 VStack(alignment: .leading, spacing: 1) {
                     Text(item.displayName)
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .font(NexusTypography.title(11))
+                        .foregroundStyle(NexusPalette.textPrimary)
                         .lineLimit(1)
                     Text(item.subtitle)
-                        .font(.system(size: 9, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.5))
+                        .font(NexusTypography.caption(9, .medium))
+                        .foregroundStyle(NexusPalette.textTertiary)
                         .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -348,14 +329,7 @@ private struct ExpandedShelfChip: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .frame(width: 164, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color.white.opacity(0.06))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(Color.white.opacity(0.06), lineWidth: 1)
-            )
+            .nexusSurface(variant: .glass, radius: 14, gradient: NexusGradient.purple)
         }
         .buttonStyle(.plain)
         .hoverPointer()
@@ -380,35 +354,19 @@ private struct TrayItemTile: View {
 
                 if item.isPinned {
                     Image(systemName: "pin.fill")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.92))
+                        .font(NexusTypography.numeric(8))
+                        .foregroundStyle(NexusPalette.textPrimary)
                         .frame(width: 15, height: 15)
-                        .background(.ultraThinMaterial, in: Circle())
-                        .background(
-                            Circle()
-                                .fill(Color.black.opacity(0.28))
-                        )
-                        .overlay(
-                            Circle()
-                                .stroke(Color.white.opacity(0.24), lineWidth: 1)
-                        )
+                        .nexusSurface(variant: .glass, radius: 8)
                         .offset(x: -34, y: -4)
                 }
 
                 if item.isMissing {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.yellow.opacity(0.95))
+                        .font(NexusTypography.numeric(8))
+                        .foregroundStyle(NexusPalette.warning)
                         .frame(width: 15, height: 15)
-                        .background(.ultraThinMaterial, in: Circle())
-                        .background(
-                            Circle()
-                                .fill(Color.black.opacity(0.28))
-                        )
-                        .overlay(
-                            Circle()
-                                .stroke(Color.white.opacity(0.24), lineWidth: 1)
-                        )
+                        .nexusSurface(variant: .glass, radius: 8)
                         .offset(x: -17, y: -4)
                 }
 
@@ -416,19 +374,11 @@ private struct TrayItemTile: View {
                     shelf.remove(item)
                 } label: {
                     Image(systemName: "xmark")
-                        .font(.system(size: 7, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.9))
+                        .font(NexusTypography.numeric(7))
+                        .foregroundStyle(NexusPalette.textPrimary)
                         .frame(width: 15, height: 15)
-                        .background(.ultraThinMaterial, in: Circle())
-                        .background(
-                            Circle()
-                                .fill(Color.black.opacity(0.28))
-                        )
-                        .overlay(
-                            Circle()
-                                .stroke(Color.white.opacity(0.24), lineWidth: 1)
-                        )
-                        .shadow(color: .white.opacity(0.08), radius: 6)
+                        .nexusSurface(variant: .glass, radius: 8)
+                        .shadow(color: NexusPalette.glassTint.opacity(0.08), radius: 6)
                 }
                 .buttonStyle(.plain)
                 .offset(x: 4, y: -4)
@@ -437,15 +387,15 @@ private struct TrayItemTile: View {
 
             VStack(spacing: 2) {
                 Text(item.displayName)
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(NexusTypography.title(11))
+                    .foregroundStyle(NexusPalette.textPrimary)
                     .lineLimit(1)
                     .truncationMode(.middle)
                     .frame(width: 104)
 
                 Text(item.subtitle)
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.46))
+                    .font(NexusTypography.caption(9, .medium))
+                    .foregroundStyle(NexusPalette.textTertiary)
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .frame(width: 104)

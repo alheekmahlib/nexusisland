@@ -7,17 +7,17 @@ struct CalendarCompactView: View {
         HStack(spacing: 6) {
             if let event = manager.nextEvent, let countdown = manager.nextEventCountdown {
                 Text(event.title ?? NSLocalizedString("Event", comment: "Calendar compact fallback title"))
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white)
+                    .font(NexusTypography.caption(11, .medium))
+                    .foregroundColor(NexusPalette.textPrimary)
                     .lineLimit(1)
 
                 Text(countdown)
-                    .font(.system(size: 10))
-                    .foregroundColor(.white.opacity(0.6))
+                    .font(NexusTypography.mono(10))
+                    .foregroundColor(NexusPalette.textSecondary)
             } else {
                 Text(NSLocalizedString("No events", comment: "Calendar compact empty state"))
-                    .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.5))
+                    .font(NexusTypography.caption(11))
+                    .foregroundColor(NexusPalette.textTertiary)
             }
         }
     }
