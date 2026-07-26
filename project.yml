@@ -50,7 +50,7 @@ targets:
         CODE_SIGN_ENTITLEMENTS: NexusIsland/NexusIsland.entitlements
         PRODUCT_NAME: NexusIsland
         INFOPLIST_KEY_CFBundleDisplayName: Nexus Island
-        MARKETING_VERSION: "1.1.0"
+        MARKETING_VERSION: "1.1.1"
         CURRENT_PROJECT_VERSION: "1"
         COMBINE_HIDPI_IMAGES: true
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
