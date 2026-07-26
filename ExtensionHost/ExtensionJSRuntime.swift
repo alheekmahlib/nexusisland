@@ -240,7 +240,29 @@ final class ExtensionJSRuntime {
         let getValue: @convention(block) (String) -> JSValue? = { [weak self] key in
             guard let self else { return nil }
             let namespacedKey = self.storeKey(for: key)
+
+            // SECURITY: OAuth-style secrets live in the Keychain, not in
+            // UserDefaults. For the special "oauth" store key, merge the
+            // Keychain payload (containing accessToken/api_key/api_secret)
+            // with the UserDefaults metadata mirror. This keeps extension
+            // code unchanged while removing secrets from the on-disk plist.
+            if key == "oauth",
+               let secretData = KeychainStore.load(account: self.extensionID, service: "nexus.oauth"),
+               let secretPayload = try? JSONSerialization.jsonObject(with: secretData) as? [String: Any] {
+                if let metadata = self.defaults.object(forKey: namespacedKey) as? [String: Any] {
+                    // Merge: secret payload wins on key conflicts.
+                    var merged = metadata
+                    merged.merge(secretPayload) { _, new in new }
+                    return self.jsValueFromStoredObject(merged as Any)
+                }
+                return self.jsValueFromStoredObject(secretPayload as Any)
+            }
+
             guard let value = self.defaults.object(forKey: namespacedKey) else {
+                // Legacy fallback: an OAuth payload may still exist only in
+                // UserDefaults from a pre-Keychain install. Surface it so the
+                // extension works during the migration window; a future write
+                // will promote it to the Keychain.
                 return JSValue(nullIn: self.context)
             }
             return self.jsValueFromStoredObject(value)
@@ -249,6 +271,28 @@ final class ExtensionJSRuntime {
         let setValue: @convention(block) (String, JSValue) -> Void = { [weak self] key, value in
             guard let self else { return }
             let namespacedKey = self.storeKey(for: key)
+
+            // SECURITY: when an extension writes back to the "oauth" store,
+            // route the secret-bearing payload to the Keychain and keep only
+            // a metadata mirror in UserDefaults.
+            if key == "oauth" {
+                let object = value.toObject()
+                if let dict = object as? [String: Any],
+                   let secretData = try? JSONSerialization.data(withJSONObject: dict, options: []) {
+                    KeychainStore.save(
+                        account: self.extensionID,
+                        service: "nexus.oauth",
+                        data: secretData
+                    )
+                    var metadata = dict
+                    for secretKey in ["accessToken", "access_token", "apiKey", "api_key", "apiSecret", "api_secret"] {
+                        metadata.removeValue(forKey: secretKey)
+                    }
+                    self.defaults.set(metadata as NSDictionary, forKey: namespacedKey)
+                    return
+                }
+            }
+
             self.save(value: value.toObject(), forKey: namespacedKey)
         }
 
@@ -579,7 +623,16 @@ final class ExtensionJSRuntime {
         }
 
         let openURL: @convention(block) (String) -> Void = { urlString in
+            // SECURITY: only allow http(s)/mailto URLs to be handed off to
+            // NSWorkspace. Without this, any extension could open `file://`
+            // paths (including arbitrary executables on disk) or dangerous
+            // scheme handlers like `x-apple.systempreferences:` with no extra
+            // permission in its manifest.
             guard let url = URL(string: urlString) else { return }
+            let allowedSchemes: Set<String> = ["http", "https", "mailto"]
+            guard let scheme = url.scheme?.lowercased(), allowedSchemes.contains(scheme) else {
+                return
+            }
             NSWorkspace.shared.open(url)
         }
 
@@ -960,9 +1013,12 @@ final class ExtensionJSRuntime {
         guard let url = URL(string: urlString) else {
             return JSValue(object: ["status": 0, "data": NSNull(), "text": "", "error": "Invalid URL"], in: context)
         }
-
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        // Cap the per-request timeout so a hung localhost endpoint can't pin
+        // the main thread for the full semaphore window. 8s is generous for
+        // extension bridge calls while keeping the UI responsive.
+        request.timeoutInterval = 8
         if let options {
             if let method = jsOptionalString(options, key: "method"), !method.isEmpty {
                 request.httpMethod = method
@@ -981,15 +1037,39 @@ final class ExtensionJSRuntime {
         var responseStatus = 0
         var responseData = Data()
         var responseError: Error?
+        // `task` is captured by reference so the completion handler can be a
+        // no-op once the semaphore has timed out (otherwise a late response
+        // would still write into the captured vars and signal a dead
+        // semaphore).
+        var task: URLSessionDataTask?
+        var didTimeout = false
 
-        let task = extensionURLSession.dataTask(with: request) { data, response, error in
+        let completion: (Data?, URLResponse?, Error?) -> Void = { data, response, error in
+            // If the semaphore already timed out, drop the late response.
+            guard !didTimeout else { return }
             responseData = data ?? Data()
             responseStatus = (response as? HTTPURLResponse)?.statusCode ?? 0
             responseError = error
             semaphore.signal()
         }
-        task.resume()
-        _ = semaphore.wait(timeout: .now() + 15)
+
+        let dataTask = extensionURLSession.dataTask(with: request, completionHandler: completion)
+        task = dataTask
+        dataTask.resume()
+
+        let waited = semaphore.wait(timeout: .now() + 10)
+        if waited == .timedOut {
+            // Mark timed-out first so any in-flight completion handler becomes
+            // a no-op, then cancel the task to free its socket/buffer.
+            didTimeout = true
+            dataTask.cancel()
+            return JSValue(object: [
+                "status": 0,
+                "data": NSNull(),
+                "text": "",
+                "error": "Request timed out (sync fetch > 10s). Use NexusIsland.http.fetch (async) instead to avoid blocking the UI."
+            ], in: context)
+        }
 
         if let responseError {
             return JSValue(object: [

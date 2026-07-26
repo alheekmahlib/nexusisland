@@ -186,6 +186,31 @@ final class NotificationManager: ObservableObject {
         let name = notification.name.rawValue
         guard name.contains("notification") || name.contains("Notification") else { return }
 
+        // PERFORMANCE / PRIVACY: macOS emits hundreds of unrelated distributed
+        // notifications per minute (Spotlight indexing, Time Machine, iCloud
+        // sync, …). The substring match above still matches dozens of them
+        // (e.g. `com.apple.Spotlight.IndexNotification`). Drop the well-known
+        // noisy subsystems before we allocate a UUID + walk the AX tree for
+        // each one.
+        let blockedPrefixes: [String] = [
+            "com.apple.Spotlight",
+            "com.apple.metadata",
+            "com.apple.kvs",
+            "com.apple.icloud",
+            "com.apple.TimeMachine",
+            "com.apple.foundation.gmsync",
+            "com.apple.system",
+            "com.apple.notificationcenter.rangestatechanged", // system UI, not a user notification
+            "com.apple.systemnotifications" // system scheduler internals
+        ]
+        if blockedPrefixes.contains(where: { name.hasPrefix($0) }) { return }
+
+        // Additional allow-list heuristic: the relevant user-facing notification
+        // distributors use `CFNotification`-style names with the producer app's
+        // bundle id as a prefix. Skip names that look like internal system
+        // signals (no dot, or all-lowercase with no app-like prefix).
+        guard name.contains(".") else { return }
+
         let extracted = extractNotificationFields(from: notification)
         let sourceID = "distributed:\(UUID().uuidString)"
 
@@ -347,7 +372,11 @@ final class NotificationManager: ObservableObject {
             id: "notifications.whatsappLog",
             name: "WhatsApp notification log scan",
             module: .builtIn(.notifications),
-            policy: .interval(15, tolerance: 5),
+            // `log show` spawns a daemon and scans the unified log — expensive
+            // enough on slower Macs that running it every 15s caused a
+            // continuous CPU/IO drain. 30s halves the cost while still
+            // surfacing new WhatsApp events within a reasonable window.
+            policy: .interval(30, tolerance: 10),
             enabled: { AppState.shared.notificationsEnabled }
         ) { [weak self] in
             guard let self else { return }

@@ -202,6 +202,13 @@ final class TeleprompterManager: ObservableObject {
                 }
             }
         }
+        // Run in `.common` mode so the 3-2-1 countdown keeps ticking while
+        // the user is dragging/scrolling the teleprompter text. Default mode
+        // is suspended during those gestures, which previously stalled the
+        // countdown mid-interaction.
+        if let countdownTimer {
+            RunLoop.main.add(countdownTimer, forMode: .common)
+        }
         countdownTimer?.tolerance = 0.1
     }
 

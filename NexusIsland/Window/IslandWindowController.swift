@@ -30,6 +30,11 @@ final class IslandWindowController {
     private var defaultsObserver: Any?
     private var activeSpaceObserver: Any?
     private var fullscreenPollTimer: Timer?
+    // Debounce token for the panel reconciliation triggered by
+    // `UserDefaults.didChangeNotification`. Each tick would otherwise call
+    // `syncPanels(display:true)` + `CGWindowListCopyWindowInfo` on every
+    // UserDefaults write app-wide — a thundering herd on the main thread.
+    private var defaultsReconcileDebounce: DispatchWorkItem?
     private var cancellables = Set<AnyCancellable>()
     private var shrinkWorkItem: DispatchWorkItem?
     private var isShowing = false
@@ -339,16 +344,24 @@ final class IslandWindowController {
         ) { [weak self] _ in
             Task { @MainActor [weak self] in
                 guard let self else { return }
+                // Cheap, immediate feedback: propagate the screen-recordings
+                // visibility flag to each panel right away.
                 for panel in self.panels.values {
                     panel.setVisibleInScreenRecordings(self.appState.showInScreenRecordings)
                 }
-                // The display identifier may have changed — reconcile the
-                // panel set (handles switching to/from All Displays and
-                // moving between single screens). Also keeps compact frame
-                // in sync with size-affecting settings like "Hide side slots".
-                self.syncPanels(display: true)
-                self.updateCompactFrameIfNeeded()
-                self.updateFullscreenVisibility()
+                // Debounce the expensive reconciliation. A burst of settings
+                // writes (e.g. dragging a slider that hits @AppStorage) would
+                // otherwise trigger syncPanels(display:true) +
+                // CGWindowListCopyWindowInfo on every keystroke.
+                self.defaultsReconcileDebounce?.cancel()
+                let work = DispatchWorkItem { [weak self] in
+                    guard let self else { return }
+                    self.syncPanels(display: true)
+                    self.updateCompactFrameIfNeeded()
+                    self.updateFullscreenVisibility()
+                }
+                self.defaultsReconcileDebounce = work
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: work)
             }
         }
     }
@@ -441,17 +454,36 @@ final class IslandWindowController {
         return false
     }
 
-    deinit {
+    /// Explicit cleanup — call from AppDelegate before nil-ing the controller.
+    /// Required because `deinit` is nonisolated on a @MainActor class and
+    /// cannot safely touch MainActor-isolated stored properties (observers,
+    /// timers, Combine cancellables) without a data race under Swift 6 strict
+    /// concurrency. `deinit` below is best-effort only.
+    func cleanup() {
         if let observer = screenObserver {
             NotificationCenter.default.removeObserver(observer)
+            screenObserver = nil
         }
         if let observer = defaultsObserver {
             NotificationCenter.default.removeObserver(observer)
+            defaultsObserver = nil
         }
         if let observer = activeSpaceObserver {
             NSWorkspace.shared.notificationCenter.removeObserver(observer)
+            activeSpaceObserver = nil
         }
         fullscreenPollTimer?.invalidate()
+        fullscreenPollTimer = nil
         cancellables.removeAll()
+    }
+
+    deinit {
+        // Best-effort: hop to the MainActor to remove observers and timers.
+        // This is not guaranteed to run if the app is terminating, so
+        // `cleanup()` must be called explicitly by the owner (AppDelegate)
+        // before releasing the controller.
+        Task { @MainActor [weak self] in
+            self?.cleanup()
+        }
     }
 }

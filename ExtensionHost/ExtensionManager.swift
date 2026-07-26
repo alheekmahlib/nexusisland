@@ -237,9 +237,28 @@ final class ExtensionManager: ObservableObject {
             // Spin up the Python bridge BEFORE firing the JS onActivate hook —
             // the extension's onActivate issues synchronous fetches against
             // 127.0.0.1:7823 to install hooks, so the socket must be live.
+            // We must NOT block the MainActor (and freeze the UI) while we
+            // wait for the Python server to bind, so we hop to a background
+            // task for the wait and then return to the MainActor to fire
+            // onActivate. The activate path is therefore async when this is
+            // the agents-status extension.
             if extensionID == AgentsStatusBridge.managedExtensionID {
                 AgentsStatusBridge.shared.start()
-                AgentsStatusBridge.shared.waitForListening()
+                // Bridge wait runs off the main thread; once it resolves we
+                // resume on the MainActor to actually fire onActivate and
+                // schedule the refresh timer.
+                Task { [weak self] in
+                    await AgentsStatusBridge.shared.waitForListeningAsync()
+                    await MainActor.run {
+                        guard let self else { return }
+                        runtime.activate()
+                        self.startRefreshTimer(for: manifest)
+                        self.syncRuntimeEnergyState()
+                        self.refreshState(extensionID: extensionID)
+                        ExtensionLogger.shared.log(extensionID, .info, "Activated extension")
+                    }
+                }
+                return
             }
 
             runtime.activate()
@@ -857,16 +876,30 @@ final class WhatsAppWebBridge: ObservableObject {
         }
     }
 
+    private static let nodePathDefaultsKey = "nexus.node.executable.path"
+
     private func resolveNodeExecutableURL() -> URL? {
         if let cachedNodeExecutableURL,
            fileManager.isExecutableFile(atPath: cachedNodeExecutableURL.path) {
             return cachedNodeExecutableURL
         }
 
+        // Persisted discovery result from a previous launch — avoids re-running
+        // `source ~/.zshrc` (which can be slow: nvm/conda/powerline) on every
+        // app start. The path is re-validated on use, so stale entries simply
+        // fall through to the on-disk search below.
+        if let persisted = UserDefaults.standard.string(forKey: Self.nodePathDefaultsKey),
+           fileManager.isExecutableFile(atPath: persisted) {
+            let url = URL(fileURLWithPath: persisted)
+            cachedNodeExecutableURL = url
+            return url
+        }
+
         // Bundled node binary (injected into app bundle by build scripts — no system install needed)
         if let bundled = Bundle.main.resourceURL?.appendingPathComponent("node"),
            fileManager.isExecutableFile(atPath: bundled.path) {
             cachedNodeExecutableURL = bundled
+            UserDefaults.standard.set(bundled.path, forKey: Self.nodePathDefaultsKey)
             return bundled
         }
 
@@ -886,10 +919,28 @@ final class WhatsAppWebBridge: ObservableObject {
         for candidate in envPathCandidates + commonCandidates {
             if fileManager.isExecutableFile(atPath: candidate.path) {
                 cachedNodeExecutableURL = candidate
+                UserDefaults.standard.set(candidate.path, forKey: Self.nodePathDefaultsKey)
                 return candidate
             }
         }
 
+        // Last-resort fallback: source the user's shell config so nvm/conda
+        // paths are discovered. This is slow (can be seconds if .zshrc is
+        // heavy) so it is bounded by a 5s timeout. The result is persisted
+        // above-stable so subsequent launches skip this entirely.
+        guard let resolved = runShellNodeLookup(timeout: 5.0) else {
+            return nil
+        }
+        cachedNodeExecutableURL = resolved
+        UserDefaults.standard.set(resolved.path, forKey: Self.nodePathDefaultsKey)
+        return resolved
+    }
+
+    /// Run `/bin/zsh -lc '... command -v node'` with a hard timeout. Returns
+    /// the resolved node URL or `nil` on failure/timeout. Implemented as a
+    /// separate helper so the timeout logic is isolated from the discovery
+    /// cascade.
+    private func runShellNodeLookup(timeout: TimeInterval) -> URL? {
         let shellTask = Process()
         let stdoutPipe = Pipe()
         shellTask.executableURL = URL(fileURLWithPath: "/bin/zsh")
@@ -902,10 +953,27 @@ final class WhatsAppWebBridge: ObservableObject {
 
         do {
             try shellTask.run()
-            shellTask.waitUntilExit()
         } catch {
             return nil
         }
+
+        // Enforce a timeout: kill the shell if it runs longer than `timeout`
+        // (a slow .zshrc — nvm, conda, powerline — would otherwise hang the
+        // caller). We poll `isRunning` on a background queue so we never block
+        // the MainActor while waiting.
+        let deadline = Date().addingTimeInterval(timeout)
+        let killTimer = Timer(timeInterval: 0.2, repeats: true) { timer in
+            if !shellTask.isRunning || Date() >= deadline {
+                if shellTask.isRunning {
+                    shellTask.terminate()
+                }
+                timer.invalidate()
+            }
+        }
+        RunLoop.main.add(killTimer, forMode: .common)
+
+        shellTask.waitUntilExit()
+        killTimer.invalidate()
 
         guard shellTask.terminationStatus == 0 else {
             return nil
@@ -919,9 +987,7 @@ final class WhatsAppWebBridge: ObservableObject {
             return nil
         }
 
-        let resolvedURL = URL(fileURLWithPath: path, isDirectory: false)
-        cachedNodeExecutableURL = resolvedURL
-        return resolvedURL
+        return URL(fileURLWithPath: path, isDirectory: false)
     }
 
     private func sendProviderCommand(_ payload: [String: Any], dedupeKey: String? = nil) {

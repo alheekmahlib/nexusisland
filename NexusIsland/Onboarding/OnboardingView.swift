@@ -75,7 +75,15 @@ final class OnboardingPermissionsViewModel: ObservableObject {
         states = initial
     }
 
-    deinit { pollTask?.cancel() }
+    // `deinit` is nonisolated even on a @MainActor class, so it cannot touch
+    // the MainActor-isolated `pollTask` directly without a data race under
+    // Swift 6 strict concurrency. Capture the task by reference and cancel it
+    // via a best-effort hop to the MainActor; callers should also call
+    // `stopPolling()` explicitly when tearing down the view model.
+    deinit {
+        guard let task = pollTask else { return }
+        Task { @MainActor in task.cancel() }
+    }
 
     func startPolling() {
         pollTask?.cancel()

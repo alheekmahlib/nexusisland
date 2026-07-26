@@ -276,7 +276,16 @@ final class PrayerTimesManager: NSObject, ObservableObject {
         isLoading = true
         lastError = nil
 
-        let urlString = "https://api.aladhan.com/v1/timings/\(key)?latitude=\(resolvedLatitude)&longitude=\(resolvedLongitude)&method=\(calcMethodRaw)"
+        // CORRECTNESS: previously no timezone was passed, so Aladhan returned
+        // times in the *location's* local timezone (for the requested lat/long)
+        // while `parseTime` then interpreted them in the device's
+        // `Calendar.current` timezone. A user who travels (device tz differs
+        // from the prayer location) would see every prayer shift by the tz
+        // delta. Passing `timezone=` makes the API return times already in the
+        // device tz, and pinning `comps.timeZone` in `parseTime` keeps the
+        // round-trip consistent.
+        let tzIdentifier = TimeZone.current.identifier
+        let urlString = "https://api.aladhan.com/v1/timings/\(key)?latitude=\(resolvedLatitude)&longitude=\(resolvedLongitude)&method=\(calcMethodRaw)&timezone=\(tzIdentifier)"
         guard let url = URL(string: urlString) else {
             isLoading = false
             lastError = "Invalid URL"
@@ -354,6 +363,11 @@ final class PrayerTimesManager: NSObject, ObservableObject {
         comps.hour = h
         comps.minute = m
         comps.second = 0
+        // Pin the timezone to the device tz so the date we construct lines up
+        // with what the API returned (we now pass `timezone=` in the request,
+        // so the two are guaranteed to agree). Without this the default
+        // `Calendar.current` would use whatever tz the calendar was created in.
+        comps.timeZone = TimeZone.current
         return Calendar.current.date(from: comps)
     }
 

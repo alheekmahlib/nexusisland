@@ -2,10 +2,11 @@
 
 var LASTFM_API_ROOT = "https://ws.audioscrobbler.com/2.0/";
 var LASTFM_AUTHORIZE_URL = "https://api.supercmd.sh/auth/lastfm/authorize?app=nexus";
-// Last.fm API key for the SuperCMD-registered app. Public per Last.fm's auth flow
-// (Last.fm exposes it in the auth redirect URL). Used as a fallback when the
-// OAuth callback doesn't carry an apiKey of its own.
-var LASTFM_DEFAULT_API_KEY = "d7f31db0cf7868f348a7fb411a91b6c4";
+// SECURITY: there is no longer a hardcoded fallback API key. Last.fm API
+// credentials must come from the OAuth callback (the supercmd proxy forwards
+// per-install apiKey/apiSecret), or the user must re-authenticate. A constant
+// key baked into the source was shared by every install and could be revoked
+// for everyone if any single user abused it.
 var MAX_BATCH_SIZE = 50;
 var MAX_QUEUE_SIZE = 200;
 var MAX_HISTORY_SIZE = 300;
@@ -283,8 +284,9 @@ function readOAuthSession() {
   var expiresIn = toNumber(oauth.expiresIn, toNumber(oauth.expires_in, 0));
   var username = trimString(oauth.username || oauth.name);
   // Last.fm signing requires the api_key/api_secret of the app the OAuth flow
-  // ran under. The supercmd callback forwards both alongside the session key.
-  var apiKey = trimString(oauth.apiKey || oauth.api_key) || LASTFM_DEFAULT_API_KEY;
+  // ran under. These MUST come from the supercmd OAuth callback — there is no
+  // baked-in fallback. If they are missing the user needs to re-authenticate.
+  var apiKey = trimString(oauth.apiKey || oauth.api_key);
   var apiSecret = trimString(oauth.apiSecret || oauth.api_secret);
 
   return {

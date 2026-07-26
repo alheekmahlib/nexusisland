@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct AdvancedSettingsView: View {
@@ -70,9 +71,9 @@ struct AdvancedSettingsView: View {
                     .controlSize(.small)
                     .alert(NSLocalizedString("Reset Settings", comment: "Alert title"), isPresented: $showResetAlert) {
                         Button(NSLocalizedString("Cancel", comment: "Button"), role: .cancel) {}
-                        Button(NSLocalizedString("Reset", comment: "Button"), role: .destructive) { resetAllSettings() }
+                        Button(NSLocalizedString("Reset & Restart", comment: "Button"), role: .destructive) { resetAllSettings() }
                     } message: {
-                        Text(NSLocalizedString("This will reset all NexusIsland settings to their defaults.", comment: "Alert message"))
+                        Text(NSLocalizedString("This will reset all NexusIsland settings to their defaults and restart the app. @AppStorage values are cached for the session, so a restart is required for the reset to take full effect.", comment: "Alert message"))
                     }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 12)
@@ -154,10 +155,19 @@ struct AdvancedSettingsView: View {
         }
     }
 
+    /// Performs the actual wipe. We do NOT call a hypothetical
+    /// `AppState.resetToDefaults()` because `@AppStorage` caches its values
+    /// in property storage on first access and will keep showing the stale
+    /// pre-reset values for the rest of the session. The honest UX is to
+    /// wipe UserDefaults and ask the user to restart, so `@AppStorage`
+    /// re-reads from a clean plist on the next launch.
     private func resetAllSettings() {
         let domain = Bundle.main.bundleIdentifier ?? "com.vexaltech.NexusIsland"
         UserDefaults.standard.removePersistentDomain(forName: domain)
-        UserDefaults.standard.synchronize()
+        // Relaunch so @AppStorage re-hydrates from the now-empty defaults.
+        let appURL = URL(fileURLWithPath: Bundle.main.bundlePath)
+        NSWorkspace.shared.openApplication(at: appURL, configuration: NSWorkspace.OpenConfiguration())
+        NSApp.terminate(nil)
     }
 
     private func diagnosticRow(_ job: EnergyDiagnosticsSnapshot) -> some View {

@@ -534,7 +534,9 @@ private struct LinearOAuthSettingsView: View {
 
     private func disconnect() {
         UserDefaults.standard.removeObject(forKey: Self.oauthStoreKey)
-        UserDefaults.standard.synchronize()
+        // SECURITY: also purge the Keychain entry so the secret is fully gone,
+        // not just the metadata mirror in UserDefaults.
+        KeychainStore.delete(account: linearMentionsExtensionID, service: "nexus.oauth")
 
         if manager.runtimes[linearMentionsExtensionID] == nil {
             manager.activate(extensionID: linearMentionsExtensionID)
@@ -722,7 +724,9 @@ private struct LastFmOAuthSettingsView: View {
 
     private func disconnect() {
         UserDefaults.standard.removeObject(forKey: Self.oauthStoreKey)
-        UserDefaults.standard.synchronize()
+        // SECURITY: also purge the Keychain entry so the secret is fully gone,
+        // not just the metadata mirror in UserDefaults.
+        KeychainStore.delete(account: lastFmScrobblerExtensionID, service: "nexus.oauth")
 
         if manager.runtimes[lastFmScrobblerExtensionID] == nil {
             manager.activate(extensionID: lastFmScrobblerExtensionID)

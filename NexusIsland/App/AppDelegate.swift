@@ -7,6 +7,11 @@ import Speech
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    /// Shared accessor set in `applicationDidFinishLaunching`, so static
+    /// helpers (e.g. `showSettingsWindow()`) can reach the instance-owned
+    /// settings window controller without callers holding a delegate
+    /// reference.
+    static var shared: AppDelegate?
     private static let linearExtensionID = "nexus.linear-mentions"
     private static let linearOAuthStoreKey = "extensions.\(linearExtensionID).store.oauth"
     private static let lastFmExtensionID = "nexus.lastfm-scrobbler"
@@ -20,9 +25,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var powerStateObserver: NSObjectProtocol?
     private var quitHotkeyMonitor: Any?
     private var didBootstrapApp = false
-    private static var fallbackSettingsWindowController: NSWindowController?
+    // Instance-owned settings window controller. Previously this was a static
+    // property with `isReleasedWhenClosed = false`, which meant the NSWindow
+    // and its entire SwiftUI view tree lived for the whole process lifetime
+    // and were rebuilt on top of the old state every time settings reopened.
+    // As an instance property we can nil it out when the window closes
+    // (`windowWillClose`) so the view tree is released between opens.
+    private var fallbackSettingsWindowController: NSWindowController?
+    // Debounce token for the expensive work triggered by
+    // `UserDefaults.didChangeNotification`. Without this, a single settings
+    // write fires `ModuleRefreshScheduler.refreshScheduling()` +
+    // `ExtensionManager.syncRuntimeEnergyState()` on every keystroke that
+    // touches a bound Toggle (a thundering herd of reconciliations).
+    private var defaultsChangeDebounce: DispatchWorkItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Self.shared = self
         Analytics.start()
         Analytics.track("app_launched", properties: [
             "version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown",
@@ -280,8 +298,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        UserDefaults.standard.set(payload as NSDictionary, forKey: routing.storeKey)
-        UserDefaults.standard.synchronize()
+        // SECURITY: store the full OAuth payload (which contains accessToken,
+        // api_key, api_secret) in the Keychain rather than UserDefaults. A
+        // metadata-only projection is kept in UserDefaults for non-secret UI
+        // fields. Extensions still read via `NexusIsland.store.get("oauth")`,
+        // which is bridged to consult the Keychain (see `injectStore`).
+        if let secretData = try? JSONSerialization.data(withJSONObject: payload, options: []) {
+            KeychainStore.save(
+                account: routing.extensionID,
+                service: "nexus.oauth",
+                data: secretData
+            )
+        }
+
+        // Metadata-only mirror (no access tokens / API secrets) for any UI or
+        // legacy code path that reads from UserDefaults directly.
+        var metadata = payload
+        for secretKey in ["accessToken", "access_token", "apiKey", "api_key", "apiSecret", "api_secret"] {
+            metadata.removeValue(forKey: secretKey)
+        }
+        UserDefaults.standard.set(metadata as NSDictionary, forKey: routing.storeKey)
 
         let extensions = ExtensionManager.shared
         if extensions.runtimes[routing.extensionID] == nil {
@@ -352,9 +388,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             queue: .main
         ) { [weak self] _ in
             Task { @MainActor [weak self] in
-                self?.applyMenuBarVisibility()
-                ModuleRefreshScheduler.shared.refreshScheduling()
-                ExtensionManager.shared.syncRuntimeEnergyState()
+                guard let self else { return }
+                // applyMenuBarVisibility is cheap and gives immediate UI
+                // feedback, so run it synchronously. The expensive downstream
+                // refreshes are debounced so a burst of UserDefaults writes
+                // (e.g. dragging a slider) collapses into a single reconcile.
+                self.applyMenuBarVisibility()
+                self.defaultsChangeDebounce?.cancel()
+                let work = DispatchWorkItem {
+                    ModuleRefreshScheduler.shared.refreshScheduling()
+                    ExtensionManager.shared.syncRuntimeEnergyState()
+                }
+                self.defaultsChangeDebounce = work
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: work)
             }
         }
     }
@@ -399,10 +445,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     static func showSettingsWindow() {
         // Avoid opening the SwiftUI Settings scene via AppKit selectors in menu-bar mode.
         // macOS may reject those calls with a "use SettingsLink" warning.
-        showFallbackSettingsWindow()
+        Self.shared?.showFallbackSettingsWindow()
     }
 
-    private static func showFallbackSettingsWindow() {
+    private func showFallbackSettingsWindow() {
         if let window = fallbackSettingsWindowController?.window {
             window.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
@@ -424,7 +470,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.isMovableByWindowBackground = true
         window.setContentSize(NSSize(width: 960, height: 680))
         window.minSize = NSSize(width: 800, height: 560)
-        window.isReleasedWhenClosed = false
+        // Allow the window (and its full SwiftUI view tree) to be released
+        // when closed, instead of living for the whole process lifetime.
+        window.isReleasedWhenClosed = true
+        window.delegate = self
         window.center()
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -435,5 +484,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func quitApp() {
         NSApp.terminate(nil)
+    }
+}
+
+extension AppDelegate: NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        // Release the settings window controller + its SwiftUI view tree when
+        // the user closes the window. Without this the NSWindow and the
+        // hosted SettingsView hierarchy (which subscribes to AppState and
+        // every per-module manager) were retained for the whole process
+        // lifetime and rebuilt on top of stale state on every reopen.
+        if (notification.object as? NSWindow) === fallbackSettingsWindowController?.window {
+            fallbackSettingsWindowController = nil
+        }
     }
 }

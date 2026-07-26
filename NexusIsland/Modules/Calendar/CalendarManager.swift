@@ -299,6 +299,11 @@ final class CalendarManager: ObservableObject {
         NotificationCenter.default.removeObserver(self, name: .NSCalendarDayChanged, object: nil)
         NotificationCenter.default.removeObserver(self, name: .EKEventStoreChanged, object: store)
         isObservingStoreChanges = false
+        // Cancel any pending pre-event notification timer so it doesn't fire
+        // (and call `showHUD`) after the user has toggled the Calendar module
+        // off. Previously this timer leaked until the next reschedule.
+        preEventTimer?.invalidate()
+        preEventTimer = nil
     }
 
     @objc private func dayChanged() {

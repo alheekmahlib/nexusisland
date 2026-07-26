@@ -10,11 +10,25 @@ import SwiftUI
 struct CurrencyRate: Identifiable, Equatable {
     let id: String          // currency code
     let code: String
-    let rate: Double        // 1 USD = rate
+    // CORRECTNESS: `rate` was `Double`, which accumulates floating-point error
+    // across multiplications and is the wrong type for money. `Decimal`
+    // preserves the significant digits a FX rate actually has and rounds
+    // predictably for display.
+    let rate: Decimal       // 1 USD = rate
     let flag: String        // SF Symbol or emoji fallback
 
     var formattedRate: String {
-        String(format: "%.2f", rate)
+        // Round to 2 decimal places using NSDecimalNumber rounding so the
+        // displayed rate is stable, not at the mercy of IEEE-754 representation.
+        let rounded = (rate as NSDecimalNumber).rounding(accordingToBehavior: NSDecimalNumberHandler(
+            roundingMode: .plain,
+            scale: 2,
+            raiseOnExactness: false,
+            raiseOnOverflow: false,
+            raiseOnUnderflow: false,
+            raiseOnDivideByZero: false
+        ))
+        return rounded.stringValue
     }
 }
 
@@ -48,11 +62,27 @@ final class CurrencyManager: ObservableObject {
                 if let error { self.lastError = error.localizedDescription; return }
                 guard let data,
                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                      let rawRates = json["rates"] as? [String: Double] else {
+                      let rawRates = json["rates"] as? [String: Any] else {
                     self.lastError = "Bad response"; return
                 }
                 self.rates = self.defaultCurrencies.compactMap { code in
-                    guard let rate = rawRates[code] else { return nil }
+                    // The API returns rates as JSON numbers. Parse via the
+                    // raw `Any` so we can build a `Decimal` from the source
+                    // string representation rather than going through Double
+                    // (which would re-introduce the FP error we're trying to
+                    // avoid).
+                    guard let raw = rawRates[code] else { return nil }
+                    let rate: Decimal
+                    if let number = raw as? NSNumber {
+                        rate = Decimal(string: number.stringValue) ?? Decimal()
+                    } else if let string = raw as? String,
+                              let parsed = Decimal(string: string) {
+                        rate = parsed
+                    } else if let dbl = raw as? Double {
+                        rate = Decimal(string: String(dbl)) ?? Decimal()
+                    } else {
+                        return nil
+                    }
                     return CurrencyRate(id: code, code: code, rate: rate, flag: Self.flagFor(code))
                 }
                 self.lastError = nil
@@ -60,8 +90,9 @@ final class CurrencyManager: ObservableObject {
         }.resume()
     }
 
-    /// Convert an amount from USD to a target currency.
-    func convert(amount: Double, to code: String) -> Double? {
+    /// Convert an amount from USD to a target currency. Uses Decimal
+    /// arithmetic so the result does not drift across repeated conversions.
+    func convert(amount: Decimal, to code: String) -> Decimal? {
         guard let rate = rates.first(where: { $0.code == code })?.rate else { return nil }
         return amount * rate
     }

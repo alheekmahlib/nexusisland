@@ -42,6 +42,18 @@ final class EmojiPickerManager: ObservableObject {
         if let appObserver {
             NotificationCenter.default.removeObserver(appObserver)
         }
+
+        // Tear down the system-wide CGEventTap. Without this the tap and its
+        // run-loop source leak for the lifetime of the process (the manager
+        // is a singleton today, so this is mostly defensive — but if the
+        // manager is ever recreated, a stale tap would keep observing every
+        // keyDown app-wide).
+        if let eventTap {
+            CGEvent.tapEnable(tap: eventTap, enable: false)
+        }
+        if let runLoopSource {
+            CFRunLoopRemoveSource(CFRunLoopGetMain(), runLoopSource, .commonModes)
+        }
     }
 
     var displayedResults: [EmojiSearchResult] {
@@ -416,6 +428,21 @@ private struct CaretAnchor {
 }
 
 private enum CaretLocator {
+    /// Cast a CFTypeRef to an AXUIElement. Swift treats AXUIElement as an
+    /// AnyObject-bridged CF type, so the compiler rejects `as? AXUIElement`
+    /// ("conditional downcast will always succeed"). We verify the type id
+    /// explicitly and bridge via unsafeBitCast; on a type mismatch we return
+    /// nil instead of forcing the caller to crash.
+    static func asAXUIElement(_ raw: CFTypeRef) -> AXUIElement? {
+        guard CFGetTypeID(raw) == AXUIElementGetTypeID() else { return nil }
+        return unsafeBitCast(raw, to: AXUIElement.self)
+    }
+
+    static func asAXValue(_ raw: CFTypeRef) -> AXValue? {
+        guard CFGetTypeID(raw) == AXValueGetTypeID() else { return nil }
+        return unsafeBitCast(raw, to: AXValue.self)
+    }
+
     static func currentAnchor() -> CaretAnchor? {
         let systemWide = AXUIElementCreateSystemWide()
         var focusedValue: CFTypeRef?
@@ -424,7 +451,14 @@ private enum CaretLocator {
             return fallbackAnchor()
         }
 
-        let element = focusedElement as! AXUIElement
+        // CRASH-SAFE: was `focusedElement as! AXUIElement`. A CFTypeRef returned
+        // by AXUIElementCopyAttributeValue is *usually* an AXUIElement, but a
+        // misbehaving accessibility implementation could hand back a different
+        // Core Foundation type — the force-cast would trap. Verify via type id
+        // and fall back to the system-wide anchor otherwise.
+        guard let element = asAXUIElement(focusedElement) else {
+            return fallbackAnchor()
+        }
         if let rect = selectedRangeBounds(for: element) ?? elementBounds(for: element),
            let anchor = anchor(from: rect) {
             return anchor
@@ -439,8 +473,9 @@ private enum CaretLocator {
               let rawValue = value else {
             return nil
         }
-        let rangeValue = rawValue as! AXValue
-        guard AXValueGetType(rangeValue) == .cfRange else { return nil }
+        // CRASH-SAFE: was `rawValue as! AXValue`.
+        guard let rangeValue = asAXValue(rawValue),
+              AXValueGetType(rangeValue) == .cfRange else { return nil }
 
         var range = CFRange()
         guard AXValueGetValue(rangeValue, .cfRange, &range) else {
@@ -458,8 +493,9 @@ private enum CaretLocator {
               let boundsRawValue = value else {
             return nil
         }
-        let boundsValue = boundsRawValue as! AXValue
-        guard AXValueGetType(boundsValue) == .cgRect else { return nil }
+        // CRASH-SAFE: was `boundsRawValue as! AXValue`.
+        guard let boundsValue = asAXValue(boundsRawValue),
+              AXValueGetType(boundsValue) == .cgRect else { return nil }
 
         var rect = CGRect.zero
         return AXValueGetValue(boundsValue, .cgRect, &rect) ? rect : nil
@@ -480,8 +516,9 @@ private enum CaretLocator {
               let rawValue = value else {
             return nil
         }
-        let axValue = rawValue as! AXValue
-        guard AXValueGetType(axValue) == .cgPoint else { return nil }
+        // CRASH-SAFE: was `rawValue as! AXValue`.
+        guard let axValue = asAXValue(rawValue),
+              AXValueGetType(axValue) == .cgPoint else { return nil }
 
         var point = CGPoint.zero
         return AXValueGetValue(axValue, .cgPoint, &point) ? point : nil
@@ -493,8 +530,9 @@ private enum CaretLocator {
               let rawValue = value else {
             return nil
         }
-        let axValue = rawValue as! AXValue
-        guard AXValueGetType(axValue) == .cgSize else { return nil }
+        // CRASH-SAFE: was `rawValue as! AXValue`.
+        guard let axValue = asAXValue(rawValue),
+              AXValueGetType(axValue) == .cgSize else { return nil }
 
         var size = CGSize.zero
         return AXValueGetValue(axValue, .cgSize, &size) ? size : nil

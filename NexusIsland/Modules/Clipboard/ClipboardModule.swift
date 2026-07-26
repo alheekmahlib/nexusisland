@@ -51,6 +51,13 @@ final class ClipboardManager: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.checkPasteboard() }
         }
+        // Add `.common` mode so the pasteboard poll keeps firing during
+        // SwiftUI gestures, dragging, and scroll tracking (the default mode
+        // is suspended while those input loops are running). Without this a
+        // copy performed mid-drag would be missed until the gesture ends.
+        if let timer {
+            RunLoop.main.add(timer, forMode: .common)
+        }
     }
 
     func stopMonitoring() {

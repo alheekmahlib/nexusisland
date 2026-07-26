@@ -185,12 +185,26 @@ enum HapticFeedbackController {
 
     private static func schedule(pattern: NSHapticFeedbackManager.FeedbackPattern, after delay: TimeInterval) {
         let workItemID = UUID()
-        var workItem: DispatchWorkItem!
-        workItem = DispatchWorkItem {
+        // Use a weak box so the closure does NOT retain its own DispatchWorkItem.
+        // Previously this was `var workItem: DispatchWorkItem!` (implicitly
+        // unwrapped) captured inside its own closure — a classic retain cycle
+        // that kept the work item alive even after `pendingWorkItems` removed
+        // it, plus an IUO hazard if re-entry happened between assignment and
+        // execution.
+        final class WeakWorkItemBox {
+            weak var value: DispatchWorkItem?
+        }
+        let box = WeakWorkItemBox()
+
+        let workItem = DispatchWorkItem { [weak box] in
+            // Pull the live reference (if still scheduled) to inspect cancel
+            // state without keeping a strong cycle alive.
+            let isCancelled = box?.value?.isCancelled ?? true
             pendingWorkItems.removeValue(forKey: workItemID)
-            guard !workItem.isCancelled else { return }
+            guard !isCancelled else { return }
             NSHapticFeedbackManager.defaultPerformer.perform(pattern, performanceTime: .now)
         }
+        box.value = workItem
 
         pendingWorkItems[workItemID] = workItem
 

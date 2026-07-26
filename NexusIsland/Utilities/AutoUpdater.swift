@@ -37,6 +37,13 @@ final class AutoUpdater: ObservableObject {
                 throw UpdateError.appNotFoundInDMG
             }
 
+            // SECURITY: verify the downloaded app is signed by the same Team ID
+            // and passes Gatekeeper assessment before we let `ditto` overwrite
+            // the running app. Without this, a tampered release asset or a
+            // MITM'd download would be able to replace a signed, notarized app
+            // with an attacker payload.
+            try await verifySignature(at: appInMount, referenceAppPath: appPath)
+
             try launchReplacementScript(
                 src: appInMount,
                 dst: appPath,
@@ -86,6 +93,98 @@ final class AutoUpdater: ObservableObject {
         }
     }
 
+    // MARK: - Signature verification
+
+    /// Verify the downloaded app is code-signed with the same Team ID as the
+    /// running app and passes Gatekeeper (`spctl`) assessment. Throws
+    /// `UpdateError.signatureMismatch` if the Team ID differs, or
+    /// `.verificationFailed` if `codesign` / `spctl` reject the bundle.
+    private func verifySignature(at candidatePath: String, referenceAppPath: String) async throws {
+        // 1. The Team ID of the *currently running* app — anything we install
+        //    must come from the same team.
+        let expectedTeamID = try await teamID(of: referenceAppPath)
+
+        // 2. `codesign --verify --deep --strict` — signature chain is intact.
+        try await runProcess(
+            executable: "/usr/bin/codesign",
+            arguments: ["--verify", "--deep", "--strict", "--verbose=2", candidatePath],
+            failure: .verificationFailed
+        )
+
+        // 3. `spctl --assess` — Gatekeeper accepts this app (notarization tick
+        //    present for Developer ID apps).
+        try await runProcess(
+            executable: "/usr/bin/spctl",
+            arguments: ["--assess", "--type", "execute", "--verbose", candidatePath],
+            failure: .verificationFailed
+        )
+
+        // 4. Team ID of the candidate must match the running app's Team ID.
+        let candidateTeamID = try await teamID(of: candidatePath)
+        guard let expectedTeamID, expectedTeamID == candidateTeamID else {
+            throw UpdateError.signatureMismatch(expected: expectedTeamID, actual: candidateTeamID)
+        }
+    }
+
+    /// Extract the ad-hoc Team ID from `codesign -dvv` output (line like
+    /// `TeamIdentifier=ABCDE12345`). Returns `nil` for an ad-hoc signed app.
+    private func teamID(of appPath: String) async throws -> String? {
+        try await withCheckedThrowingContinuation { continuation in
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/codesign")
+            process.arguments = ["-dvv", appPath]
+            let pipe = Pipe()
+            process.standardError = pipe // codesign writes -dvv output to stderr
+            process.terminationHandler = { [weak pipe] p in
+                // codesign -dvv exits non-zero on unsigned apps — treat that as
+                // "no Team ID" so the equality check fails safely.
+                guard p.terminationStatus == 0 || p.terminationStatus == 1 else {
+                    continuation.resume(throwing: UpdateError.verificationFailed)
+                    return
+                }
+                let output = String(data: pipe?.fileHandleForReading.readDataToEndOfFile() ?? Data(), encoding: .utf8) ?? ""
+                let teamLine = output
+                    .components(separatedBy: "\n")
+                    .first(where: { $0.hasPrefix("TeamIdentifier=") })
+                let teamID = teamLine?
+                    .components(separatedBy: "=")
+                    .dropFirst()
+                    .joined(separator: "=")
+                    .trimmingCharacters(in: .whitespaces)
+                continuation.resume(returning: (teamID?.isEmpty == true) ? nil : teamID)
+            }
+            do {
+                try process.run()
+            } catch {
+                continuation.resume(throwing: UpdateError.verificationFailed)
+            }
+        }
+    }
+
+    /// Run an external process and resume the continuation with a failure error
+    /// if it exits non-zero. Stdout/stderr are discarded.
+    private func runProcess(executable: String, arguments: [String], failure: UpdateError) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: executable)
+            process.arguments = arguments
+            process.standardOutput = Pipe()
+            process.standardError = Pipe()
+            process.terminationHandler = { p in
+                if p.terminationStatus == 0 {
+                    continuation.resume()
+                } else {
+                    continuation.resume(throwing: failure)
+                }
+            }
+            do {
+                try process.run()
+            } catch {
+                continuation.resume(throwing: failure)
+            }
+        }
+    }
+
     // MARK: - Mount
 
     private func mountDMG(at path: String) async throws -> String {
@@ -123,18 +222,35 @@ final class AutoUpdater: ObservableObject {
 
     private func launchReplacementScript(src: String, dst: String, mountPoint: String, fallbackURL: URL) throws {
         let pid = ProcessInfo.processInfo.processIdentifier
+
+        // SECURITY: the previous version interpolated `src`, `dst`, `mountPoint`
+        // (parsed from `hdiutil` output) and `fallbackURL` directly into a bash
+        // heredoc, only escaping double-quotes. A value containing `$()`,
+        // backticks, or unescaped quotes could inject into the script that runs
+        // after the app exits (and outlives any crash report). Instead, we now
+        // write a *fixed* script that reads its arguments from environment
+        // variables, so no user/network-derived string ever becomes part of the
+        // script body. bash's quoted `"$VAR"` expansion handles arbitrary paths
+        // safely.
         let script = """
         #!/bin/bash
+        set -u
+        SRC="${NEXUS_UPDATE_SRC:?missing src}"
+        DST="${NEXUS_UPDATE_DST:?missing dst}"
+        MOUNT="${NEXUS_UPDATE_MOUNT:?missing mount}"
+        FALLBACK="${NEXUS_UPDATE_FALLBACK:?missing fallback}"
+
         while kill -0 \(pid) 2>/dev/null; do sleep 0.3; done
-        if /usr/bin/ditto \"\(src)\" \"\(dst)\"; then
-            /usr/bin/hdiutil detach \"\(mountPoint)\" -quiet 2>/dev/null
+
+        if /usr/bin/ditto -- "$SRC" "$DST"; then
+            /usr/bin/hdiutil detach "$MOUNT" -quiet 2>/dev/null
             sleep 0.3
-            open \"\(dst)\"
+            open "$DST"
         else
-            /usr/bin/hdiutil detach \"\(mountPoint)\" -quiet 2>/dev/null
-            open \"\(fallbackURL.absoluteString)\"
+            /usr/bin/hdiutil detach "$MOUNT" -quiet 2>/dev/null
+            open "$FALLBACK"
         fi
-        rm -- \"$0\"
+        rm -- "$0"
         """
 
         let scriptURL = FileManager.default.temporaryDirectory
@@ -145,6 +261,14 @@ final class AutoUpdater: ObservableObject {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/bash")
         process.arguments = [scriptURL.path]
+        // Pass the dynamic values as environment variables rather than
+        // interpolating them into the script body.
+        var env = ProcessInfo.processInfo.environment
+        env["NEXUS_UPDATE_SRC"] = src
+        env["NEXUS_UPDATE_DST"] = dst
+        env["NEXUS_UPDATE_MOUNT"] = mountPoint
+        env["NEXUS_UPDATE_FALLBACK"] = fallbackURL.absoluteString
+        process.environment = env
         try process.run()
     }
 
@@ -153,11 +277,17 @@ final class AutoUpdater: ObservableObject {
     enum UpdateError: LocalizedError {
         case appNotFoundInDMG
         case mountFailed
+        case verificationFailed
+        case signatureMismatch(expected: String?, actual: String?)
 
         var errorDescription: String? {
             switch self {
             case .appNotFoundInDMG: return "Could not find app in update package."
             case .mountFailed: return "Could not open update package."
+            case .verificationFailed:
+                return "The update failed its signature or Gatekeeper check and was rejected."
+            case .signatureMismatch(let expected, let actual):
+                return "The update is signed by a different team (\(actual ?? "unknown")) than this app (\(expected ?? "unknown")). Refusing to install."
             }
         }
     }

@@ -44,6 +44,18 @@ final class AgentsStatusBridge {
         }
     }
 
+    /// Async, non-blocking variant of `waitForListening`. Polls the bridge
+    /// socket from a background task so the main thread / MainActor is never
+    /// put to sleep — the UI stays responsive while we wait for the Python
+    /// server to bind port 7823. Prefer this from `@MainActor` call sites.
+    func waitForListeningAsync(timeout: TimeInterval = 2.0) async {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if isServerListening() { return }
+            try? await Task.sleep(nanoseconds: 50_000_000) // 50ms
+        }
+    }
+
     private func isServerListening() -> Bool {
         let sock = socket(AF_INET, SOCK_STREAM, 0)
         guard sock >= 0 else { return false }
@@ -105,17 +117,25 @@ final class AgentsStatusBridge {
             serverProcess = nil
             adoptedServerPID = nil
             adoptedExternalServer = false
-            guard process.isRunning else { return }
-            process.terminate()
-            // Give the server a moment to shut down cleanly, then SIGKILL if needed
-            // so we don't leave port 7823 occupied.
+            // Capture the pid on the MainActor before handing off, then do
+            // the wait/kill on a background queue using only the pid (via
+            // `kill(pid, 0)`). The previous version polled
+            // `process.isRunning` from the background queue while the
+            // `terminationHandler` could fire on the main queue —
+            // `Process.isRunning` is documented as main-thread-only, so the
+            // background read raced against the handler and could SIGKILL a
+            // pid whose Process had already been torn down.
             let pid = process.processIdentifier
+            guard pid > 0, kill(pid, 0) == 0 else { return }
+            process.terminate()
+            // Give the server a moment to shut down cleanly, then SIGKILL if
+            // needed so we don't leave port 7823 occupied.
             DispatchQueue.global(qos: .utility).async {
                 let deadline = Date().addingTimeInterval(1.0)
-                while process.isRunning && Date() < deadline {
+                while kill(pid, 0) == 0 && Date() < deadline {
                     Thread.sleep(forTimeInterval: 0.05)
                 }
-                if process.isRunning {
+                if kill(pid, 0) == 0 {
                     kill(pid, SIGKILL)
                 }
             }

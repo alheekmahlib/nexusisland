@@ -167,10 +167,21 @@ final class WeatherManager: NSObject, ObservableObject {
             let calendar = Foundation.Calendar.current
             let currentHour = calendar.component(.hour, from: Date())
             let startIndex = max(currentHour, 0)
-            let endIndex = min(startIndex + 6, times.count)
+            // CRASH-SAFE: clamp against EVERY parallel array (Open-Meteo can
+            // return different lengths if `forecast_days` changes; without
+            // these guards `temps[i]` / `codes[i]` would trap on a response
+            // whose first element isn't 00:00 today).
+            let safeCount = min(times.count, temps.count, codes.count)
+            let endIndex = min(startIndex + 6, safeCount)
+
+            guard startIndex < endIndex else {
+                weather.hourlyForecast = []
+                return
+            }
 
             var forecast: [HourlyWeather] = []
             for i in startIndex..<endIndex {
+                guard i < temps.count, i < codes.count else { break }
                 let hourStr: String
                 if i == currentHour {
                     hourStr = "Now"

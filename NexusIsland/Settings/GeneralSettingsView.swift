@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 
 private struct MascotGridPicker: View {
@@ -92,7 +93,12 @@ struct GeneralSettingsView: View {
     @ObservedObject private var mascotManager = MascotManager.shared
     @State private var launchAtLogin = LaunchAtLogin.isEnabled
     @State private var permissionStates: [PermissionType: Bool] = [:]
-    private static let permissionRefreshTimer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
+    // Previously this was a `static let ... .autoconnect()` publisher, which
+    // meant the 2s permission-poll fired forever — even while the General
+    // settings pane was closed — for the lifetime of the process. Now we
+    // hold the cancellable on the view itself and only connect while the
+    // pane is on-screen (onAppear/onDisappear).
+    @State private var permissionRefreshCancellable: AnyCancellable?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -331,8 +337,19 @@ struct GeneralSettingsView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .onAppear { refreshPermissionStates() }
-        .onReceive(Self.permissionRefreshTimer) { _ in refreshPermissionStates() }
+        .onAppear {
+            refreshPermissionStates()
+            // Only poll while the General settings pane is visible. The old
+            // static timer ran forever (even with settings closed) and called
+            // PermissionsManager checks every 2s indefinitely.
+            permissionRefreshCancellable = Timer.publish(every: 2.0, on: .main, in: .common)
+                .autoconnect()
+                .sink { _ in refreshPermissionStates() }
+        }
+        .onDisappear {
+            permissionRefreshCancellable?.cancel()
+            permissionRefreshCancellable = nil
+        }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             refreshPermissionStates()
         }

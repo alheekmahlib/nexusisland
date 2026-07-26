@@ -86,9 +86,20 @@ final class CountdownManager: ObservableObject {
         let f = ISO8601DateFormatter()
 
         // Approximate Islamic dates for the current year (shift each year).
+        // CRASH-SAFE: the previous version force-unwrapped both
+        // `f.date(from:)` (which traps on an unparseable ISO string) and
+        // `cal.date(from:)` (which traps on invalid DateComponents). Use
+        // optional binding with a sane fallback so a fresh install can never
+        // crash here.
         let year = cal.component(.year, from: now)
-        let ramadan = cal.date(from: DateComponents(year: year + (now > f.date(from: "\(year)-02-28T00:00:00Z")! ? 1 : 0), month: 2, day: 28))!
-        let newYear = cal.date(from: DateComponents(year: year + 1, month: 1, day: 1))!
+        let rolloverAnchor = f.date(from: "\(year)-02-28T00:00:00Z") ?? now
+        let ramadanYear = year + (now > rolloverAnchor ? 1 : 0)
+        guard let ramadan = cal.date(from: DateComponents(year: ramadanYear, month: 2, day: 28)) else {
+            return
+        }
+        guard let newYear = cal.date(from: DateComponents(year: year + 1, month: 1, day: 1)) else {
+            return
+        }
 
         events = [
             CountdownEvent(name: "رمضان", date: ramadan, dateKey: f.string(from: ramadan)),

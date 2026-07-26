@@ -13,13 +13,23 @@ struct WorldClock: Identifiable, Equatable {
     let label: String        // display label (e.g. "الرياض")
     let offsetHours: Double  // UTC offset for sorting
 
-    /// Current time in this zone, formatted as "h:mm a" (12-hour).
-    var currentTime: String {
+    /// Shared formatter. `DateFormatter` allocation is expensive (~14
+    /// allocations per render tick previously, one per zone per 30s refresh);
+    /// a single static instance is reused, with only the (cheap) `timeZone`
+    /// property swapped per zone. `DateFormatter` is thread-safe for read
+    /// access after configuration on macOS, and SwiftUI renders on the main
+    /// thread, so no synchronization is needed here.
+    private static let timeFormatter: DateFormatter = {
         let f = DateFormatter()
-        f.timeZone = TimeZone(identifier: id)
         f.dateFormat = "h:mm a"
         f.locale = Locale(identifier: "en_US_POSIX")
-        return f.string(from: Date())
+        return f
+    }()
+
+    /// Current time in this zone, formatted as "h:mm a" (12-hour).
+    var currentTime: String {
+        Self.timeFormatter.timeZone = TimeZone(identifier: id) ?? .current
+        return Self.timeFormatter.string(from: Date())
     }
 
     /// Short day/night glyph.
