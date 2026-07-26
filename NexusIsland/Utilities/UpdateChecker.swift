@@ -26,7 +26,7 @@ final class UpdateChecker: ObservableObject {
 
     /// EDIT THIS when you change the hosting domain. Must point at the
     /// `manifest.json` file on your R2 custom domain.
-    private static let manifestURL = URL(string: "https://releases.yourdomain.com/manifest.json")!
+    private static let manifestURL = URL(string: "https://pub-5e3677047217483d989d8e48043fadcb.r2.dev/manifest.json")!
 
     private static let lastCheckedKey = "updateChecker.lastCheckedAt"
     private static let dailyInterval: TimeInterval = 86400
