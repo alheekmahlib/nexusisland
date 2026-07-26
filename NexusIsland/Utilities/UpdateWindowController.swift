@@ -25,7 +25,18 @@ final class UpdateWindowController {
         window.titlebarSeparatorStyle = .none
         window.minSize = CGSize(width: 300, height: 210)
         window.maxSize = CGSize(width: 300, height: 210)
-
+        // Keep the update dialog ABOVE every other window — including the
+        // Settings window the user just clicked "Update" from. Without an
+        // explicit level the dialog opens at .normal and is occluded by the
+        // Settings window, which makes the "Update" button look dead (the
+        // dialog is actually shown but hidden behind Settings).
+        window.level = .floating
+        // The dialog should still appear during Spaces/fullscreen transitions
+        // so the user doesn't miss an update that was triggered just before
+        // they swapped spaces.
+        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        // Hide the standard traffic-light buttons — the dialog uses its own
+        // Later/Update actions and shouldn't be closable from the title bar.
         window.standardWindowButton(.closeButton)?.isHidden = true
         window.standardWindowButton(.miniaturizeButton)?.isHidden = true
         window.standardWindowButton(.zoomButton)?.isHidden = true
@@ -50,8 +61,18 @@ final class UpdateWindowController {
         } else {
             window.center()
         }
-        NSApp.activate(ignoringOtherApps: true)
+        // Activate the app first so the window is allowed to take focus, then
+        // order the dialog front and make it the key window. `activate()` is
+        // the macOS 14+ replacement for the deprecated
+        // `NSApp.activate(ignoringOtherApps:)`. Combined with `.floating`
+        // level (set in init) this guarantees the dialog is visible above the
+        // Settings window the user just acted on.
+        NSApp.activate()
         window.makeKeyAndOrderFront(nil)
+        // Re-assert the level after ordering front — some macOS versions reset
+        // the level when a window becomes key, which would push it back behind
+        // the Settings window.
+        window.level = .floating
     }
 
     func close() {

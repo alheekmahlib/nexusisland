@@ -77,9 +77,23 @@ final class UpdateChecker: ObservableObject {
             request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
 
             let (data, response) = try await URLSession.shared.data(for: request)
-            if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
-                checkState = .failed("Update server returned \(http.statusCode).")
-                return
+            if let http = response as? HTTPURLResponse {
+                // Diagnostic: log the status + body so a 401/403 from R2 or
+                // Cloudflare WAF can be diagnosed. Remove once stable.
+                let bodySnippet = String(data: data.prefix(200), encoding: .utf8) ?? "<binary>"
+                let dbgLine = "[UpdateChecker] HTTP \(http.statusCode) | url=\(Self.manifestURL.absoluteString) | body=\(bodySnippet)\n"
+                if let dbgData = dbgLine.data(using: .utf8) {
+                    if FileManager.default.fileExists(atPath: "/tmp/update-checker.log"),
+                       let h = try? FileHandle(forWritingTo: URL(fileURLWithPath: "/tmp/update-checker.log")) {
+                        _ = try? h.seekToEnd(); try? h.write(contentsOf: dbgData); try? h.close()
+                    } else {
+                        try? dbgData.write(to: URL(fileURLWithPath: "/tmp/update-checker.log"))
+                    }
+                }
+                if !(200...299).contains(http.statusCode) {
+                    checkState = .failed("Update server returned \(http.statusCode).")
+                    return
+                }
             }
 
             guard let manifest = try? JSONDecoder().decode(UpdateManifest.self, from: data) else {

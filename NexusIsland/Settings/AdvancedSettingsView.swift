@@ -112,6 +112,15 @@ struct AdvancedSettingsView: View {
                     updateButton
                 }
                 .padding(.horizontal, 16).padding(.vertical, 11)
+
+                // Inline "What's New" panel — shown only when an update is
+                // available AND the manifest carried release notes. The notes
+                // are pulled from manifest.json (hosted on R2) so the user
+                // sees exactly what the maintainer published, in place.
+                if case .updateAvailable(_, let notes, _) = updateChecker.checkState, !notes.isEmpty {
+                    SettingRowDivider()
+                    whatsNewPanel(notes: notes)
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -152,6 +161,68 @@ struct AdvancedSettingsView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.small)
         }
+    }
+
+    /// "What's New" panel: renders the release notes from the manifest as a
+    /// polished bulleted list inside a tinted card. Each note is a single
+    /// line, prefixed by a violet dot so the eye can scan the changelog at a
+    /// glance. The panel only renders when there is at least one note.
+    @ViewBuilder
+    private func whatsNewPanel(notes: [String]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            // Section header with a small glyph + the localized "What's New"
+            // label. Using a leading SF Symbol (no emoji per the design system
+            // rules) keeps it consistent with the rest of the settings UI.
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [NexusPalette.electricViolet, NexusPalette.neonPink],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                Text(NSLocalizedString("What's New", comment: "Settings section"))
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(NexusPalette.textPrimary)
+            }
+
+            // Notes list inside a subtly tinted card to set it apart from the
+            // plain rows above. Border + fill keep it readable on both light
+            // and dark appearances (the glass tint already has alpha).
+            VStack(alignment: .leading, spacing: 7) {
+                ForEach(Array(notes.enumerated()), id: \.offset) { _, note in
+                    HStack(alignment: .top, spacing: 8) {
+                        // Bullet: a 4pt violet disc. Top-aligned so multi-line
+                        // notes (rare, but possible) keep the bullet pinned to
+                        // the first line.
+                        Circle()
+                            .fill(NexusPalette.electricViolet)
+                            .frame(width: 4, height: 4)
+                            .padding(.top, 5)
+                        Text(note)
+                            .font(.system(size: 12))
+                            .foregroundStyle(NexusPalette.textSecondary)
+                            // Allow wrapping for long notes without truncation.
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: NexusMetrics.cornerRadiusS)
+                    .fill(NexusPalette.electricViolet.opacity(0.08))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: NexusMetrics.cornerRadiusS)
+                    .strokeBorder(NexusPalette.glassTint.opacity(0.12), lineWidth: NexusMetrics.strokeHairline)
+            )
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// Performs the actual wipe. We do NOT call a hypothetical
