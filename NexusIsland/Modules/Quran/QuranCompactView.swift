@@ -2,8 +2,9 @@ import SwiftUI
 
 // MARK: - Quran Compact View (pill)
 //
-// Redesigned with NexusDesign tokens. The compact surface is only 200×36pt,
-// so the row must fit on a single line: [play] [surah name] [gradient hairline].
+// The compact surface is only 200×36pt, so the row must fit on a single line:
+// [play toggle] [surah name] [gradient hairline]. Purple NexusDesign tokens
+// match the rest of the app.
 
 struct QuranCompactView: View {
     @ObservedObject private var manager = QuranManager.shared
@@ -24,14 +25,20 @@ struct QuranCompactView: View {
             Image(systemName: manager.isLoading
                   ? "circle.dashed"
                   : (manager.isPlaying ? "pause.fill" : "play.fill"))
-                .font(.system(size: 10, weight: .black))
+                .font(.system(size: 9, weight: .black))
                 .foregroundColor(.white)
                 .frame(width: 20, height: 20)
                 .background {
                     if manager.isPlaying {
-                        Circle().fill(NexusGradient.purple)
+                        Circle()
+                            .fill(NexusGradient.purple)
+                            .shadow(color: NexusPalette.electricViolet.opacity(0.5), radius: 3, y: 1)
                     } else {
-                        Circle().fill(Color.white.opacity(0.14))
+                        Circle()
+                            .fill(Color.white.opacity(0.10))
+                            .overlay(
+                                Circle().strokeBorder(NexusPalette.glassTint.opacity(0.10), lineWidth: 0.5)
+                            )
                     }
                 }
         }

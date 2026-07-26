@@ -15,20 +15,22 @@ import SwiftUI
 
 enum SettingsGlass {
     // MARK: - Window backdrop (the rich base the cards float over)
-    /// Diagonal dark-purple gradient mirroring the app icon's backdrop.
+    /// Vertical background gradient: black at the top → deep purple at the bottom.
     static var windowBackground: LinearGradient {
         LinearGradient(
             colors: [NexusPalette.background, NexusPalette.deepPurple],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
+            startPoint: .top,
+            endPoint: .bottom
         )
     }
 
     /// Central radial glow layered above windowBackground for depth.
+    /// Anchored to the bottom so it reinforces the black→purple vertical
+    /// gradient (more purple toward the bottom).
     static var windowGlow: RadialGradient {
         RadialGradient(
-            colors: [NexusPalette.deepPurple.opacity(0.40), .clear],
-            center: .top,
+            colors: [NexusPalette.deepPurple.opacity(0.45), .clear],
+            center: .bottom,
             startRadius: 0,
             endRadius: 460
         )

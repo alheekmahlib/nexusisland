@@ -2,59 +2,56 @@ import SwiftUI
 
 // MARK: - Quran Expanded View (drawer)
 //
-// Redesigned with NexusDesign tokens while preserving the RTL-aware, draggable
-// QuranProgressBar. Layout (408×88pt):
-//   [medallion] [ surah name        | progress bar (draggable) ] [⏮ ⏯ ⏭]
-//                [ reciter name      | 0:12 / 3:45               ]
-// The center column stays LTR so the progress bar's physical coordinates
-// match the app; only the Arabic text runs RTL.
+// Mid-size player within 408×88pt. Three columns:
+//   [artwork medallion] [ identity · progress · timecodes ] [⏮ ⏯ ⏭]
+// The center column stays LTR so the progress bar's coordinates match the app;
+// only Arabic text runs RTL locally.
 
 struct QuranExpandedView: View {
     @ObservedObject private var manager = QuranManager.shared
 
     var body: some View {
         HStack(spacing: 12) {
-            medallion
-
-            // Center column: identity + draggable progress.
             VStack(alignment: .leading, spacing: 4) {
+                // Identity row: surah name + reciter.
                 HStack(spacing: 6) {
                     Text(manager.currentSurah.arabicName)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: 15, weight: .bold))
                         .foregroundColor(NexusPalette.textPrimary)
                         .lineLimit(1)
-                        .environment(\.layoutDirection, .rightToLeft) // Arabic glyph shaping only
+                        .environment(\.layoutDirection, .rightToLeft)
                     Text("·")
                         .font(NexusTypography.body)
                         .foregroundColor(NexusPalette.textTertiary)
-                    Text(manager.currentReciter.latinName)
+                    Text(manager.currentReciter.displayName)
                         .font(.system(size: 11))
                         .foregroundColor(NexusPalette.textSecondary)
                         .lineLimit(1)
+                        .environment(\.layoutDirection, .rightToLeft)
                 }
 
-                // LTR progress bar — fill grows left→right, matching the app.
+                // Draggable progress.
                 QuranProgressBar(
                     progress: manager.progress,
-                    trackHeight: 3,
-                    knobSize: 9,
+                    trackHeight: 4,
+                    knobSize: 10,
                     onSeek: { fraction in manager.seek(toFraction: fraction) },
                     isRTL: false
                 )
 
                 HStack(spacing: 0) {
                     Text(QuranDesign.formatTime(manager.currentTime))
-                        .font(NexusTypography.mono)
+                        .font(.system(size: 10, design: .monospaced))
                         .foregroundColor(NexusPalette.textTertiary)
                     Spacer()
                     Text(manager.duration > 0 ? QuranDesign.formatTime(manager.duration) : "--:--:--")
-                        .font(NexusTypography.mono)
+                        .font(.system(size: 10, design: .monospaced))
                         .foregroundColor(NexusPalette.textTertiary)
                 }
             }
             .frame(maxWidth: .infinity)
 
-            // Right stack: three controls, vertically centered.
+            // Transport: prev / play-pause / next.
             VStack(spacing: 6) {
                 navButton(icon: "backward.fill", action: manager.previousSurah,
                           disabled: manager.currentSurah.number <= 1)
@@ -65,24 +62,8 @@ struct QuranExpandedView: View {
         }
     }
 
-    // MARK: - Medallion (surah number in a purple-gradient ring)
-
-    private var medallion: some View {
-        ZStack {
-            Circle()
-                .strokeBorder(NexusPalette.electricViolet.opacity(0.5), lineWidth: 1)
-                .background(Circle().fill(NexusGradient.purple.opacity(0.30)))
-            Text(manager.currentSurah.arabicNumber)
-                .font(.system(size: 13, weight: .bold, design: .rounded))
-                .foregroundColor(NexusPalette.textPrimary)
-        }
-        .frame(width: 38, height: 38)
-    }
 
     // MARK: - Controls
-    //
-    // primaryPlay matches NowPlaying: a NeonButton with the vibrant gradient
-    // fill + press scale, instead of a hand-built circle.
 
     private var primaryPlay: some View {
         NeonButton(

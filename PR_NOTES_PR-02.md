@@ -18,9 +18,9 @@ Summary:
 
 Validation:
 - `bash -n` passed for release and packaging scripts.
-- `ruby -c packaging/homebrew/superisland.rb` passed.
+- `ruby -c packaging/homebrew/nexusisland.rb` passed.
 - `git diff --check` passed.
-- `./scripts/bundle-node-runtime.sh build/SuperIsland.app --dry-run` passed.
+- `./scripts/bundle-node-runtime.sh build/NexusIsland.app --dry-run` passed.
 - `./scripts/verify-universal-build.sh --help` passed.
 - `./scripts/build-dmg.sh --dry-run` failed clearly because `xcodegen` is unavailable locally.
 - `./scripts/build-and-release.sh --dry-run` failed clearly because `xcodegen` is unavailable locally.

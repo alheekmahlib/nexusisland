@@ -38,7 +38,7 @@ final class ExtensionRuntimeTests: XCTestCase {
         let context = JSContext()!
         ExtensionSandbox.configureContext(context, extensionID: "test.net", permissions: ["storage"])
 
-        let flag = context.evaluateScript("globalThis.__superIslandNetworkDisabled")
+        let flag = context.evaluateScript("globalThis.__nexusIslandNetworkDisabled")
         XCTAssertEqual(flag?.toBool(), true, "network must be flagged disabled without the 'network' permission")
     }
 
@@ -46,7 +46,7 @@ final class ExtensionRuntimeTests: XCTestCase {
         let context = JSContext()!
         ExtensionSandbox.configureContext(context, extensionID: "test.net", permissions: ["network", "storage"])
 
-        let flag = context.evaluateScript("globalThis.__superIslandNetworkDisabled")
+        let flag = context.evaluateScript("globalThis.__nexusIslandNetworkDisabled")
         XCTAssertFalse(flag?.toBool() ?? true, "network flag must NOT be set when the 'network' permission is granted")
     }
 

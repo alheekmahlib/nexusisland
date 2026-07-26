@@ -23,7 +23,7 @@ Validation:
 - Direct Swift typecheck of app sources passed with the package-backed analytics source excluded because package resolution depends on generated project setup.
 - `xcodebuild -version` reported Xcode 26.5.
 - `xcodegen generate` could not run because `xcodegen` is unavailable locally.
-- `xcodebuild -project SuperIsland.xcodeproj -scheme SuperIsland -configuration Debug build` could not run because the project file is generated and is not present without XcodeGen.
+- `xcodebuild -project NexusIsland.xcodeproj -scheme NexusIsland -configuration Debug build` could not run because the project file is generated and is not present without XcodeGen.
 
 Screenshots needed:
 - Settings -> General -> Power section.

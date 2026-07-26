@@ -6,7 +6,7 @@ DynamicIsland extension that polls Linear for new issue mentions and issue comme
 
 1. Open DynamicIsland Settings -> Extensions -> `Linear Mentions`.
 2. Activate the extension and click `Login with Linear`.
-3. Complete OAuth in the browser. The callback returns to `superisland://auth/callback?...` and is persisted automatically.
+3. Complete OAuth in the browser. The callback returns to `nexusisland://auth/callback?...` and is persisted automatically.
 4. Keep the extension active.
 
 ## Behavior

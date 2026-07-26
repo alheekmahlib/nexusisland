@@ -43,27 +43,24 @@ struct IslandContainerView: View {
             islandShape
                 .fill(islandSurfaceBaseFill)
 
-            // Expanded surface fill: the dark-purple gradient backdrop from the
-            // app icon (`background` → `backgroundGlow`), with a radial glow
-            // layered beneath for depth. The vibrant purple→magenta→orange
-            // gradient lives only on ACCENTS (progress bars, medallions, tabs) —
-            // matching how the icon reserves bright color for its notch symbol.
-            // Compact stays black to blend with the real metal notch.
+            // Expanded surface fill: a vertical black→deep-purple gradient —
+            // black at the top, deep purple at the bottom. The linear gradient
+            // alone produces the clean top-to-bottom transition. Compact stays
+            // black to blend with the real metal notch.
             if appState.currentState != .compact {
-                islandShape
-                    .fill(NexusGradient.backgroundRadial)
                 islandShape
                     .fill(NexusGradient.backgroundLinear)
 
                 // Glass specular sheen — a bright top highlight fading to clear,
                 // confined to the upper portion. This is what makes the pill read
                 // as curved, frosted glass (the macOS "liquid glass" cue).
+                // Kept very subtle (0.06) so it doesn't wash out the gradient.
                 islandShape
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.16),
-                                Color.white.opacity(0.04),
+                                Color.white.opacity(0.06),
+                                Color.white.opacity(0.01),
                                 Color.clear
                             ],
                             startPoint: .top,
@@ -170,15 +167,20 @@ struct IslandContainerView: View {
             : .scale(scale: scale, anchor: .top).combined(with: .opacity)
     }
 
-    /// Solid base fill. Black in compact (the notch-blend look); deep purple
-    /// `NexusPalette.background` when expanded so the vibrant gradient overlay
-    /// reads true. The vibrant gradient itself is layered in `islandSurface`.
+    /// Solid base fill. Black in compact (the notch-blend look); clear when
+    /// expanded so the vertical black→purple gradient layered in
+    /// `islandSurface` (`backgroundLinear`) shows through directly without a
+    /// black underlay masking it.
+    /// Solid base fill. Black in compact (the notch-blend look); solid black
+    /// when expanded too, so the vertical black→purple gradient layered in
+    /// `islandSurface` reads true from a pure-black starting point (no purple
+    /// tint bleeding through from the base).
     private var islandSurfaceBaseFill: LinearGradient {
         if appState.currentState == .compact {
             return LinearGradient(colors: [Color.black.opacity(0.98), Color.black.opacity(0.94)],
                                   startPoint: .top, endPoint: .bottom)
         } else {
-            return LinearGradient(colors: [NexusPalette.background, NexusPalette.background.opacity(0.96)],
+            return LinearGradient(colors: [Color.black, Color.black],
                                   startPoint: .top, endPoint: .bottom)
         }
     }

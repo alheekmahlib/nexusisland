@@ -1,6 +1,6 @@
 # Live Football ⚽
 
-Live FIFA World Cup 2026 scores in your SuperIsland — country flags, goal
+Live FIFA World Cup 2026 scores in your NexusIsland — country flags, goal
 celebrations, and the full fixture list.
 
 Inspired by [claudinho](https://github.com/arturogarrido/claudinho), which

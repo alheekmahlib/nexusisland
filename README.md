@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/logo.png" width="96" height="96" alt="SuperIsland" />
+  <img src="assets/logo.png" width="96" height="96" alt="NexusIsland" />
 </p>
 
-<h1 align="center">SuperIsland</h1>
+<h1 align="center">NexusIsland</h1>
 
 <p align="center">
   Transform your Mac's notch into a live, interactive island.<br />
@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://dynamicisland.app">Website</a> ·
   <a href="https://dynamicisland.app/docs">Docs</a> ·
-  <a href="https://github.com/shobhit99/superisland/releases">Releases</a>
+  <a href="https://github.com/shobhit99/nexusisland/releases">Releases</a>
 </p>
 
 ---
@@ -29,13 +29,13 @@
 ## Setup
 
 ```bash
-git clone https://github.com/shobhit99/superisland.git
-cd superisland
+git clone https://github.com/shobhit99/nexusisland.git
+cd nexusisland
 xcodegen generate
-open SuperIsland.xcodeproj
+open NexusIsland.xcodeproj
 ```
 
-Select the `SuperIsland` scheme, choose your Mac as the destination, and hit Run.
+Select the `NexusIsland` scheme, choose your Mac as the destination, and hit Run.
 
 > On first launch the app will ask for Accessibility, Calendar, and Location permissions. These are required for the relevant modules to work.
 
@@ -64,14 +64,14 @@ Then run:
 ./scripts/build-and-release.sh
 ```
 
-This archives a universal app, bundles a universal runtime, notarizes the DMG, and produces `build/SuperIsland.dmg`.
+This archives a universal app, bundles a universal runtime, notarizes the DMG, and produces `build/NexusIsland.dmg`.
 
-Release and Homebrew packaging notes are in [docs/RELEASE.md](docs/RELEASE.md). A Homebrew Cask template is available at [packaging/homebrew/superisland.rb](packaging/homebrew/superisland.rb).
+Release and Homebrew packaging notes are in [docs/RELEASE.md](docs/RELEASE.md). A Homebrew Cask template is available at [packaging/homebrew/nexusisland.rb](packaging/homebrew/nexusisland.rb).
 
 To verify a built app bundle:
 
 ```bash
-./scripts/verify-universal-build.sh build/SuperIsland.app --skip-signature
+./scripts/verify-universal-build.sh build/NexusIsland.app --skip-signature
 ```
 
 ---
@@ -79,7 +79,7 @@ To verify a built app bundle:
 ## Project structure
 
 ```
-SuperIsland/
+NexusIsland/
   App/              AppDelegate, AppState
   Modules/          Built-in modules (Battery, NowPlaying, Weather, …)
   Settings/         Settings window views
@@ -98,7 +98,7 @@ Extensions are JavaScript packages that run inside a sandboxed JavaScriptCore co
 
 ## Notifications
 
-The Notifications module supports source-level controls for SuperIsland extensions, the bundled WhatsApp integration, and compatible public app broadcasts. See [docs/NOTIFICATIONS.md](docs/NOTIFICATIONS.md).
+The Notifications module supports source-level controls for NexusIsland extensions, the bundled WhatsApp integration, and compatible public app broadcasts. See [docs/NOTIFICATIONS.md](docs/NOTIFICATIONS.md).
 ## Now Playing
 
 Now Playing supports system media, Apple Music, Spotify, and opt-in browser media detection for supported Chromium browsers. See [docs/NOW_PLAYING.md](docs/NOW_PLAYING.md).
@@ -129,16 +129,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Updates
 
-SuperIsland checks for updates automatically on launch. When a new version is available a dialog appears — click **Update** to download and install without reinstalling.
+NexusIsland checks for updates automatically on launch. When a new version is available a dialog appears — click **Update** to download and install without reinstalling.
 
 ---
 
 ## Star History
 
-<a href="https://www.star-history.com/#shobhit99/superisland&Date">
+<a href="https://www.star-history.com/#shobhit99/nexusisland&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=shobhit99/superisland&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=shobhit99/superisland&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=shobhit99/superisland&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=shobhit99/nexusisland&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=shobhit99/nexusisland&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=shobhit99/nexusisland&type=Date" />
   </picture>
 </a>

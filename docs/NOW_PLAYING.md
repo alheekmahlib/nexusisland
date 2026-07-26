@@ -4,7 +4,7 @@ The Now Playing module combines the system media feed with app-specific fallback
 
 ## Browser media detection
 
-Browser media detection is off by default. When enabled in Settings -> Modules -> Now Playing, SuperIsland can use macOS Automation to inspect allowed browser tabs for active `video` and `audio` elements.
+Browser media detection is off by default. When enabled in Settings -> Modules -> Now Playing, NexusIsland can use macOS Automation to inspect allowed browser tabs for active `video` and `audio` elements.
 
 Supported browser targets:
 
@@ -13,7 +13,7 @@ Supported browser targets:
 
 Browser detection requires:
 
-- Automation permission for SuperIsland
+- Automation permission for NexusIsland
 - The browser running with media in an open tab
 - JavaScript from Apple Events enabled in the browser
 

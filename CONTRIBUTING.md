@@ -1,4 +1,4 @@
-# Contributing to SuperIsland
+# Contributing to NexusIsland
 
 Thanks for taking the time to contribute. Here's everything you need to get going.
 
@@ -7,19 +7,19 @@ Thanks for taking the time to contribute. Here's everything you need to get goin
 ## Getting started
 
 ```bash
-git clone https://github.com/shobhit99/superisland.git
-cd superisland
+git clone https://github.com/shobhit99/nexusisland.git
+cd nexusisland
 xcodegen generate
-open SuperIsland.xcodeproj
+open NexusIsland.xcodeproj
 ```
 
-Run the `SuperIsland` scheme on your Mac. Accessibility permission is required for the island window to sit above other apps.
+Run the `NexusIsland` scheme on your Mac. Accessibility permission is required for the island window to sit above other apps.
 
 ---
 
 ## What to work on
 
-Check the [Issues](https://github.com/shobhit99/superisland/issues) tab. Issues labelled `good first issue` are a good starting point. For anything larger — new modules, architecture changes — open an issue first so we can align before you spend time on it.
+Check the [Issues](https://github.com/shobhit99/nexusisland/issues) tab. Issues labelled `good first issue` are a good starting point. For anything larger — new modules, architecture changes — open an issue first so we can align before you spend time on it.
 
 ---
 

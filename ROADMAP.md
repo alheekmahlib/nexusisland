@@ -1,6 +1,6 @@
-# SuperIsland — Development Roadmap
+# NexusIsland — Development Roadmap
 
-> خارطة طريق تطوير SuperIsland — 19 ميزة جديدة + أساس بنيوي.
+> خارطة طريق تطوير NexusIsland — 19 ميزة جديدة + أساس بنيوي.
 > كل ميزة تُعلَّم ✅ عند إكمالها. هذا الملف هو مصدر الحقيقة للتقدّم.
 
 ---
@@ -8,7 +8,7 @@
 ## نظرة عامة على النهج
 
 - **حفظ الخطة**: هذا الملف يحتوي على كل المراحل والميزات والترتيب والاعتماديات، لتطبيق طلب "حفظ كل الخطة كي لا ننسى أي شيء". كل ميزة عند إنجازها تُعلَّم ✅.
-- **التزام البنية**: كل Module أصلي يتبع نمط `Manager` singleton + `CompactView` + `ExpandedView` + تسجيل في `ModuleType` (`SuperIsland/App/AppState.swift:19`). كل Extension يتبع نمط `manifest.json` + `index.js` يستدعي `SuperIsland.registerModule({...})`.
+- **التزام البنية**: كل Module أصلي يتبع نمط `Manager` singleton + `CompactView` + `ExpandedView` + تسجيل في `ModuleType` (`NexusIsland/App/AppState.swift:19`). كل Extension يتبع نمط `manifest.json` + `index.js` يستدعي `NexusIsland.registerModule({...})`.
 - **الأفضل لكل ميزة**: Module أصلي عند الحاجة لـ EventKit/IOKit/Audio APIs الخاصة؛ Extension عند الاكتفاء بـ HTTP fetch + تخزين.
 - **اختبار قبل الدمج**: بعد Phase 0، كل ميزة جديدة تكتب لها اختبارات قبل اعتمادها.
 
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | ✅ | **0.1** إضافة `.swiftlint.yml` + `.swiftformat` | جذر الـ repo، قواعد متوافقة مع كود موجود (no force-unwrap، `@MainActor` على UI) | فحص جودة موحّد |
 | ✅ | **0.2** CI workflow للبناء | `.github/workflows/ci.yml` — `xcodegen generate` + `xcodebuild build` + `xcodebuild test` على macOS runner | حماية main من الكسر |
-| ✅ | **0.3** نواة Test Suite | `SuperIslandTests/` — اختبارات لـ `AppState` (transitions)، `BatteryManager`، `WeatherManager` (mock)، `ExtensionManifest` (parsing)، `ModuleRefreshScheduler` (توسيع الموجود) | تغطية للنواة |
+| ✅ | **0.3** نواة Test Suite | `NexusIslandTests/` — اختبارات لـ `AppState` (transitions)، `BatteryManager`، `WeatherManager` (mock)، `ExtensionManifest` (parsing)، `ModuleRefreshScheduler` (توسيع الموجود) | تغطية للنواة |
 | ✅ | **0.4** اختبارات Extension runtime | اختبارات لـ `ExtensionJSRuntime` (sandbox: لا `eval`/`Function`)، `ExtensionSandbox`، `ViewNode.from(...)` | حماية sandbox |
 | ✅ | **0.5** أداة scaffold للأ extensions | `scripts/new-extension.sh` (أو Swift CLI صغير) تولّد هيكل `manifest.json` + `index.js` من قالب | تسريع إنشاء Extensions لاحقاً |
 
@@ -38,13 +38,13 @@ Module أصلي. التشغيل **سورة كاملة بملف صوتي واحد
 
 | الحالة | المكوّن | الوصف |
 |---|---|---|
-| ✅ | `SuperIsland/Modules/Quran/QuranManager.swift` | `@MainActor ObservableObject` — يدير السورة الحالية، القارئ، التشغيل/الإيقاف، آخر موضع استماع، آخر سورة، إعدادات القارئ في `@AppStorage` |
-| ✅ | `SuperIsland/Modules/Quran/QuranPlayer.swift` | طبقة `AVPlayer` تُشغّل ملف السورة الكامل — حالات `isPlaying`/`progress`/`duration`/`currentPosition`؛ استئناف من آخر موضع عند التوقف |
-| ✅ | `SuperIsland/Modules/Quran/QuranReciters.swift` | قائمة القرّاء (9 قرّاء، **بدون السديس**): عبد الباسط، الحصري، المنشاوي، العفاسي، المعيقلي، بصفر، الشريم، الحذيفي، العجمي — كلٌّ مع مُعرّف AlQuran Cloud |
-| ✅ | `SuperIsland/Modules/Quran/QuranCompactView.swift` | اسم السورة + القارئ + شريط تقدّم السورة + زر تشغيل/إيقاف |
-| ✅ | `SuperIsland/Modules/Quran/QuranExpandedView.swift` | اختيار القارئ + اختيار السورة (114 سورة) + إعادة تشغيل من البداية + قفز لسورة تالية/سابقة |
-| ✅ | `SuperIsland/Modules/Quran/QuranFullExpandedView.swift` | قائمة السور الكاملة، آخر مواضع الاستماع لكل سورة، إحصائيات يومية (سور مكتملة) |
-| ✅ | التسجيل | إضافة `case quran` في `ModuleType` (`SuperIsland/App/AppState.swift:19`) + المسار في `ExpandedView.swift` + `CompactView` + `FullExpandedView` |
+| ✅ | `NexusIsland/Modules/Quran/QuranManager.swift` | `@MainActor ObservableObject` — يدير السورة الحالية، القارئ، التشغيل/الإيقاف، آخر موضع استماع، آخر سورة، إعدادات القارئ في `@AppStorage` |
+| ✅ | `NexusIsland/Modules/Quran/QuranPlayer.swift` | طبقة `AVPlayer` تُشغّل ملف السورة الكامل — حالات `isPlaying`/`progress`/`duration`/`currentPosition`؛ استئناف من آخر موضع عند التوقف |
+| ✅ | `NexusIsland/Modules/Quran/QuranReciters.swift` | قائمة القرّاء (9 قرّاء، **بدون السديس**): عبد الباسط، الحصري، المنشاوي، العفاسي، المعيقلي، بصفر، الشريم، الحذيفي، العجمي — كلٌّ مع مُعرّف AlQuran Cloud |
+| ✅ | `NexusIsland/Modules/Quran/QuranCompactView.swift` | اسم السورة + القارئ + شريط تقدّم السورة + زر تشغيل/إيقاف |
+| ✅ | `NexusIsland/Modules/Quran/QuranExpandedView.swift` | اختيار القارئ + اختيار السورة (114 سورة) + إعادة تشغيل من البداية + قفز لسورة تالية/سابقة |
+| ✅ | `NexusIsland/Modules/Quran/QuranFullExpandedView.swift` | قائمة السور الكاملة، آخر مواضع الاستماع لكل سورة، إحصائيات يومية (سور مكتملة) |
+| ✅ | التسجيل | إضافة `case quran` في `ModuleType` (`NexusIsland/App/AppState.swift:19`) + المسار في `ExpandedView.swift` + `CompactView` + `FullExpandedView` |
 | ✅ | الاختبارات | `QuranModuleTests` — 24 اختباراً تغطّي: قائمة القرّاء (9، بدون السديس)، 114 سورة، التحويل للأرقام العربية، بناء عناوين الصوت، التسجيل في ModuleType |
 
 **الميزات**: 9 قرّاء (بدون السديس)، تشغيل السورة كاملة، انتقال تلقائي للسورة التالية، استئناف من آخر موضع، عرض اسم السورة بالعربية + رقمها، شريط تقدّم، حفظ آخر سورة وقارئ. **مُنجز بالكامل (24 اختباراً تمرّ، البناء ناجح).**
@@ -71,7 +71,7 @@ Module أصلي. التشغيل **سورة كاملة بملف صوتي واحد
 
 | الحالة | # | الميزة | النوع | الـ API/المصدر |
 |---|---|---|---|---|
-| ☐ | 3.1 | **GitHub PR/Issue Watcher** | Extension (`notificationFeed`) + OAuth عبر `superisland://` | GitHub GraphQL API |
+| ☐ | 3.1 | **GitHub PR/Issue Watcher** | Extension (`notificationFeed`) + OAuth عبر `nexusisland://` | GitHub GraphQL API |
 | ☐ | 3.2 | **CI/CD Build Monitor** | Extension | GitHub Actions API |
 | ☐ | 3.3 | **Local Dev Servers** | Module أصلي | فحص المنافذ (BSD sockets) |
 | ☐ | 3.4 | **Git Branch / Repo Stats** | Module أصلي | `git` CLI |
@@ -119,7 +119,7 @@ Module أصلي. التشغيل **سورة كاملة بملف صوتي واحد
 1. **كل Phase فرع مستقل** — لا ندمج إلى `main` حتى يكتمل وتمرّ اختباراته.
 2. **Test-first للميزات الجوهرية** — Module أصلي بدون اختبار لا يُدمج.
 3. **التزام المعايير** — `@MainActor`، لا force-unwrap، تعليقات إنجليزية في الكود (للتوافق مع upstream)، ملتزمون بـ lint.
-4. **عدم لمس المنطق الحسّاس للنافذة** — قاعدة "no GeometryReader" في سطح الـ island (`SuperIsland/Views/IslandContainerView.swift:13-15`)، وحجم النافذة المضبوط في الـ compact.
+4. **عدم لمس المنطق الحسّاس للنافذة** — قاعدة "no GeometryReader" في سطح الـ island (`NexusIsland/Views/IslandContainerView.swift:13-15`)، وحجم النافذة المضبوط في الـ compact.
 5. **حفظ التقدّم** — تحديث `ROADMAP.md` بعد كل ميزة (تعليم ☐ → ✅).
 
 ---

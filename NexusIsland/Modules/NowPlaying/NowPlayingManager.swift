@@ -368,6 +368,13 @@ final class NowPlayingManager: ObservableObject {
     }
 
     private func handleAdapterUpdate(_ update: NowPlayingUpdate) async {
+        // Ignore system-media updates while Quran is active — it never reaches
+        // the system session, so these updates belong to other apps and would
+        // overwrite the Quran snapshot.
+        if QuranManager.shared.playbackState != .idle {
+            return
+        }
+
         adapterDidDeliverUpdate = true
 
         let payload = update.payload
@@ -543,7 +550,22 @@ final class NowPlayingManager: ObservableObject {
 
     // MARK: - AppleScript Fallback
 
-    private func refreshPreferredSource() {
+    /// Re-evaluate which source (Quran / system media / browser) is currently
+    /// active and update the displayed snapshot. Public so other modules
+    /// (e.g. QuranManager) can prompt a refresh when their state changes.
+    func refreshPreferredSource() {
+        // Quran playback is in-app only (AVPlayer, never reaches the system
+        // media session), so it must be checked before the adapter pipeline.
+        // Otherwise system media would always win and Quran would never show.
+        if QuranManager.shared.playbackState != .idle {
+            let currentSource = sourceName
+            providerRefreshTask?.cancel()
+            providerRefreshTask = Task { [weak self] in
+                await self?.refreshProviderSnapshots(preferredSourceName: currentSource)
+            }
+            return
+        }
+
         if adapterDidDeliverUpdate, !title.isEmpty {
             providerStatus = isPlaying ? .playing(sourceName) : .paused(sourceName)
             return
@@ -593,6 +615,13 @@ final class NowPlayingManager: ObservableObject {
 
     private func scriptProviders(preferredSourceName: String) -> [any NowPlayingProvider] {
         var providers: [any NowPlayingProvider] = []
+
+        // Quran playback wins over every other source while active. The Quran
+        // player is self-contained (AVPlayer), so it never reaches the system
+        // media session — this is the only way to surface it in Now Playing.
+        if QuranManager.shared.playbackState != .idle {
+            providers.append(QuranNowPlayingProvider())
+        }
 
         switch preferredSourceName {
         case "Spotify":
@@ -1169,6 +1198,16 @@ final class NowPlayingManager: ObservableObject {
             return
         }
 
+        // Quran is an in-app source — route directly to its manager instead of
+        // the system media session / AppleScript paths below.
+        if sourceName == "Quran" {
+            let shouldPlay = !isPlaying
+            isPlaying = shouldPlay
+            QuranManager.shared.togglePlayPause()
+            refreshPreferredSource()
+            return
+        }
+
         let shouldPlay = !isPlaying
 
         // Immediately toggle local state for responsive UI
@@ -1208,6 +1247,12 @@ final class NowPlayingManager: ObservableObject {
     }
 
     func nextTrack() {
+        if sourceName == "Quran" {
+            QuranManager.shared.nextSurah()
+            refreshPreferredSource()
+            return
+        }
+
         if shouldUseMediaRemoteControls {
             _ = sendCommandFunc?(kMRNextTrack, nil)
             return
@@ -1223,6 +1268,12 @@ final class NowPlayingManager: ObservableObject {
     }
 
     func previousTrack() {
+        if sourceName == "Quran" {
+            QuranManager.shared.previousSurah()
+            refreshPreferredSource()
+            return
+        }
+
         if shouldUseMediaRemoteControls {
             _ = sendCommandFunc?(kMRPreviousTrack, nil)
             return
@@ -1245,6 +1296,13 @@ final class NowPlayingManager: ObservableObject {
         let clampedTime = max(0, min(time, duration))
         elapsedTime = clampedTime
         updatePlaybackTimer()
+
+        // Quran uses a fraction-based seek; convert the absolute time.
+        if sourceName == "Quran" {
+            let fraction = duration > 0 ? clampedTime / duration : 0
+            QuranManager.shared.seek(toFraction: fraction)
+            return
+        }
 
         if shouldUseMediaRemoteControls {
             setElapsedTimeFunc?(clampedTime)

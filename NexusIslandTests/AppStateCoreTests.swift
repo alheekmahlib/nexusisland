@@ -69,10 +69,10 @@ final class AppStateCoreTests: XCTestCase {
     }
 
     func testActiveModuleExtensionEquality() {
-        XCTAssertEqual(ActiveModule.extension_("superisland.pomodoro"),
-                       .extension_("superisland.pomodoro"))
-        XCTAssertNotEqual(ActiveModule.extension_("superisland.pomodoro"),
-                          .extension_("superisland.ai-usage"))
+        XCTAssertEqual(ActiveModule.extension_("nexus.pomodoro"),
+                       .extension_("nexus.pomodoro"))
+        XCTAssertNotEqual(ActiveModule.extension_("nexus.pomodoro"),
+                          .extension_("nexus.ai-usage"))
     }
 
     func testActiveModuleBuiltInVsExtensionNeverEqual() {

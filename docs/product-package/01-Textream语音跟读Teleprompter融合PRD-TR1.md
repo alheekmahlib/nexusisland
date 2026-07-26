@@ -2,16 +2,16 @@
 
 ## 基本信息
 
-- 子项目：SuperIsland
+- 子项目：NexusIsland
 - 归属：Productivity / Teleprompter
 - 任务类型：A 新需求
 - 标注版本：20260607
-- 需求来源：将 f/textream 的语音跟读能力融合到 SuperIsland 现有 Teleprompter 模块
+- 需求来源：将 f/textream 的语音跟读能力融合到 NexusIsland 现有 Teleprompter 模块
 - 授权说明：本需求会参考并迁移 f/textream 的 MIT 许可能力，后续 PR 描述中保留 Textream attribution
 
 ## 本次范围
 
-本次只做 MVP 融合：保留 SuperIsland 现有 notch/island 窗口系统和 Teleprompter 入口，在现有 Teleprompter 模块中新增 Classic 定速滚动与 Word Tracking 语音跟读两种模式。暂不纳入 PPTX notes 导入、Director Mode、远程浏览器控制、外接屏/Sidecar 输出、Textream 独立主窗口、Textream URL scheme 和 Textream 文件格式。
+本次只做 MVP 融合：保留 NexusIsland 现有 notch/island 窗口系统和 Teleprompter 入口，在现有 Teleprompter 模块中新增 Classic 定速滚动与 Word Tracking 语音跟读两种模式。暂不纳入 PPTX notes 导入、Director Mode、远程浏览器控制、外接屏/Sidecar 输出、Textream 独立主窗口、Textream URL scheme 和 Textream 文件格式。
 
 ## 功能点 1：启用 Teleprompter 时完成语音权限预授权
 
@@ -21,7 +21,7 @@
 
 ### 2. 使用者
 
-使用者是开启 SuperIsland Teleprompter 的 Mac 用户，尤其是直播、演示、录课、访谈和播客场景中需要跟读脚本的人。适用角色包括普通使用者、演示者、主播和内容创作者。不适用角色是未启用 Teleprompter 模块、只使用 Battery/Now Playing/Calendar 等其他模块的用户。
+使用者是开启 NexusIsland Teleprompter 的 Mac 用户，尤其是直播、演示、录课、访谈和播客场景中需要跟读脚本的人。适用角色包括普通使用者、演示者、主播和内容创作者。不适用角色是未启用 Teleprompter 模块、只使用 Battery/Now Playing/Calendar 等其他模块的用户。
 
 ### 3. 触发
 
@@ -33,8 +33,8 @@
 2. 用户打开 Teleprompter 开关。
 3. 系统保存 Teleprompter enabled 状态。
 4. 系统检查麦克风授权状态。
-5. 麦克风状态为未决定时，系统激活 SuperIsland 并立即发出麦克风授权请求；已拒绝或受限时引导用户打开系统设置。
-6. Speech Recognition 状态为未决定时，系统激活 SuperIsland 并立即发出系统授权请求，不依赖用户再点击应用内授权按钮；已拒绝或受限时引导用户打开系统设置。
+5. 麦克风状态为未决定时，系统激活 NexusIsland 并立即发出麦克风授权请求；已拒绝或受限时引导用户打开系统设置。
+6. Speech Recognition 状态为未决定时，系统激活 NexusIsland 并立即发出系统授权请求，不依赖用户再点击应用内授权按钮；已拒绝或受限时引导用户打开系统设置。
 7. 系统根据 macOS 实际返回的授权状态刷新权限行；如果系统按队列依次呈现弹窗，界面不得把后一个权限请求隐藏到手动按钮之后。
 8. 用户在 Teleprompter 已开启后切换到 Word Tracking 模式时，系统再次按当前状态触发缺失权限请求。
 9. 授权完成后，用户可继续编辑脚本、选择模式并播放。
@@ -49,7 +49,7 @@
 - 权限状态为未决定时必须尝试弹系统授权；权限状态为已拒绝或受限时不得假装会再次弹窗，必须展示打开系统设置的路径。
 - 麦克风授权和 Speech Recognition 授权需要在启用、启动或进入设置页的自动路径中主动发起；macOS 可按系统弹窗队列依次呈现，但应用不得要求用户额外点击授权按钮才发起第二个请求。
 - 用户拒绝权限时，Teleprompter 模块仍可保持开启，但 Word Tracking 播放必须显示不可用状态或错误提示。
-- 权限文案要使用 SuperIsland 品牌，不沿用 Textream 品牌。
+- 权限文案要使用 NexusIsland 品牌，不沿用 Textream 品牌。
 - 如果系统权限状态无法同步获取，界面需要在应用重新激活或再次进入设置时刷新状态。
 
 ### 6. 边界
@@ -84,7 +84,7 @@
 
 ### 1. 业务目的
 
-让 SuperIsland Teleprompter 同时支持无需麦克风的定速滚动和基于语音识别的跟读高亮，覆盖不同演示场景。Classic 适合无需逐字跟踪、只想稳定滚动脚本的用户；Word Tracking 适合希望文字跟着朗读进度移动并突出当前内容的用户。点击开始后，系统必须把口播稿模块真实呈现出来，用户不应只触发后台播放状态却仍停留在其他 tab、Home 或 compact 不可见状态。
+让 NexusIsland Teleprompter 同时支持无需麦克风的定速滚动和基于语音识别的跟读高亮，覆盖不同演示场景。Classic 适合无需逐字跟踪、只想稳定滚动脚本的用户；Word Tracking 适合希望文字跟着朗读进度移动并突出当前内容的用户。点击开始后，系统必须把口播稿模块真实呈现出来，用户不应只触发后台播放状态却仍停留在其他 tab、Home 或 compact 不可见状态。
 
 ### 2. 使用者
 
@@ -169,7 +169,7 @@
 
 ### 1. 业务目的
 
-让用户朗读时能在 SuperIsland 的 Teleprompter 中看到当前进度，降低读稿走神和丢句风险。该功能的目标不是创建独立提词器应用，而是在 SuperIsland 现有 island 展示区域内，把脚本拆成词流并根据语音识别进度高亮已读/当前内容。识别反馈必须足够灵敏：用户正常朗读后应尽快看到听音状态、最近识别文本和进度变化，而不是长时间停留在等待状态。
+让用户朗读时能在 NexusIsland 的 Teleprompter 中看到当前进度，降低读稿走神和丢句风险。该功能的目标不是创建独立提词器应用，而是在 NexusIsland 现有 island 展示区域内，把脚本拆成词流并根据语音识别进度高亮已读/当前内容。识别反馈必须足够灵敏：用户正常朗读后应尽快看到听音状态、最近识别文本和进度变化，而不是长时间停留在等待状态。
 
 ### 2. 使用者
 
@@ -177,7 +177,7 @@
 
 ### 3. 触发
 
-触发页面是 SuperIsland 的 compact、expanded 和 full expanded Teleprompter 展示区域。触发元素是 Teleprompter 展示面 `data-annotation-id="teleprompter-word-tracking-surface"`、语音状态/错误提示 `data-annotation-id="teleprompter-speech-status"`、播放/暂停控件 `data-annotation-id="teleprompter-play-control"`。当用户在 Word Tracking 模式点击播放且倒计时完成后，词流开始根据朗读进度更新。
+触发页面是 NexusIsland 的 compact、expanded 和 full expanded Teleprompter 展示区域。触发元素是 Teleprompter 展示面 `data-annotation-id="teleprompter-word-tracking-surface"`、语音状态/错误提示 `data-annotation-id="teleprompter-speech-status"`、播放/暂停控件 `data-annotation-id="teleprompter-play-control"`。当用户在 Word Tracking 模式点击播放且倒计时完成后，词流开始根据朗读进度更新。
 
 ### 4. 流程
 
@@ -203,7 +203,7 @@
 - 匹配算法需要以当前位置附近窗口为主，避免远处相似短语抢占进度；大跨度跳转必须有更强确认，小跨度推进可以更灵敏。
 - 如果麦克风已经有输入但脚本进度未推进，状态区必须展示最近听到的文本和输入状态，帮助用户判断是音量、语言选择还是脚本匹配问题。
 - 正常朗读时进度更新应尽量跟随最近一次有效 partial result，不需要等待最终识别结果。
-- 已读、当前、未读状态必须清晰，但不能破坏 SuperIsland 现有深色 island 视觉。
+- 已读、当前、未读状态必须清晰，但不能破坏 NexusIsland 现有深色 island 视觉。
 - Word Tracking 展示必须保留用户在脚本编辑框中输入的换行、空行和段落结构；用户一行一句输入时，island 中也应按一行一句展示，不得压平成单段。
 - CJK 文本展示不得为了识别而在每个字之间插入额外空格；识别匹配可以内部折叠空白，但展示层必须回到原始脚本位置。
 - 识别匹配的空白折叠不得降低朗读跟随效果；识别进度映射回原始展示文本后，高亮、行锚点和完成状态都必须保持正确。
@@ -216,7 +216,7 @@
 - 识别异常时必须停止推进并展示错误提示。
 - 识别已产出转写但高亮未推进时，状态区应展示最近听到的短文本，帮助用户判断是语言、脚本匹配还是麦克风问题。
 - 点击重置必须清除语音识别进度、音频状态和滚动位置。
-- Word Tracking 不使用 Textream 独立 notch overlay，必须渲染在 SuperIsland 现有 Teleprompter 展示中。
+- Word Tracking 不使用 Textream 独立 notch overlay，必须渲染在 NexusIsland 现有 Teleprompter 展示中。
 
 ### 6. 边界
 
@@ -258,12 +258,12 @@
 - [ ] 暂停后高亮停在当前进度，重置后回到开头。
 - [ ] 识别失败或权限不足时有可见错误状态。
 - [ ] compact、expanded、full expanded 不出现文字重叠或布局溢出。
-- [ ] Textream 的独立 overlay/window 不进入 SuperIsland。
+- [ ] Textream 的独立 overlay/window 不进入 NexusIsland。
 - [ ] 长文本滚动时，播放控件仍可点击。
 
 ### 9. UI 视觉
 
-Word Tracking 的高亮应延续 SuperIsland 现有深色半透明 island 风格。已读文字使用更高不透明度，未读文字使用较低不透明度，当前朗读附近内容保持在视觉中心或易读区域。不得引入大面积新色块、营销式卡片或独立提词器窗口；控件尺寸、图标重量、间距应贴近现有 Teleprompter 控件。
+Word Tracking 的高亮应延续 NexusIsland 现有深色半透明 island 风格。已读文字使用更高不透明度，未读文字使用较低不透明度，当前朗读附近内容保持在视觉中心或易读区域。不得引入大面积新色块、营销式卡片或独立提词器窗口；控件尺寸、图标重量、间距应贴近现有 Teleprompter 控件。
 
 ## 附录：不进入本次 MVP 的能力
 

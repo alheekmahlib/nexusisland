@@ -69,35 +69,11 @@ final class ExtensionManager: ObservableObject {
         let appSupportBase = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
 
-        // Migrate from old "SuperIsland" App Support folder if it exists.
-        Self.migrateAppSupportIfNeeded(base: appSupportBase)
-
         installedExtensionsDirectory = appSupportBase
             .appendingPathComponent("NexusIsland", isDirectory: true)
             .appendingPathComponent("Extensions", isDirectory: true)
 
         try? fileManager.createDirectory(at: installedExtensionsDirectory, withIntermediateDirectories: true)
-    }
-
-    /// One-time migration: if the old ~/Library/Application Support/SuperIsland
-    /// exists and NexusIsland doesn't, rename it so user data (extensions,
-    /// shelf items, mascots, OAuth tokens) survives the rebrand.
-    private static func migrateAppSupportIfNeeded(base: URL) {
-        let fm = FileManager.default
-        let oldDir = base.appendingPathComponent("SuperIsland", isDirectory: true)
-        let newDir = base.appendingPathComponent("NexusIsland", isDirectory: true)
-
-        guard fm.fileExists(atPath: oldDir.path),
-              !fm.fileExists(atPath: newDir.path) else { return }
-
-        do {
-            try fm.moveItem(at: oldDir, to: newDir)
-            ExtensionLogger.shared.log("migration", .info,
-                "Migrated App Support from SuperIsland → NexusIsland")
-        } catch {
-            // If move fails, try copy + remove (handles cross-volume edge cases).
-            try? fm.copyItem(at: oldDir, to: newDir)
-        }
     }
 
     private static func resolveRepoExtensionsDirectory() -> URL? {

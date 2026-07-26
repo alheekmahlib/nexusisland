@@ -184,31 +184,35 @@ final class ExtensionJSRuntime {
     }
 
     private func injectAPI() {
-        let superIsland = JSValue(newObjectIn: context)!
-        context.setObject(superIsland, forKeyedSubscript: "NexusIsland" as NSString)
+        let nexusIsland = JSValue(newObjectIn: context)!
+        // Expose the host API under both names: "NexusIsland" is canonical,
+        // "Nexus" is a back-compat alias so legacy extensions calling
+        // Nexus.registerModule(...) keep working.
+        context.setObject(nexusIsland, forKeyedSubscript: "NexusIsland" as NSString)
+        context.setObject(nexusIsland, forKeyedSubscript: "Nexus" as NSString)
 
-        injectModuleRegistration(into: superIsland)
-        injectStore(into: superIsland)
-        injectSettings(into: superIsland)
-        injectIslandControls(into: superIsland)
-        injectNotifications(into: superIsland)
-        injectHTTP(into: superIsland)
-        injectSystem(into: superIsland)
-        injectFeedback(into: superIsland)
-        injectMascot(into: superIsland)
-        injectConsole(into: superIsland)
+        injectModuleRegistration(into: nexusIsland)
+        injectStore(into: nexusIsland)
+        injectSettings(into: nexusIsland)
+        injectIslandControls(into: nexusIsland)
+        injectNotifications(into: nexusIsland)
+        injectHTTP(into: nexusIsland)
+        injectSystem(into: nexusIsland)
+        injectFeedback(into: nexusIsland)
+        injectMascot(into: nexusIsland)
+        injectConsole(into: nexusIsland)
         injectTimers()
         injectViewHelpers()
         injectComponents()
     }
 
-    private func injectModuleRegistration(into superIsland: JSValue) {
+    private func injectModuleRegistration(into nexusIsland: JSValue) {
         let registerModule: @convention(block) (JSValue) -> Void = { [weak self] config in
             guard let self else { return }
             self.moduleConfig = config
             ExtensionLogger.shared.log(self.extensionID, .info, "Module registered")
         }
-        superIsland.setObject(registerModule, forKeyedSubscript: "registerModule" as NSString)
+        nexusIsland.setObject(registerModule, forKeyedSubscript: "registerModule" as NSString)
     }
 
     private func resolveMinimalCompactPrecedence(from config: JSValue) -> Int {
@@ -230,7 +234,7 @@ final class ExtensionJSRuntime {
         return 1
     }
 
-    private func injectStore(into superIsland: JSValue) {
+    private func injectStore(into nexusIsland: JSValue) {
         let store = JSValue(newObjectIn: context)!
 
         let getValue: @convention(block) (String) -> JSValue? = { [weak self] key in
@@ -250,10 +254,10 @@ final class ExtensionJSRuntime {
 
         store.setObject(getValue, forKeyedSubscript: "get" as NSString)
         store.setObject(setValue, forKeyedSubscript: "set" as NSString)
-        superIsland.setObject(store, forKeyedSubscript: "store" as NSString)
+        nexusIsland.setObject(store, forKeyedSubscript: "store" as NSString)
     }
 
-    private func injectSettings(into superIsland: JSValue) {
+    private func injectSettings(into nexusIsland: JSValue) {
         let settings = JSValue(newObjectIn: context)!
 
         let getValue: @convention(block) (String) -> JSValue? = { [weak self] key in
@@ -273,10 +277,10 @@ final class ExtensionJSRuntime {
 
         settings.setObject(getValue, forKeyedSubscript: "get" as NSString)
         settings.setObject(setValue, forKeyedSubscript: "set" as NSString)
-        superIsland.setObject(settings, forKeyedSubscript: "settings" as NSString)
+        nexusIsland.setObject(settings, forKeyedSubscript: "settings" as NSString)
     }
 
-    private func injectIslandControls(into superIsland: JSValue) {
+    private func injectIslandControls(into nexusIsland: JSValue) {
         let island = JSValue(newObjectIn: context)!
 
         let activate: @convention(block) (JSValue?) -> Void = { [weak self] autoDismissArg in
@@ -299,10 +303,10 @@ final class ExtensionJSRuntime {
         island.setObject(false, forKeyedSubscript: "isActive" as NSString)
 
         islandNamespace = island
-        superIsland.setObject(island, forKeyedSubscript: "island" as NSString)
+        nexusIsland.setObject(island, forKeyedSubscript: "island" as NSString)
     }
 
-    private func injectNotifications(into superIsland: JSValue) {
+    private func injectNotifications(into nexusIsland: JSValue) {
         let notifications = JSValue(newObjectIn: context)!
 
         let send: @convention(block) (JSValue) -> Void = { [weak self] options in
@@ -340,10 +344,10 @@ final class ExtensionJSRuntime {
         }
 
         notifications.setObject(send, forKeyedSubscript: "send" as NSString)
-        superIsland.setObject(notifications, forKeyedSubscript: "notifications" as NSString)
+        nexusIsland.setObject(notifications, forKeyedSubscript: "notifications" as NSString)
     }
 
-    private func injectHTTP(into superIsland: JSValue) {
+    private func injectHTTP(into nexusIsland: JSValue) {
         let fetchSync: @convention(block) (String, JSValue?) -> JSValue? = { [weak self] urlString, options in
             guard let self else { return nil }
             return self.fetchSync(urlString: urlString, options: options)
@@ -379,8 +383,8 @@ final class ExtensionJSRuntime {
             }
         }
 
-        superIsland.setObject(fetchSync, forKeyedSubscript: "__fetchSync" as NSString)
-        superIsland.setObject(fetchAsync, forKeyedSubscript: "__fetchAsync" as NSString)
+        nexusIsland.setObject(fetchSync, forKeyedSubscript: "__fetchSync" as NSString)
+        nexusIsland.setObject(fetchAsync, forKeyedSubscript: "__fetchAsync" as NSString)
 
         if manifest.permissions.contains("network") {
             context.evaluateScript(
@@ -407,7 +411,7 @@ final class ExtensionJSRuntime {
         }
     }
 
-    private func injectSystem(into superIsland: JSValue) {
+    private func injectSystem(into nexusIsland: JSValue) {
         let system = JSValue(newObjectIn: context)!
 
         let getAIUsage: @convention(block) () -> JSValue? = { [weak self] in
@@ -564,10 +568,10 @@ final class ExtensionJSRuntime {
         system.setObject(sendWhatsAppWebMessageAsync, forKeyedSubscript: "sendWhatsAppWebMessageAsync" as NSString)
         system.setObject(dismissNotification, forKeyedSubscript: "dismissNotification" as NSString)
         system.setObject(closePresentedInteraction, forKeyedSubscript: "closePresentedInteraction" as NSString)
-        superIsland.setObject(system, forKeyedSubscript: "system" as NSString)
+        nexusIsland.setObject(system, forKeyedSubscript: "system" as NSString)
     }
 
-    private func injectFeedback(into superIsland: JSValue) {
+    private func injectFeedback(into nexusIsland: JSValue) {
         let playFeedback: @convention(block) (String) -> Void = { type in
             DispatchQueue.main.async {
                 HapticFeedbackController.play(named: type)
@@ -579,11 +583,11 @@ final class ExtensionJSRuntime {
             NSWorkspace.shared.open(url)
         }
 
-        superIsland.setObject(playFeedback, forKeyedSubscript: "playFeedback" as NSString)
-        superIsland.setObject(openURL, forKeyedSubscript: "openURL" as NSString)
+        nexusIsland.setObject(playFeedback, forKeyedSubscript: "playFeedback" as NSString)
+        nexusIsland.setObject(openURL, forKeyedSubscript: "openURL" as NSString)
     }
 
-    private func injectMascot(into superIsland: JSValue) {
+    private func injectMascot(into nexusIsland: JSValue) {
         let mascot = JSValue(newObjectIn: context)!
 
         let setExpression: @convention(block) (String) -> Void = { expression in
@@ -633,10 +637,10 @@ final class ExtensionJSRuntime {
         mascot.setObject(getSelected, forKeyedSubscript: "getSelected" as NSString)
         mascot.setObject(list, forKeyedSubscript: "list" as NSString)
         mascot.setObject(setInput, forKeyedSubscript: "setInput" as NSString)
-        superIsland.setObject(mascot, forKeyedSubscript: "mascot" as NSString)
+        nexusIsland.setObject(mascot, forKeyedSubscript: "mascot" as NSString)
     }
 
-    private func injectConsole(into superIsland: JSValue) {
+    private func injectConsole(into nexusIsland: JSValue) {
         let logInfo: @convention(block) (String) -> Void = { [weak self] message in
             guard let self else { return }
             ExtensionLogger.shared.log(self.extensionID, .info, message)
@@ -652,9 +656,9 @@ final class ExtensionJSRuntime {
             ExtensionLogger.shared.log(self.extensionID, .error, message)
         }
 
-        superIsland.setObject(logInfo, forKeyedSubscript: "__log" as NSString)
-        superIsland.setObject(logWarn, forKeyedSubscript: "__warn" as NSString)
-        superIsland.setObject(logError, forKeyedSubscript: "__error" as NSString)
+        nexusIsland.setObject(logInfo, forKeyedSubscript: "__log" as NSString)
+        nexusIsland.setObject(logWarn, forKeyedSubscript: "__warn" as NSString)
+        nexusIsland.setObject(logError, forKeyedSubscript: "__error" as NSString)
 
         context.evaluateScript(
             """

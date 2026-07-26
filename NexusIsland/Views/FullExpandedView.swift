@@ -497,7 +497,11 @@ private struct FullExpandedTabButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        // Circle when there's no title (shoulder bar) — matches the battery /
+        // settings / lock medallions. Capsule when a title is shown (inline bar).
+        let isCircle = !(showsTitle && isSelected)
+        let shape: AnyShape = isCircle ? AnyShape(Circle()) : AnyShape(Capsule(style: .continuous))
+        return Button(action: action) {
             HStack(spacing: 6) {
                 tabIcon
                     .foregroundColor(.white.opacity(isSelected ? 0.96 : 0.72))
@@ -508,28 +512,25 @@ private struct FullExpandedTabButton: View {
                         .lineLimit(1)
                 }
             }
-            .padding(.horizontal, showsTitle && isSelected ? 11 : 10)
-            .padding(.vertical, 6)
+            .padding(.horizontal, isCircle ? 0 : (showsTitle && isSelected ? 11 : 10))
+            .padding(.vertical, isCircle ? 0 : 6)
+            .frame(width: isCircle ? 32 : nil, height: isCircle ? 32 : nil)
             .background(
-                Capsule(style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color.black.opacity(0.98),
-                                Color.black.opacity(0.94)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+                shape.fill(
+                    // Match the battery/settings medallion: deep-purple →
+                    // background gradient (islandSurfaceFill in the parent).
+                    LinearGradient(
+                        colors: [NexusPalette.deepPurple, NexusPalette.background],
+                        startPoint: .top,
+                        endPoint: .bottom
                     )
-                    .overlay(
-                        Capsule(style: .continuous)
-                            .fill(Color.white.opacity(isSelected ? 0.05 : 0.02))
-                    )
+                )
+                .overlay(
+                    shape.fill(Color.white.opacity(isSelected ? 0.05 : 0.015))
+                )
             )
             .overlay(
-                Capsule(style: .continuous)
-                    .stroke(Color.white.opacity(isSelected ? 0.12 : 0.08), lineWidth: 1)
+                shape.stroke(Color.white.opacity(isSelected ? 0.10 : 0.035), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -539,7 +540,16 @@ private struct FullExpandedTabButton: View {
 
     @ViewBuilder
     private var tabIcon: some View {
-        if let iconImage = tab.iconImage {
+        // Custom Quran icon (template-rendered so it tints white like the SF
+        // Symbols do).
+        if case .module(.builtIn(.quran)) = tab {
+            Image("QuranTabIcon")
+                .renderingMode(.template)
+                .resizable()
+                .interpolation(.high)
+                .scaledToFit()
+                .frame(width: 13, height: 13)
+        } else if let iconImage = tab.iconImage {
             Image(nsImage: iconImage)
                 .renderingMode(.original)
                 .resizable()

@@ -1,6 +1,7 @@
 import AVFoundation
 import Combine
 import Foundation
+import MediaPlayer
 
 // MARK: - Quran Manager
 
@@ -81,7 +82,10 @@ final class QuranManager: ObservableObject {
 
         player.$state
             .receive(on: RunLoop.main)
-            .sink { [weak self] state in self?.playbackState = state }
+            .sink { [weak self] state in
+                self?.playbackState = state
+                self?.notifyNowPlayingOfStateChange()
+            }
             .store(in: &cancellables)
 
         player.$currentTime
@@ -94,8 +98,100 @@ final class QuranManager: ObservableObject {
 
         player.$duration
             .receive(on: RunLoop.main)
-            .assign(to: \.duration, on: self)
+            .sink { [weak self] duration in
+                self?.duration = duration
+                self?.notifyNowPlayingOfStateChange()
+            }
             .store(in: &cancellables)
+    }
+
+    /// Tell the Now Playing module to re-evaluate its source. Called whenever
+    /// Quran playback state / duration changes so Now Playing picks up (or
+    /// releases) the Quran snapshot promptly. Throttled to avoid flooding.
+    private var lastNowPlayingNotify = Date.distantPast
+    private func notifyNowPlayingOfStateChange() {
+        let now = Date()
+        guard now.timeIntervalSince(lastNowPlayingNotify) > 0.25 else { return }
+        lastNowPlayingNotify = now
+        publishSystemNowPlayingInfo()
+        Task { @MainActor in
+            NowPlayingManager.shared.refreshPreferredSource()
+        }
+    }
+
+    // MARK: - System media session (media keys / Control Center)
+    //
+    // Publishing Quran to MPNowPlayingInfoCenter lets macOS route the keyboard
+    // transport keys (F7/F8/F9) and the Control Center media widget directly to
+    // this app — no Accessibility permission needed, unlike a CGEventTap. The
+    // remote-command handlers below are the receiving end: when the user hits a
+    // media key, the system invokes them.
+
+    private var remoteCommandsRegistered = false
+
+    private func registerRemoteCommands() {
+        guard !remoteCommandsRegistered else { return }
+        remoteCommandsRegistered = true
+
+        let cc = MPRemoteCommandCenter.shared()
+        cc.togglePlayPauseCommand.addTarget { [weak self] _ in
+            self?.togglePlayPause()
+            return .success
+        }
+        cc.playCommand.addTarget { [weak self] _ in
+            if self?.playbackState != .playing { self?.play() }
+            return .success
+        }
+        cc.pauseCommand.addTarget { [weak self] _ in
+            if self?.playbackState == .playing { self?.pause() }
+            return .success
+        }
+        cc.nextTrackCommand.addTarget { [weak self] _ in
+            self?.nextSurah()
+            return .success
+        }
+        cc.previousTrackCommand.addTarget { [weak self] _ in
+            self?.previousSurah()
+            return .success
+        }
+        cc.changePlaybackPositionCommand.addTarget { [weak self] event in
+            guard let self,
+                  let event = event as? MPChangePlaybackPositionCommandEvent else {
+                return .commandFailed
+            }
+            guard self.duration > 0 else { return .commandFailed }
+            self.seek(toFraction: event.positionTime / self.duration)
+            return .success
+        }
+        // Enable the commands so the system knows this app accepts them.
+        cc.togglePlayPauseCommand.isEnabled = true
+        cc.playCommand.isEnabled = true
+        cc.pauseCommand.isEnabled = true
+        cc.nextTrackCommand.isEnabled = true
+        cc.previousTrackCommand.isEnabled = true
+        cc.changePlaybackPositionCommand.isEnabled = true
+    }
+
+    /// Push the current Quran state to the system Now Playing info center.
+    /// Called from `notifyNowPlayingOfStateChange()` (throttled). Keeping the
+    /// info fresh is what makes macOS treat this app as the active media owner
+    /// and route media keys to it instead of Music.app / the browser.
+    private func publishSystemNowPlayingInfo() {
+        guard playbackState != .idle else {
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+            return
+        }
+        registerRemoteCommands()
+
+        var info: [String: Any] = [:]
+        info[MPMediaItemPropertyTitle] = currentSurah.arabicName
+        info[MPMediaItemPropertyArtist] = currentReciter.displayName
+        info[MPMediaItemPropertyAlbumTitle] = "Quran"
+        info[MPMediaItemPropertyPlaybackDuration] = duration
+        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentTime
+        info[MPNowPlayingInfoPropertyPlaybackRate] = isPlaying ? 1.0 : 0.0
+        info[MPNowPlayingInfoPropertyMediaType] = MPNowPlayingInfoMediaType.audio.rawValue
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
     }
 
     private func onItemReady() {
@@ -137,6 +233,10 @@ final class QuranManager: ObservableObject {
     /// Stop and release the current item.
     func stop() {
         player.stop()
+        // Release the system media session immediately so media keys go back
+        // to the previous owner (browser / Spotify) without waiting for the
+        // throttled notifier.
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
 
     /// Seek to a fraction of the surah.

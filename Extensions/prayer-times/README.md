@@ -1,6 +1,6 @@
 # Prayer Times · مواقيت الصلاة
 
-A SuperIsland extension that surfaces daily prayer times for a user-configured
+A NexusIsland extension that surfaces daily prayer times for a user-configured
 location, shows a live countdown to the next prayer beside the notch, and sends
 notifications before and at each prayer.
 

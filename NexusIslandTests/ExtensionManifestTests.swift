@@ -13,7 +13,7 @@ final class ExtensionManifestTests: XCTestCase {
     func testMinimalValidManifestDecodesWithDefaults() throws {
         let json = #"""
         {
-            "id": "superisland.demo",
+            "id": "nexus.demo",
             "name": "Demo",
             "version": "1.0.0"
         }
@@ -21,7 +21,7 @@ final class ExtensionManifestTests: XCTestCase {
 
         let manifest = try JSONDecoder().decode(ExtensionManifest.self, from: json)
 
-        XCTAssertEqual(manifest.id, "superisland.demo")
+        XCTAssertEqual(manifest.id, "nexus.demo")
         XCTAssertEqual(manifest.name, "Demo")
         XCTAssertEqual(manifest.version, "1.0.0")
         // Defaults
@@ -142,7 +142,7 @@ final class ExtensionManifestTests: XCTestCase {
     func testManifestRoundTripsThroughEncodeDecode() throws {
         let originalJSON = #"""
         {
-            "id": "superisland.roundtrip",
+            "id": "nexus.roundtrip",
             "name": "Round Trip",
             "version": "2.3.1",
             "minAppVersion": "1.0.5",
@@ -176,7 +176,7 @@ final class ExtensionManifestTests: XCTestCase {
     // MARK: - load(from:) filesystem contract
 
     func testLoadFromMissingDirectoryThrowsMissingManifest() {
-        let nonexistent = URL(fileURLWithPath: "/tmp/superisland-manifest-test-\(UUID().uuidString)")
+        let nonexistent = URL(fileURLWithPath: "/tmp/nexus-manifest-test-\(UUID().uuidString)")
 
         XCTAssertThrowsError(try ExtensionManifest.load(from: nonexistent)) { error in
             guard case ExtensionManifest.ManifestError.missingManifest = error else {
@@ -189,7 +189,7 @@ final class ExtensionManifestTests: XCTestCase {
     func testLoadFromDirectoryWithoutEntryFileThrowsMissingEntry() throws {
         // manifest.json present but no index.js → must surface a clear error.
         let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("superisland-no-entry-\(UUID().uuidString)", isDirectory: true)
+            .appendingPathComponent("nexus-no-entry-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: dir) }
 

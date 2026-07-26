@@ -1,6 +1,6 @@
 # Appearance and Home Layout
 
-SuperIsland lets users tune the compact island without changing module behavior.
+NexusIsland lets users tune the compact island without changing module behavior.
 
 ## Home slots
 

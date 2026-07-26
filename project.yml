@@ -28,7 +28,7 @@ targets:
     type: application
     platform: macOS
     sources:
-      - path: SuperIsland
+      - path: NexusIsland
         excludes:
           - "**/.DS_Store"
       - path: ExtensionHost
@@ -46,9 +46,10 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.vexaltech.NexusIsland
-        INFOPLIST_FILE: SuperIsland/Info.plist
-        CODE_SIGN_ENTITLEMENTS: SuperIsland/NexusIsland.entitlements
+        INFOPLIST_FILE: NexusIsland/Info.plist
+        CODE_SIGN_ENTITLEMENTS: NexusIsland/NexusIsland.entitlements
         PRODUCT_NAME: NexusIsland
+        INFOPLIST_KEY_CFBundleDisplayName: Nexus Island
         MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "1"
         COMBINE_HIDPI_IMAGES: true
@@ -56,7 +57,7 @@ targets:
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
         ENABLE_HARDENED_RUNTIME: true
     entitlements:
-      path: SuperIsland/NexusIsland.entitlements
+      path: NexusIsland/NexusIsland.entitlements
       properties:
         com.apple.security.personal-information.calendars: true
         com.apple.security.personal-information.reminders: true
@@ -96,7 +97,7 @@ targets:
     type: bundle.unit-test
     platform: macOS
     sources:
-      - path: SuperIslandTests
+      - path: NexusIslandTests
     dependencies:
       - target: NexusIsland
     settings:

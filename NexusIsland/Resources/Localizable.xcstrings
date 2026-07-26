@@ -1,0 +1,3757 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "--:--" : {
+
+    },
+    "— بانتظار الموقع" : {
+
+    },
+    ":%@" : {
+
+    },
+    "…" : {
+
+    },
+    "·" : {
+
+    },
+    "[%@] %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "[%1$@] %2$@"
+          }
+        }
+      }
+    },
+    "#%@" : {
+
+    },
+    "%@" : {
+
+    },
+    "%@ – %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ – %2$@"
+          }
+        }
+      }
+    },
+    "%@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@ • v%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ • v%2$@"
+          }
+        }
+      }
+    },
+    "%@ events" : {
+
+    },
+    "%@ ms" : {
+
+    },
+    "%@ notification%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ notification%2$@"
+          }
+        }
+      }
+    },
+    "%@ اليوم" : {
+
+    },
+    "%@ متأخر" : {
+
+    },
+    "%@ نشط" : {
+
+    },
+    "%@%%" : {
+
+    },
+    "°C" : {
+
+    },
+    "°F" : {
+
+    },
+    "↑%@" : {
+
+    },
+    "+%@ more" : {
+
+    },
+    "●%@" : {
+
+    },
+    "1 دولار أمريكي =" : {
+
+    },
+    "1$ = %@" : {
+
+    },
+    "99+" : {
+      "comment" : "Notification count overflow badge",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+٩٩"
+          }
+        }
+      }
+    },
+    "About" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حول"
+          }
+        }
+      }
+    },
+    "Access was denied or restricted. Open System Settings to enable Word Tracking." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم رفض الوصول أو تقييده. افتح إعدادات النظام لتفعيل تتبّع الكلمات."
+          }
+        }
+      }
+    },
+    "Accessibility" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إمكانية الوصول"
+          }
+        }
+      }
+    },
+    "Account: %@" : {
+
+    },
+    "Activate" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفعيل"
+          }
+        }
+      }
+    },
+    "Active" : {
+      "comment" : "Extension filter\nStatus label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نشط"
+          }
+        }
+      }
+    },
+    "Add" : {
+      "comment" : "Onboarding extension button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة"
+          }
+        }
+      }
+    },
+    "Add extra capabilities to your island." : {
+      "comment" : "Onboarding section subtitle",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف قدرات إضافية لجزيرتك."
+          }
+        }
+      }
+    },
+    "Add script" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة نص"
+          }
+        }
+      }
+    },
+    "Added" : {
+      "comment" : "Onboarding extension button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أُضيفت"
+          }
+        }
+      }
+    },
+    "Advanced" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متقدم"
+          }
+        }
+      }
+    },
+    "AirDrop" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirDrop"
+          }
+        }
+      }
+    },
+    "Align" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المحاذاة"
+          }
+        }
+      }
+    },
+    "All" : {
+      "comment" : "Extension filter",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكل"
+          }
+        }
+      }
+    },
+    "All Day" : {
+      "comment" : "Calendar all-day event label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طوال اليوم"
+          }
+        }
+      }
+    },
+    "All Displays" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كل الشاشات"
+          }
+        }
+      }
+    },
+    "Allow Command+Q to quit" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السماح بـ Command+Q للإنهاء"
+          }
+        }
+      }
+    },
+    "Allow NexusIsland to look for media in this browser." : {
+      "comment" : "Settings description"
+    },
+    "Allowed with limited delivery." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسموح بتسليم محدود."
+          }
+        }
+      }
+    },
+    "Allowed. Choose which calendars appear in NexusIsland." : {
+      "comment" : "Settings description"
+    },
+    "Allowed. Choose which calendars appear in Nexus Island." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسموح. اختر أي التقاويم تظهر في Nexus Island."
+          }
+        }
+      }
+    },
+    "Allowed. NexusIsland can send its own notifications and extension alerts." : {
+      "comment" : "Settings description"
+    },
+    "Allowed. Nexus Island can send its own notifications and extension alerts." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسموح. يمكن لـ Nexus Island إرسال إشعاراته وتنبيهات الإضافات."
+          }
+        }
+      }
+    },
+    "Animation" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الحركة"
+          }
+        }
+      }
+    },
+    "Animation and compact sizing." : {
+      "comment" : "Settings page subtitle"
+    },
+    "Animation intensity" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شدّة الحركة"
+          }
+        }
+      }
+    },
+    "Animation Speed" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سرعة الحركة"
+          }
+        }
+      }
+    },
+    "App language" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لغة التطبيق"
+          }
+        }
+      }
+    },
+    "Appearance" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المظهر"
+          }
+        }
+      }
+    },
+    "AQI" : {
+      "comment" : "Weather detail label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مؤشر جودة الهواء"
+          }
+        }
+      }
+    },
+    "Arrange and toggle visible modules." : {
+      "comment" : "Settings page subtitle"
+    },
+    "Authenticate with Last.fm to start scrobbling your listening history." : {
+      "comment" : "Settings description"
+    },
+    "Authenticate with Linear to start mention notifications and inline replies." : {
+      "comment" : "Settings description"
+    },
+    "Author" : {
+      "comment" : "Metadata label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المؤلف"
+          }
+        }
+      }
+    },
+    "Auto" : {
+      "comment" : "Quran auto-advance toggle"
+    },
+    "Auto-open Shelf on Drop" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح الرف تلقائياً عند الإفلات"
+          }
+        }
+      }
+    },
+    "Automatic" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تلقائي"
+          }
+        }
+      }
+    },
+    "Back" : {
+      "comment" : "Onboarding navigation button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رجوع"
+          }
+        }
+      }
+    },
+    "Battery" : {
+      "comment" : "Menu item\nModule name\nSettings label\nToolbar help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البطارية"
+          }
+        }
+      }
+    },
+    "Battery Trend" : {
+      "comment" : "Battery trend sparkline title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتجاه البطارية"
+          }
+        }
+      }
+    },
+    "Behavior" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السلوك"
+          }
+        }
+      }
+    },
+    "Birthdays" : {
+      "comment" : "Calendar type"
+    },
+    "Bluetooth" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بلوتوث"
+          }
+        }
+      }
+    },
+    "Bounce" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الارتداد"
+          }
+        }
+      }
+    },
+    "Browser media detection" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتشاف الوسائط في المتصفح"
+          }
+        }
+      }
+    },
+    "Build" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البناء"
+          }
+        }
+      }
+    },
+    "Bundled" : {
+      "comment" : "Extension source badge",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مُضمّن"
+          }
+        }
+      }
+    },
+    "Calculation method" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طريقة الحساب"
+          }
+        }
+      }
+    },
+    "CalDAV" : {
+      "comment" : "Calendar type"
+    },
+    "Calendar" : {
+      "comment" : "Calendar type\nModule name\nSettings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقويم"
+          }
+        }
+      }
+    },
+    "Calendar access" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوصول للتقويم"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إلغاء"
+          }
+        }
+      }
+    },
+    "Center slot" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخانة الوسطى"
+          }
+        }
+      }
+    },
+    "Check for Updates" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحقق من التحديثات"
+          }
+        }
+      }
+    },
+    "Checking..." : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ التحقق…"
+          }
+        }
+      }
+    },
+    "Choose an extension from the left panel." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر إضافة من اللوحة اليسرى."
+          }
+        }
+      }
+    },
+    "CI Monitor" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مراقب CI"
+          }
+        }
+      }
+    },
+    "Clear" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح"
+          }
+        }
+      }
+    },
+    "Clear All" : {
+      "comment" : "Button\nNotification clear all button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح الكل"
+          }
+        }
+      }
+    },
+    "Clear Unpinned" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح غير المثبّتة"
+          }
+        }
+      }
+    },
+    "Clipboard" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الحافظة"
+          }
+        }
+      }
+    },
+    "Collapse duplicate events" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دمج الفعاليات المكررة"
+          }
+        }
+      }
+    },
+    "Compact Island Size" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حجم الجزيرة المصغّرة"
+          }
+        }
+      }
+    },
+    "Configure each module's behaviour." : {
+      "comment" : "Settings page subtitle"
+    },
+    "Connect third-party services." : {
+      "comment" : "Settings page subtitle"
+    },
+    "Connected" : {
+      "comment" : "Connectivity status\nStatus label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متصل"
+          }
+        }
+      }
+    },
+    "Connected device notifications" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إشعارات الأجهزة المتصلة"
+          }
+        }
+      }
+    },
+    "Connected. New messages will be synced from this login." : {
+      "comment" : "Settings description"
+    },
+    "Connectivity" : {
+      "comment" : "Module name\nSettings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الاتصال"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "comment" : "Onboarding button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متابعة"
+          }
+        }
+      }
+    },
+    "Controls island motion and transition strength" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتحكم بحركة الجزيرة وقوة الانتقال"
+          }
+        }
+      }
+    },
+    "Copy Item" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ العنصر"
+          }
+        }
+      }
+    },
+    "Copy Link" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ الرابط"
+          }
+        }
+      }
+    },
+    "Copy meeting link" : {
+      "comment" : "Calendar event action help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ رابط الاجتماع"
+          }
+        }
+      }
+    },
+    "Copy Path" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ المسار"
+          }
+        }
+      }
+    },
+    "Copy Text" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ النص"
+          }
+        }
+      }
+    },
+    "Copy URL" : {
+      "comment" : "Menu",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ الرابط"
+          }
+        }
+      }
+    },
+    "Core preferences for the island." : {
+      "comment" : "Settings page subtitle"
+    },
+    "Countdown" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العد التنازلي"
+          }
+        }
+      }
+    },
+    "Currency" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العملات"
+          }
+        }
+      }
+    },
+    "Current forecast will appear here." : {
+      "comment" : "Home weather unavailable subtitle",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيظهر التنبؤ الحالي هنا."
+          }
+        }
+      }
+    },
+    "Deactivate" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إلغاء التفعيل"
+          }
+        }
+      }
+    },
+    "Debug" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصحيح"
+          }
+        }
+      }
+    },
+    "Denied. Open System Settings to allow Calendar access." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرفوض. افتح إعدادات النظام للسماح بالوصول للتقويم."
+          }
+        }
+      }
+    },
+    "Denied. Open System Settings to allow NexusIsland notifications." : {
+      "comment" : "Settings description"
+    },
+    "Denied. Open System Settings to allow Nexus Island notifications." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرفوض. افتح إعدادات النظام للسماح بإشعارات Nexus Island."
+          }
+        }
+      }
+    },
+    "Details" : {
+      "comment" : "Card title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التفاصيل"
+          }
+        }
+      }
+    },
+    "Detection test" : {
+      "comment" : "Settings label"
+    },
+    "Dev Servers" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خوادم التطوير"
+          }
+        }
+      }
+    },
+    "Diagnostics, debug, and about." : {
+      "comment" : "Settings page subtitle"
+    },
+    "Disabled modules stay in place but won’t appear in the island." : {
+      "comment" : "Island display settings hint"
+    },
+    "Disconnect" : {
+      "comment" : "Button"
+    },
+    "Disconnected" : {
+      "comment" : "Connectivity status",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير متصل"
+          }
+        }
+      }
+    },
+    "Display" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العرض"
+          }
+        }
+      }
+    },
+    "DISPLAY ORDER" : {
+      "comment" : "Island display settings section"
+    },
+    "Display sender and message text when available." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار المُرسل ونص الرسالة عند التوفّر."
+          }
+        }
+      }
+    },
+    "Docker" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دوكر"
+          }
+        }
+      }
+    },
+    "Downloading %@%%" : {
+      "comment" : "A progress bar that shows the percentage of a download.",
+      "isCommentAutoGenerated" : true
+    },
+    "Drag to reorder" : {
+      "comment" : "Island row help"
+    },
+    "Drag to reorder. The first enabled module shows first when cycling the island." : {
+      "comment" : "Island display settings subtitle"
+    },
+    "Drop files here" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أفلت الملفات هنا"
+          }
+        }
+      }
+    },
+    "Drop files, links, images, or text" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أفلت ملفات أو روابط أو صور أو نصاً"
+          }
+        }
+      }
+    },
+    "Drop onto the island" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أفلت على الجزيرة"
+          }
+        }
+      }
+    },
+    "Drop to share" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أفلت للمشاركة"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحرير"
+          }
+        }
+      }
+    },
+    "Edit Script…" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحرير النص…"
+          }
+        }
+      }
+    },
+    "Empty" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فارغ"
+          }
+        }
+      }
+    },
+    "Enable modules in Settings to show them here." : {
+      "comment" : "Home empty state subtitle",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فعّل الوحدات في الإعدادات لإظهارها هنا."
+          }
+        }
+      }
+    },
+    "Energy Diagnostics" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشخيص الطاقة"
+          }
+        }
+      }
+    },
+    "English" : {
+      "comment" : "Picker option",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإنجليزية"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "comment" : "Status label"
+    },
+    "Event" : {
+      "comment" : "Calendar compact fallback title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فعالية"
+          }
+        }
+      }
+    },
+    "Exchange" : {
+      "comment" : "Calendar type"
+    },
+    "Expanded collapse delay" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأخير طي المحتوى الموسّع"
+          }
+        }
+      }
+    },
+    "Expired" : {
+      "comment" : "Status label"
+    },
+    "Extensions" : {
+      "comment" : "Onboarding section title\nOnboarding summary label\nSettings pane\nSettings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإضافات"
+          }
+        }
+      }
+    },
+    "Feedback strength when entering the notch" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قوة التغذية الراجعة عند الدخول للثقب"
+          }
+        }
+      }
+    },
+    "Feels Like" : {
+      "comment" : "Weather detail label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُشعر كـ"
+          }
+        }
+      }
+    },
+    "Fetching weather" : {
+      "comment" : "Home weather loading title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جلب الطقس"
+          }
+        }
+      }
+    },
+    "Filter" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصفية"
+          }
+        }
+      }
+    },
+    "Focus Off" : {
+      "comment" : "Focus compact inactive label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التركيز مغلق"
+          }
+        }
+      }
+    },
+    "Full" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كامل"
+          }
+        }
+      }
+    },
+    "General" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عام"
+          }
+        }
+      }
+    },
+    "Gesture detection and system events" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتشاف الإيماءات وأحداث النظام"
+          }
+        }
+      }
+    },
+    "Get Started" : {
+      "comment" : "Onboarding button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابدأ الآن"
+          }
+        }
+      }
+    },
+    "Getting your local conditions." : {
+      "comment" : "Home weather loading subtitle",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ الحصول على أحوالك المحلية."
+          }
+        }
+      }
+    },
+    "Git Repos" : {
+
+    },
+    "Git Stats" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إحصائيات Git"
+          }
+        }
+      }
+    },
+    "GitHub" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غيت هب"
+          }
+        }
+      }
+    },
+    "Grant" : {
+      "comment" : "Onboarding permission button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "منح"
+          }
+        }
+      }
+    },
+    "Grant Access" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "منح الوصول"
+          }
+        }
+      }
+    },
+    "Granted" : {
+      "comment" : "Onboarding permission badge\nStatus label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ممنوح"
+          }
+        }
+      }
+    },
+    "H:%@" : {
+      "comment" : "A label that reads \"High temperature\" The argument is the string “%arg°C” or the string “%arg°F”.",
+      "isCommentAutoGenerated" : true
+    },
+    "Height" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الارتفاع"
+          }
+        }
+      }
+    },
+    "Hide birthdays" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء أعياد الميلاد"
+          }
+        }
+      }
+    },
+    "Hide holidays" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء العطل"
+          }
+        }
+      }
+    },
+    "Hide on fullscreen" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء في ملء الشاشة"
+          }
+        }
+      }
+    },
+    "Hide repeated holidays or birthdays with the same title and time." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء العطل أو أعياد الميلاد المكررة بنفس العنوان والوقت."
+          }
+        }
+      }
+    },
+    "Hide side slots" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء الخانات الجانبية"
+          }
+        }
+      }
+    },
+    "Hide this calendar" : {
+      "comment" : "Calendar event action help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء هذا التقويم"
+          }
+        }
+      }
+    },
+    "High" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرتفع"
+          }
+        }
+      }
+    },
+    "Home" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرئيسية"
+          }
+        }
+      }
+    },
+    "Hover expand delay" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأخير التوسع عند المرور"
+          }
+        }
+      }
+    },
+    "How long expanded content stays visible" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مدة بقاء المحتوى الموسّع ظاهراً"
+          }
+        }
+      }
+    },
+    "How long to hover the notch before it peeks open" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مدة المرور فوق الثقب قبل أن ينفتح"
+          }
+        }
+      }
+    },
+    "How many days appear in the Upcoming column." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كم يوماً يظهر في عمود القادم."
+          }
+        }
+      }
+    },
+    "How many feed items stay available in the island." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كم عنصراً يبقى متاحاً في الجزيرة."
+          }
+        }
+      }
+    },
+    "Humidity" : {
+      "comment" : "Weather detail label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرطوبة"
+          }
+        }
+      }
+    },
+    "Idle" : {
+      "comment" : "Status label"
+    },
+    "Inactive" : {
+      "comment" : "Status label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير نشط"
+          }
+        }
+      }
+    },
+    "Information" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المعلومات"
+          }
+        }
+      }
+    },
+    "Installed" : {
+      "comment" : "Extension source badge",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مُثبّت"
+          }
+        }
+      }
+    },
+    "Installing..." : {
+      "comment" : "A message displayed when the app is installing.",
+      "isCommentAutoGenerated" : true
+    },
+    "Interaction" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التفاعل"
+          }
+        }
+      }
+    },
+    "Island Display" : {
+      "comment" : "Island display settings title\nSettings pane"
+    },
+    "Island surface swipes" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمريرات سطح الجزيرة"
+          }
+        }
+      }
+    },
+    "Items stay here until you remove them." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبقى العناصر هنا حتى تزيلها."
+          }
+        }
+      }
+    },
+    "Join" : {
+      "comment" : "Calendar event join button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انضمام"
+          }
+        }
+      }
+    },
+    "just now" : {
+      "comment" : "Notification timestamp",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الآن"
+          }
+        }
+      }
+    },
+    "Keep inactive extensions quiet until they are visible or selected." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إبقاء الإضافات غير النشطة هادئة حتى تُعرض أو تُحدد."
+          }
+        }
+      }
+    },
+    "Keep refresh behavior responsive." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إبقاء سلوك التحديث متجاوباً."
+          }
+        }
+      }
+    },
+    "Keep typing to refine the search" : {
+      "comment" : "A description of the emoji picker's empty state.",
+      "isCommentAutoGenerated" : true
+    },
+    "L:%@" : {
+
+    },
+    "Language" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اللغة"
+          }
+        }
+      }
+    },
+    "Last.fm is connected. New plays will scrobble automatically." : {
+      "comment" : "Settings description"
+    },
+    "Last.fm Login" : {
+      "comment" : "Card title"
+    },
+    "Latitude" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خط العرض"
+          }
+        }
+      }
+    },
+    "Launch at login" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التشغيل عند تسجيل الدخول"
+          }
+        }
+      }
+    },
+    "Left slot" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخانة اليسرى"
+          }
+        }
+      }
+    },
+    "Linear is authenticated. New mentions will appear in the Nexus Island." : {
+      "comment" : "Settings description"
+    },
+    "Linear Login" : {
+      "comment" : "Card title"
+    },
+    "Loading" : {
+      "comment" : "Status label"
+    },
+    "Local" : {
+      "comment" : "Calendar type"
+    },
+    "localhost:%@" : {
+
+    },
+    "Location" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الموقع"
+          }
+        }
+      }
+    },
+    "Lock island open" : {
+      "comment" : "Toolbar help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تثبيت الجزيرة مفتوحة"
+          }
+        }
+      }
+    },
+    "Log In Again" : {
+      "comment" : "Button"
+    },
+    "Log In to Last.fm" : {
+      "comment" : "Button"
+    },
+    "Log In to Linear" : {
+      "comment" : "Button"
+    },
+    "Log Out" : {
+      "comment" : "Button"
+    },
+    "Logged in" : {
+      "comment" : "Status label"
+    },
+    "Longitude" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خط الطول"
+          }
+        }
+      }
+    },
+    "Low" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "منخفض"
+          }
+        }
+      }
+    },
+    "Low Power" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طاقة منخفضة"
+          }
+        }
+      }
+    },
+    "Low Power suggestions" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اقتراحات وضع الطاقة المنخفضة"
+          }
+        }
+      }
+    },
+    "Mascot" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التميمة"
+          }
+        }
+      }
+    },
+    "Media" : {
+      "comment" : "Home now playing fallback title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوسائط"
+          }
+        }
+      }
+    },
+    "Media & HUD" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوسائط والشاشة"
+          }
+        }
+      }
+    },
+    "Media Apps" : {
+      "comment" : "System HUD media apps header",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تطبيقات الوسائط"
+          }
+        }
+      }
+    },
+    "Medium" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متوسط"
+          }
+        }
+      }
+    },
+    "Microphone access will be requested when Word Tracking is enabled." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيُطلب الوصول للميكروفون عند تفعيل تتبّع الكلمات."
+          }
+        }
+      }
+    },
+    "Microphone and Speech Recognition access are requested when Teleprompter is enabled." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُطلب الوصول للميكروفون والتعرّف على الكلام عند تفعيل المُلقّن."
+          }
+        }
+      }
+    },
+    "Microphone and Speech Recognition are ready for Word Tracking." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الميكروفون والتعرّف على الكلام جاهزان لتتبّع الكلمات."
+          }
+        }
+      }
+    },
+    "Minimal" : {
+      "comment" : "Picker option",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضئيل"
+          }
+        }
+      }
+    },
+    "Mode" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوضع"
+          }
+        }
+      }
+    },
+    "Modules" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوحدات"
+          }
+        }
+      }
+    },
+    "Need more samples" : {
+      "comment" : "Battery sparkline empty state",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحتاج عينات أكثر"
+          }
+        }
+      }
+    },
+    "Next %@" : {
+
+    },
+    "Next module" : {
+      "comment" : "Module cycler help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوحدة التالية"
+          }
+        }
+      }
+    },
+    "Nexus Island" : {
+
+    },
+    "NexusIsland needs a few permissions to work properly." : {
+      "comment" : "Onboarding section subtitle"
+    },
+    "NexusIsland Settings" : {
+      "comment" : "Window title"
+    },
+    "NexusIsland will run in the background." : {
+      "comment" : "Onboarding section subtitle"
+    },
+    "No active connection" : {
+      "comment" : "Connectivity offline title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يوجد اتصال نشط"
+          }
+        }
+      }
+    },
+    "No calendars available" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد تقاويم متاحة"
+          }
+        }
+      }
+    },
+    "No emoji found" : {
+      "comment" : "A message displayed when there are no emoji matching the current search query.",
+      "isCommentAutoGenerated" : true
+    },
+    "No events" : {
+      "comment" : "Calendar compact empty state\nCalendar events panel empty state",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد فعاليات"
+          }
+        }
+      }
+    },
+    "No events scheduled today" : {
+      "comment" : "Home calendar empty subtitle",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد فعاليات اليوم"
+          }
+        }
+      }
+    },
+    "No home modules enabled" : {
+      "comment" : "Home empty state title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد وحدات رئيسية مفعّلة"
+          }
+        }
+      }
+    },
+    "No matches" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا تطابق"
+          }
+        }
+      }
+    },
+    "No more events today" : {
+      "comment" : "Calendar medium empty state",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا مزيد من الفعاليات اليوم"
+          }
+        }
+      }
+    },
+    "No notifications" : {
+      "comment" : "Notification compact empty state",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد إشعارات"
+          }
+        }
+      }
+    },
+    "No Notifications" : {
+      "comment" : "Notification expanded empty state title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد إشعارات"
+          }
+        }
+      }
+    },
+    "No scheduled refresh jobs" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد مهام تحديث مجدولة"
+          }
+        }
+      }
+    },
+    "No script" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يوجد نص"
+          }
+        }
+      }
+    },
+    "No supported media apps are currently playing." : {
+      "comment" : "System HUD empty media apps state",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد تطبيقات وسائط مدعومة تعمل حالياً."
+          }
+        }
+      }
+    },
+    "None" : {
+      "comment" : "Onboarding summary empty extensions",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا شيء"
+          }
+        }
+      }
+    },
+    "Normal" : {
+      "comment" : "Picker option",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عادي"
+          }
+        }
+      }
+    },
+    "Not logged in" : {
+      "comment" : "Status label"
+    },
+    "Not requested. Allow access to show upcoming events." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير مطلوب. اسمح بالوصول لإظهار الفعاليات القادمة."
+          }
+        }
+      }
+    },
+    "Not requested. Allow this when you want NexusIsland or extensions to send macOS notifications." : {
+      "comment" : "Settings description"
+    },
+    "Not requested. Allow this when you want Nexus Island or extensions to send macOS notifications." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير مطلوب. اسمح بهذا عندما تريد لـ Nexus Island أو الإضافات إرسال إشعارات macOS."
+          }
+        }
+      }
+    },
+    "Notch haptic intensity" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شدّة اهتزاز الثقب"
+          }
+        }
+      }
+    },
+    "Nothing coming up" : {
+      "comment" : "Home calendar empty state title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا شيء قادم"
+          }
+        }
+      }
+    },
+    "Nothing this week" : {
+      "comment" : "Calendar upcoming empty state",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا شيء هذا الأسبوع"
+          }
+        }
+      }
+    },
+    "Notifications" : {
+      "comment" : "Module name\nSettings label\nToolbar help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإشعارات"
+          }
+        }
+      }
+    },
+    "Now Playing" : {
+      "comment" : "Menu item\nModule name\nSettings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوسائط الآن"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيقاف"
+          }
+        }
+      }
+    },
+    "Offer Low Power mode when the Mac switches to battery or refresh work stays busy." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اقترح وضع الطاقة المنخفضة عند انتقال الماك للبطارية أو ازدحام التحديثات."
+          }
+        }
+      }
+    },
+    "Offline" : {
+      "comment" : "Connectivity status",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير متصل بالإنترنت"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح"
+          }
+        }
+      }
+    },
+    "Open in Terminal" : {
+      "comment" : "Menu",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح في الطرفية"
+          }
+        }
+      }
+    },
+    "Open meeting link" : {
+      "comment" : "Calendar event action help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح رابط الاجتماع"
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "comment" : "Button\nOnboarding permission button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح الإعدادات"
+          }
+        }
+      }
+    },
+    "Open Settings Instead" : {
+      "comment" : "Onboarding button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح الإعدادات بدلاً من ذلك"
+          }
+        }
+      }
+    },
+    "Pause" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيقاف مؤقت"
+          }
+        }
+      }
+    },
+    "Pause background extension refresh" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيقاف تحديث الإضافات في الخلفية"
+          }
+        }
+      }
+    },
+    "Permission" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإذن"
+          }
+        }
+      }
+    },
+    "Permissions" : {
+      "comment" : "Metadata label\nOnboarding section title\nOnboarding summary label\nSettings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأذونات"
+          }
+        }
+      }
+    },
+    "Pick a specific display or let NexusIsland choose" : {
+      "comment" : "Settings description"
+    },
+    "Pick a specific display or let Nexus Island choose" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر شاشة محددة أو دع Nexus Island يختار"
+          }
+        }
+      }
+    },
+    "Pill height on notched Macs" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ارتفاع القرص على أجهزة الماك ذات الثقب"
+          }
+        }
+      }
+    },
+    "Pill width on notched Macs" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عرض القرص على أجهزة الماك ذات الثقب"
+          }
+        }
+      }
+    },
+    "Pin" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تثبيت"
+          }
+        }
+      }
+    },
+    "Pinned items are kept" : {
+      "comment" : "Settings description"
+    },
+    "Play" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغيل"
+          }
+        }
+      }
+    },
+    "Playing" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغيل"
+          }
+        }
+      }
+    },
+    "Power" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الطاقة"
+          }
+        }
+      }
+    },
+    "Power mode" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وضع الطاقة"
+          }
+        }
+      }
+    },
+    "Prayer Times" : {
+      "comment" : "Module name\nSettings label\nSettings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مواقيت الصلاة"
+          }
+        }
+      }
+    },
+    "Preparing secure login session..." : {
+      "comment" : "Settings description"
+    },
+    "Previous module" : {
+      "comment" : "Module cycler help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوحدة السابقة"
+          }
+        }
+      }
+    },
+    "Productivity" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإنتاجية"
+          }
+        }
+      }
+    },
+    "QR Ready" : {
+      "comment" : "Status label"
+    },
+    "Quick Look" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نظرة سريعة"
+          }
+        }
+      }
+    },
+    "Quit" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إنهاء"
+          }
+        }
+      }
+    },
+    "Quit NexusIsland" : {
+      "comment" : "Menu item"
+    },
+    "Quit Nexus Island" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إنهاء Nexus Island"
+          }
+        }
+      }
+    },
+    "Quran" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "القرآن"
+          }
+        }
+      }
+    },
+    "Ready" : {
+      "comment" : "Status label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جاهز"
+          }
+        }
+      }
+    },
+    "Recent Logs" : {
+      "comment" : "Card title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السجلات الحديثة"
+          }
+        }
+      }
+    },
+    "Reconnect" : {
+      "comment" : "Button"
+    },
+    "Reduce animations" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقليل الحركات"
+          }
+        }
+      }
+    },
+    "Reduce background work while collapsed and restore quickly on hover." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقليل العمل في الخلفية أثناء الطي والاستعادة السريعة عند المرور."
+          }
+        }
+      }
+    },
+    "Reduce motion" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقليل الحركة"
+          }
+        }
+      }
+    },
+    "Reduced" : {
+      "comment" : "Picker option",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مخفّف"
+          }
+        }
+      }
+    },
+    "Refresh" : {
+      "comment" : "Metadata label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحديث"
+          }
+        }
+      }
+    },
+    "Refresh QR" : {
+      "comment" : "Button"
+    },
+    "Reload" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة تحميل"
+          }
+        }
+      }
+    },
+    "Reminders" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التذكيرات"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إزالة"
+          }
+        }
+      }
+    },
+    "Request" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طلب"
+          }
+        }
+      }
+    },
+    "Request Access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طلب الوصول"
+          }
+        }
+      }
+    },
+    "Required" : {
+      "comment" : "Onboarding permission badge",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مطلوب"
+          }
+        }
+      }
+    },
+    "Requires Automation permission and JavaScript from Apple Events in the browser." : {
+      "comment" : "Settings description"
+    },
+    "Reset" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة تعيين"
+          }
+        }
+      }
+    },
+    "Reset All Settings" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة تعيين كل الإعدادات"
+          }
+        }
+      }
+    },
+    "Reset Settings" : {
+      "comment" : "Alert title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة تعيين الإعدادات"
+          }
+        }
+      }
+    },
+    "Restart required to apply" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يلزم إعادة التشغيل للتطبيق"
+          }
+        }
+      }
+    },
+    "Restore all settings to their defaults" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استعادة كل الإعدادات الافتراضية"
+          }
+        }
+      }
+    },
+    "Restricted by macOS settings." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقيّد بإعدادات macOS."
+          }
+        }
+      }
+    },
+    "Retained items" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العناصر المحفوظة"
+          }
+        }
+      }
+    },
+    "Reveal in Finder" : {
+      "comment" : "Menu",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار في Finder"
+          }
+        }
+      }
+    },
+    "Right slot" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخانة اليمنى"
+          }
+        }
+      }
+    },
+    "Scan this QR with WhatsApp on your phone" : {
+      "comment" : "Settings label"
+    },
+    "Scope: %@" : {
+
+    },
+    "Script" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النص"
+          }
+        }
+      }
+    },
+    "Search" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بحث"
+          }
+        }
+      }
+    },
+    "Search…" : {
+      "comment" : "Quran search placeholder"
+    },
+    "Select an extension" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر إضافة"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "comment" : "Card title\nToolbar help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإعدادات"
+          }
+        }
+      }
+    },
+    "Settings..." : {
+      "comment" : "Menu item",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإعدادات…"
+          }
+        }
+      }
+    },
+    "Share via AirDrop" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مشاركة عبر AirDrop"
+          }
+        }
+      }
+    },
+    "Share..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مشاركة…"
+          }
+        }
+      }
+    },
+    "Shelf" : {
+      "comment" : "Module name\nSettings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرف"
+          }
+        }
+      }
+    },
+    "Shelf retention" : {
+      "comment" : "Settings label"
+    },
+    "Show in Finder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار في Finder"
+          }
+        }
+      }
+    },
+    "Show in screen recordings" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار في تسجيلات الشاشة"
+          }
+        }
+      }
+    },
+    "Show island on" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار الجزيرة على"
+          }
+        }
+      }
+    },
+    "Show mascot in Pomodoro" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار التميمة في بومودورو"
+          }
+        }
+      }
+    },
+    "Show menu bar icon" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار أيقونة شريط القوائم"
+          }
+        }
+      }
+    },
+    "Show on all Spaces" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار في كل المساحات"
+          }
+        }
+      }
+    },
+    "Show previews" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار المعاينات"
+          }
+        }
+      }
+    },
+    "Show upcoming events in the island" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار الفعاليات القادمة في الجزيرة"
+          }
+        }
+      }
+    },
+    "shown" : {
+      "comment" : "Extension count"
+    },
+    "Simplify island transitions and content swaps" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبسيط انتقالات الجزيرة وتبديل المحتوى"
+          }
+        }
+      }
+    },
+    "Size" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الحجم"
+          }
+        }
+      }
+    },
+    "Slow non-essential refresh and pause inactive extension work." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إبطاء التحديثات غير الضرورية وإيقاف عمل الإضافات غير النشطة."
+          }
+        }
+      }
+    },
+    "Smart" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ذكي"
+          }
+        }
+      }
+    },
+    "Speech Recognition access will be requested when Word Tracking is enabled." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيُطلب التعرّف على الكلام عند تفعيل تتبّع الكلمات."
+          }
+        }
+      }
+    },
+    "Speed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السرعة"
+          }
+        }
+      }
+    },
+    "Spring bounce for compact ↔ expanded transitions" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ارتداد زنبركي لانتقالات مصغّر ↔ موسّع"
+          }
+        }
+      }
+    },
+    "Start Login" : {
+      "comment" : "Button"
+    },
+    "Starting" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بدء"
+          }
+        }
+      }
+    },
+    "Startup" : {
+      "comment" : "Settings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بدء التشغيل"
+          }
+        }
+      }
+    },
+    "Stocks" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأسواق"
+          }
+        }
+      }
+    },
+    "Strong" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قوي"
+          }
+        }
+      }
+    },
+    "Subscription" : {
+      "comment" : "Calendar type"
+    },
+    "Subtle" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خفيف"
+          }
+        }
+      }
+    },
+    "Nexus Island needs a few permissions to work properly." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج Nexus Island إلى بعض الأذونات ليعمل بشكل صحيح."
+          }
+        }
+      }
+    },
+    "Nexus Island Settings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعدادات Nexus Island"
+          }
+        }
+      }
+    },
+    "Nexus Island will run in the background." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيعمل Nexus Island في الخلفية."
+          }
+        }
+      }
+    },
+    "Supported sources will appear here" : {
+      "comment" : "Notification expanded empty state subtitle",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ستظهر المصادر المدعومة هنا"
+          }
+        }
+      }
+    },
+    "Surahs" : {
+      "comment" : "Quran sidebar title"
+    },
+    "SWIPE" : {
+
+    },
+    "Swipe left or right on the notch to switch between modules." : {
+
+    },
+    "Swipe the island" : {
+      "comment" : "Onboarding section title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرّر الجزيرة"
+          }
+        }
+      }
+    },
+    "System" : {
+      "comment" : "Picker option\nSettings section",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النظام"
+          }
+        }
+      }
+    },
+    "System Volume" : {
+      "comment" : "System HUD volume header",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صوت النظام"
+          }
+        }
+      }
+    },
+    "Teleprompter" : {
+      "comment" : "Module name\nSettings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المُلقّن"
+          }
+        }
+      }
+    },
+    "Temperature Unit" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وحدة الحرارة"
+          }
+        }
+      }
+    },
+    "Test" : {
+      "comment" : "Button"
+    },
+    "This will reset all NexusIsland settings to their defaults." : {
+      "comment" : "Alert message"
+    },
+    "This will reset all Nexus Island settings to their defaults." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيؤدي هذا إلى إعادة تعيين كل إعدادات Nexus Island إلى افتراضياتها."
+          }
+        }
+      }
+    },
+    "Today" : {
+      "comment" : "Calendar relative date label\nCalendar today button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اليوم"
+          }
+        }
+      }
+    },
+    "Tomorrow" : {
+      "comment" : "Calendar relative date label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غداً"
+          }
+        }
+      }
+    },
+    "Triggers" : {
+      "comment" : "Metadata label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المُحفّزات"
+          }
+        }
+      }
+    },
+    "Turn this off to prevent accidental quits while interacting with the notch." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عطّل هذا لمنع الإنهاء العرضي أثناء التفاعل مع الثقب."
+          }
+        }
+      }
+    },
+    "Understood" : {
+      "comment" : "Onboarding button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فهمت"
+          }
+        }
+      }
+    },
+    "Unknown. Check macOS Calendar privacy settings." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير معروف. تحقق من إعدادات خصوصية تقويم macOS."
+          }
+        }
+      }
+    },
+    "Unknown. Check macOS notification settings." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير معروف. تحقق من إعدادات إشعارات macOS."
+          }
+        }
+      }
+    },
+    "Unlock island" : {
+      "comment" : "Toolbar help",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح قفل الجزيرة"
+          }
+        }
+      }
+    },
+    "Unpin" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إلغاء التثبيت"
+          }
+        }
+      }
+    },
+    "Unsupported setting field: %@" : {
+
+    },
+    "Untitled" : {
+      "comment" : "Calendar untitled event fallback",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بدون عنوان"
+          }
+        }
+      }
+    },
+    "Upcoming" : {
+      "comment" : "Calendar upcoming panel title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "القادم"
+          }
+        }
+      }
+    },
+    "Upcoming event" : {
+      "comment" : "Home event row fallback title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الفعالية القادمة"
+          }
+        }
+      }
+    },
+    "Upcoming range" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نطاق القادم"
+          }
+        }
+      }
+    },
+    "Update" : {
+      "comment" : "Button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحديث"
+          }
+        }
+      }
+    },
+    "Update Available" : {
+
+    },
+    "Updates" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحديثات"
+          }
+        }
+      }
+    },
+    "Use automatic location" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدام الموقع التلقائي"
+          }
+        }
+      }
+    },
+    "Use macOS automation to detect media in allowed browsers." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدم أتمتة macOS لاكتشاف الوسائط في المتصفحات المسموحة."
+          }
+        }
+      }
+    },
+    "Use simpler motion for island transitions and visual effects." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدم حركة أبسط لانتقالات الجزيرة والتأثيرات البصرية."
+          }
+        }
+      }
+    },
+    "UV Index" : {
+      "comment" : "Weather detail label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مؤشر الأشعة فوق البنفسجية"
+          }
+        }
+      }
+    },
+    "Version" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار"
+          }
+        }
+      }
+    },
+    "Version %@ available" : {
+      "comment" : "A label indicating that an update is available for the app. The argument is the version number of the update.",
+      "isCommentAutoGenerated" : true
+    },
+    "Version %@ is ready to install." : {
+
+    },
+    "Volume" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مستوى الصوت"
+          }
+        }
+      }
+    },
+    "Volume HUD" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شاشة الصوت"
+          }
+        }
+      }
+    },
+    "Weather" : {
+      "comment" : "Module name\nSettings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الطقس"
+          }
+        }
+      }
+    },
+    "Weather information for your location" : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معلومات الطقس لموقعك"
+          }
+        }
+      }
+    },
+    "Weather unavailable" : {
+      "comment" : "Home weather unavailable title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الطقس غير متاح"
+          }
+        }
+      }
+    },
+    "Welcome to NexusIsland" : {
+      "comment" : "Onboarding title"
+    },
+    "Welcome to Nexus Island" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرحباً بك في Nexus Island"
+          }
+        }
+      }
+    },
+    "WhatsApp Web Login" : {
+      "comment" : "Card title"
+    },
+    "Wi-Fi and Bluetooth are idle" : {
+      "comment" : "Connectivity offline detail",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الواي فاي والبلوتوث في وضع الخمول"
+          }
+        }
+      }
+    },
+    "Wi-Fi Connected" : {
+      "comment" : "Connectivity status",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "واي فاي متصل"
+          }
+        }
+      }
+    },
+    "Width" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العرض"
+          }
+        }
+      }
+    },
+    "Wind" : {
+      "comment" : "Weather detail label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرياح"
+          }
+        }
+      }
+    },
+    "Word Tracking" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تتبّع الكلمات"
+          }
+        }
+      }
+    },
+    "Word Tracking permissions" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أذونات تتبّع الكلمات"
+          }
+        }
+      }
+    },
+    "World Clock" : {
+      "comment" : "Module name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الساعة العالمية"
+          }
+        }
+      }
+    },
+    "Write-only access is not enough to display events." : {
+      "comment" : "Settings description",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوصول للكتابة فقط لا يكفي لعرض الفعاليات."
+          }
+        }
+      }
+    },
+    "Yesterday" : {
+      "comment" : "Calendar relative date label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أمس"
+          }
+        }
+      }
+    },
+    "You're all set" : {
+      "comment" : "Onboarding section title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أنت جاهز"
+          }
+        }
+      }
+    },
+    "You're up to date" : {
+      "comment" : "Settings label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أنت على أحدث إصدار"
+          }
+        }
+      }
+    },
+    "Your Last.fm session has expired. Authenticate again to resume scrobbling." : {
+      "comment" : "Settings description"
+    },
+    "Your Linear session has expired. Authenticate again to resume mention syncing." : {
+      "comment" : "Settings description"
+    },
+    "Your notch, reimagined. A quick setup\nand you're ready to go." : {
+
+    },
+    "Your schedule is clear for now." : {
+      "comment" : "Home calendar empty state subtitle",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جدولك خالٍ الآن."
+          }
+        }
+      }
+    },
+    "أسعار الصرف" : {
+
+    },
+    "أضف حدثاً من الإعدادات" : {
+
+    },
+    "التذكيرات" : {
+
+    },
+    "الحاويات" : {
+      "comment" : "A label displayed above the list of containers.",
+      "isCommentAutoGenerated" : true
+    },
+    "الخدمات المحلية" : {
+
+    },
+    "الساعات العالمية" : {
+
+    },
+    "الصلاة القادمة" : {
+
+    },
+    "العد التنازلي" : {
+
+    },
+    "العربية" : {
+
+    },
+    "العملات الرقمية" : {
+      "comment" : "The title of the crypto prices section.",
+      "isCommentAutoGenerated" : true
+    },
+    "المستودعات" : {
+      "comment" : "A label for the list of repositories.",
+      "isCommentAutoGenerated" : true
+    },
+    "امنح صلاحية التذكيرات" : {
+
+    },
+    "امنح صلاحية التذكيرات من إعدادات النظام" : {
+
+    },
+    "بدون رد" : {
+
+    },
+    "جارٍ التحميل" : {
+
+    },
+    "سجل الحافظة" : {
+
+    },
+    "شغّل خادم تطوير (npm run dev, python -m http.server, إلخ)" : {
+
+    },
+    "كل repos نظيفة ✓" : {
+      "comment" : "A message displayed when a user's repos are all clean.",
+      "isCommentAutoGenerated" : true
+    },
+    "كل البناءات ناجحة ✓" : {
+
+    },
+    "كل شيء واضح" : {
+
+    },
+    "كل شيء واضح ✓" : {
+
+    },
+    "لا توجد runs" : {
+
+    },
+    "لا توجد أحداث" : {
+      "comment" : "A placeholder text displayed when there are no upcoming events.",
+      "isCommentAutoGenerated" : true
+    },
+    "لا توجد بيانات" : {
+
+    },
+    "لا توجد تذكيرات ✓" : {
+
+    },
+    "لا توجد تذكيرات معلقة ✓" : {
+      "comment" : "A message displayed when there are no pending reminders.",
+      "isCommentAutoGenerated" : true
+    },
+    "لا توجد حاويات" : {
+
+    },
+    "لا توجد خدمات محلية" : {
+
+    },
+    "لا توجد خدمات محلية تعمل" : {
+
+    },
+    "لا يوجد سجل بعد" : {
+
+    },
+    "متأخر" : {
+
+    },
+    "مواقيت اليوم" : {
+
+    },
+    "يوم" : {
+
+    }
+  },
+  "version" : "1.1"
+}

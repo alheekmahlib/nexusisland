@@ -44,14 +44,14 @@ enum NexusGradient {
         )
     }
 
-    /// Diagonal dark-purple gradient mirroring the app icon's backdrop:
-    /// `background` (Midnight Blue, edges) → `deepPurple` (center).
-    /// The signature surface fill for the expanded island.
+    /// Vertical background gradient: pure black at the top → deep purple at
+    /// the bottom. Uses `Color.black` (not the palette `background` tint) at
+    /// the top so the upper edge reads as genuinely black, not purple-tinted.
     static var backgroundLinear: LinearGradient {
         LinearGradient(
-            colors: [NexusPalette.background, NexusPalette.deepPurple],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
+            colors: [Color.black, NexusPalette.deepPurple],
+            startPoint: .top,
+            endPoint: .bottom
         )
     }
 

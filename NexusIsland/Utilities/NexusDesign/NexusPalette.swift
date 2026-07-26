@@ -9,9 +9,9 @@ import SwiftUI
 enum NexusPalette {
     // MARK: - Background (from the app icon)
     /// Midnight Blue — the dark background base.
-    static let background     = Color(hex: "#141125")
+    static let background     = Color(hex: "#0A0614")
     /// Deep Purple — darker gradient stop.
-    static let deepPurple     = Color(hex: "#36206D")
+    static let deepPurple     = Color(hex: "#1A0F38")
 
     // MARK: - Purple ramp (primary brand colors)
     /// Royal Purple — the main purple.

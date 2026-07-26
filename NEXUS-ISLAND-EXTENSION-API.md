@@ -1,6 +1,6 @@
-# DPI: SuperIsland Plugin Interface (Builder Guide)
+# DPI: NexusIsland Plugin Interface (Builder Guide)
 
-This guide documents the **currently exposed extension APIs** in SuperIsland so builders can ship working extensions quickly.
+This guide documents the **currently exposed extension APIs** in NexusIsland so builders can ship working extensions quickly.
 
 Use this as your source of truth for what works in the runtime today.
 
@@ -8,14 +8,14 @@ Use this as your source of truth for what works in the runtime today.
 
 1. Create a folder under `Extensions/`, for example `Extensions/my-timer/`.
 2. Add a `manifest.json`.
-3. Add an `index.js` that calls `SuperIsland.registerModule(...)` once.
+3. Add an `index.js` that calls `NexusIsland.registerModule(...)` once.
 4. Optional: add `settings.json` for native settings UI.
 5. Launch the app, open **Settings -> Extensions**, then activate your extension.
 
 Minimal example:
 
 ```js
-SuperIsland.registerModule({
+NexusIsland.registerModule({
   compact() {
     return View.hstack([
       View.icon("bolt.fill", { color: "yellow" }),
@@ -66,7 +66,7 @@ Common fields:
   - `minimalCompact` (default `false`)
   - `backgroundRefresh` (default `true`)
   - `settings` (default `true`)
-  - `notificationFeed` (default `false`) - extension is hidden from module slots; `SuperIsland.island.activate()` opens the shared Notifications module
+  - `notificationFeed` (default `false`) - extension is hidden from module slots; `NexusIsland.island.activate()` opens the shared Notifications module
 - `refreshInterval` (seconds, default `1.0`, minimum `0.1`)
 - `activationTriggers` (default `["manual"]`)
 
@@ -74,7 +74,7 @@ Example:
 
 ```json
 {
-  "id": "superisland.pomodoro",
+  "id": "nexus.pomodoro",
   "name": "Pomodoro Timer",
   "version": "1.0.0",
   "main": "index.js",
@@ -88,7 +88,7 @@ Example:
 Your extension registers exactly one module:
 
 ```js
-SuperIsland.registerModule({
+NexusIsland.registerModule({
   compact,                   // required
   expanded,                  // recommended
   fullExpanded,              // optional
@@ -113,13 +113,13 @@ SuperIsland.registerModule({
 - `minimalCompact.leading()/trailing()` -> rendered on notched compact variant when available.
 - `minimalCompact.precedence` -> optional number or callback. `1` matches media priority, `2` lets music take precedence when media is active.
 
-## 5. `SuperIsland` Global API
+## 5. `NexusIsland` Global API
 
-### `SuperIsland.registerModule(config)`
+### `NexusIsland.registerModule(config)`
 
 Registers your extension module config.
 
-### `SuperIsland.island`
+### `NexusIsland.island`
 
 - `activate(autoDismiss = true)`
 - `dismiss()`
@@ -134,13 +134,13 @@ Timer/background-safe pattern:
 
 ```js
 function revealIsland() {
-  SuperIsland.island.activate(false);
+  NexusIsland.island.activate(false);
   // Optional second activation to survive host/menu transition races.
-  setTimeout(() => SuperIsland.island.activate(false), 120);
+  setTimeout(() => NexusIsland.island.activate(false), 120);
 }
 ```
 
-### `SuperIsland.store`
+### `NexusIsland.store`
 
 Persistent extension-scoped key/value storage.
 
@@ -152,14 +152,14 @@ Notes:
 - `null` clears/removes the key.
 - Scalars and JSON-compatible objects/arrays are supported.
 
-### `SuperIsland.settings`
+### `NexusIsland.settings`
 
 Extension settings key/value store (paired with `settings.json`).
 
 - `get(key)` -> value or `null`
 - `set(key, value)`
 
-### `SuperIsland.notifications`
+### `NexusIsland.notifications`
 
 - `send(options)`
   - `title` (string)
@@ -172,13 +172,13 @@ Extension settings key/value store (paired with `settings.json`).
   - `previewText?` (string): message/content preview
   - `avatarURL?` (string): sender avatar (`file://`, absolute file path, `http(s)://`)
   - `appIconURL?` (string): extension/app icon (`file://`, absolute file path, `http(s)://`)
-  - `systemNotification?` (boolean, default `true`): when `false`, only Super Island feed is updated
+  - `systemNotification?` (boolean, default `true`): when `false`, only Nexus Island feed is updated
 
 Notes:
 
-- For extensions with `capabilities.notificationFeed: true`, sent notifications are mirrored into the shared Super Island Notifications feed.
+- For extensions with `capabilities.notificationFeed: true`, sent notifications are mirrored into the shared Nexus Island Notifications feed.
 
-### `SuperIsland.http`
+### `NexusIsland.http`
 
 - `fetch(url, options?) -> Promise<{ status, data, text, error? }>`
 
@@ -194,7 +194,7 @@ Notes:
 - Without permission, `fetch` throws.
 - Network errors return a resolved object with `error`.
 
-### `SuperIsland.system`
+### `NexusIsland.system`
 
 - `getAIUsage()` -> usage object or `null`
 - `getNowPlaying()` -> normalized now playing snapshot or `null`
@@ -222,7 +222,7 @@ Notes:
   - `{ id, localID, appName, bundleIdentifier, appIcon, appIconURL, title, body, senderName, previewText, avatarURL, timestamp }`
   - `previewText`/`avatarURL` are best-effort and depend on what macOS exposes for that notification (privacy settings can hide previews).
 
-### `SuperIsland.playFeedback(type)`
+### `NexusIsland.playFeedback(type)`
 
 `type` supported:
 
@@ -231,11 +231,11 @@ Notes:
 - `"error"`
 - `"selection"`
 
-### `SuperIsland.openURL(url)`
+### `NexusIsland.openURL(url)`
 
 Opens URL in default browser.
 
-### `SuperIsland.mascot`
+### `NexusIsland.mascot`
 
 Control the shared mascot companion that users can configure in Settings.
 
@@ -337,7 +337,7 @@ Action payloads:
 
 - `View.mascot({ size?, expression? })`
   - `size` (number, default 60): diameter of the mascot orb in points
-  - `expression` (string, optional): override expression (`"idle"`, `"working"`, `"alert"`, `"happy"`, `"tired"`, `"clicked"`). If omitted, uses the global expression set via `SuperIsland.mascot.setExpression()`.
+  - `expression` (string, optional): override expression (`"idle"`, `"working"`, `"alert"`, `"happy"`, `"tired"`, `"clicked"`). If omitted, uses the global expression set via `NexusIsland.mascot.setExpression()`.
 
 The mascot renders as an animated orb with the user's selected character. Each character has unique symbols, colors, and animations per expression.
 
@@ -350,7 +350,7 @@ Returning `null` from child positions is supported (treated as empty).
 
 ### Shared Components
 
-- `SuperIsland.components.inputComposer({ placeholder, text?, action, id?, autoFocus?, minHeight?, showsEmojiButton?, error?, spacing?, padding?, cornerRadius?, chrome?, backgroundColor? })`
+- `NexusIsland.components.inputComposer({ placeholder, text?, action, id?, autoFocus?, minHeight?, showsEmojiButton?, error?, spacing?, padding?, cornerRadius?, chrome?, backgroundColor? })`
 - Returns a reusable reply/input tray with the shared input box styling, shortcut hint, optional error text, and optional emoji button.
 
 ## 8. `settings.json` Schema
@@ -403,7 +403,7 @@ Common scan locations:
 - `<repo>/Extensions` (development)
 - `<cwd>/Extensions`
 - `<cwd>/ExtensionsDev`
-- `~/Library/Application Support/SuperIsland/Extensions`
+- `~/Library/Application Support/NexusIsland/Extensions`
 
 If duplicate IDs are found, first discovered wins and duplicates are logged.
 
@@ -413,10 +413,10 @@ Sandbox behavior in current runtime:
 
 - `eval` and `Function` are removed from global scope.
 - JS runs in isolated JavaScriptCore context.
-- `network` permission is enforced for `SuperIsland.http.fetch`.
-- `media` permission is enforced for `SuperIsland.system.getNowPlaying`.
-- `usage` permission is enforced for `SuperIsland.system.getAIUsage`.
-- `notifications` permission is enforced for `SuperIsland.system.getLatestNotification` and `SuperIsland.system.getRecentNotifications`.
+- `network` permission is enforced for `NexusIsland.http.fetch`.
+- `media` permission is enforced for `NexusIsland.system.getNowPlaying`.
+- `usage` permission is enforced for `NexusIsland.system.getAIUsage`.
+- `notifications` permission is enforced for `NexusIsland.system.getLatestNotification` and `NexusIsland.system.getRecentNotifications`.
 
 Other permission names are currently metadata for compatibility/future policy, but should still be declared correctly in `manifest.json`.
 
@@ -446,7 +446,7 @@ Do not pass unsupported complex host objects. Stick to scalars, arrays, and plai
 ## 12. Recommended Builder Pattern
 
 - Keep module state in plain JS variables.
-- Persist checkpoints via `SuperIsland.store`.
+- Persist checkpoints via `NexusIsland.store`.
 - Keep render functions pure and fast.
 - Use action IDs as stable command names (`start`, `pause`, `reset`, etc.).
 - Declare only required permissions.

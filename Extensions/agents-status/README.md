@@ -13,7 +13,7 @@ Currently bridges:
 
 ## How it works
 
-Agent hooks are shell commands, but SuperIsland extensions run in a sandbox
+Agent hooks are shell commands, but NexusIsland extensions run in a sandbox
 with no filesystem or IPC. A tiny local HTTP server bridges them:
 
 ```
@@ -37,8 +37,8 @@ Claude Code / Codex hooks  --curl POST-->  127.0.0.1:7823  <--GET poll--  extens
 
 ## Install
 
-The extension is bundled with Super Island — no scripts to run. Just enable it
-in **Super Island → Settings → Extensions**. The bridge server (`server.py`)
+The extension is bundled with Nexus Island — no scripts to run. Just enable it
+in **Nexus Island → Settings → Extensions**. The bridge server (`server.py`)
 starts automatically when the extension activates and stops when it's disabled
 or the app quits.
 
@@ -116,7 +116,7 @@ For stable Warp switching, give each agent tab a distinct custom title such as
 `repo-cc` and `repo-cx`. The island shows that tab title directly, and clicking
 the row switches to the matching Warp tab by its current on-screen index.
 
-Server env vars (injected automatically by Super Island when the extension
+Server env vars (injected automatically by Nexus Island when the extension
 activates — the host owns the process, so no plist or launchd involvement):
 
 - `AGENTS_STATUS_PORT` — default `7823`
@@ -127,9 +127,9 @@ activates — the host owns the process, so no plist or launchd involvement):
 
 ## Upgrading from 1.2.x / earlier
 
-The bridge is now managed by Super Island itself — old versions relied on a
+The bridge is now managed by Nexus Island itself — old versions relied on a
 `launchd` user agent installed via `server/install.sh`. On first launch of the
-new extension, any `com.superisland.agents-status` or `com.superisland.cc-status`
+new extension, any `com.nexus.agents-status` or `com.nexus.cc-status`
 LaunchAgent left over from previous installs is booted out and its plist
 removed automatically, so there's nothing to clean up by hand.
 
@@ -140,7 +140,7 @@ to make sure the hook entries in `~/.claude/settings.json` and
 ## Troubleshooting
 
 - **Island shows `offline`**: the bridge failed to start. Open
-  Super Island → Settings → Extensions → Agents Status → Logs to see the
+  Nexus Island → Settings → Extensions → Agents Status → Logs to see the
   Python process output, or verify `python3` is installed (see Install).
 - **No sessions appear**: make sure hooks are installed in the settings file
   your agent actually reads (user-level vs project-level for Claude Code,
