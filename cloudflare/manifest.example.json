@@ -1,0 +1,13 @@
+{
+  "_comment": "Copy this file to manifest.json, fill in real values, and upload to the R2 bucket root at https://releases.yourdomain.com/manifest.json. UpdateChecker.swift fetches this on launch and when the user taps 'Check for Updates'.",
+  "version": "1.0.0",
+  "downloadURL": "https://releases.yourdomain.com/NexusIsland-1.0.0.dmg",
+  "releaseNotesURL": "https://releases.yourdomain.com/notes/1.0.0.json",
+  "releaseNotes": [
+    "Initial release",
+    "NexusDesign system across all modules",
+    "Auto-update with code-signature verification"
+  ],
+  "minimumOSVersion": "14.0",
+  "publishedAt": "2026-07-26T12:00:00Z"
+}

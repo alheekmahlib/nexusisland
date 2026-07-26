@@ -185,23 +185,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func observeUpdateState() {
         updateCancellable = UpdateChecker.shared.$checkState
-            .compactMap { state -> (String, URL, URL?)? in
-                if case .updateAvailable(let version, let releaseURL, let downloadURL) = state {
-                    return (version, releaseURL, downloadURL)
+            .compactMap { state -> (String, [String], URL)? in
+                if case .updateAvailable(let version, let releaseNotes, let downloadURL) = state {
+                    return (version, releaseNotes, downloadURL)
                 }
                 return nil
             }
             .first()
             .receive(on: RunLoop.main)
-            .sink { [weak self] version, releaseURL, downloadURL in
+            .sink { [weak self] version, releaseNotes, downloadURL in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    self?.showUpdateDialog(version: version, releaseURL: releaseURL, downloadURL: downloadURL)
+                    self?.showUpdateDialog(version: version, releaseNotes: releaseNotes, downloadURL: downloadURL)
                 }
             }
     }
 
-    private func showUpdateDialog(version: String, releaseURL: URL, downloadURL: URL?) {
-        let controller = UpdateWindowController(version: version, releaseURL: releaseURL, downloadURL: downloadURL)
+    private func showUpdateDialog(version: String, releaseNotes: [String], downloadURL: URL) {
+        let controller = UpdateWindowController(version: version, releaseNotes: releaseNotes, downloadURL: downloadURL)
         updateWindowController = controller
         controller.show()
     }

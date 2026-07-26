@@ -8,6 +8,8 @@ build/
 .build/
 DerivedData/
 .env
+# Real manifest.json lives on R2 — only the example is committed (in cloudflare/).
+/cloudflare/manifest.json
 .DS_Store
 *.xcworkspace
 *.swp

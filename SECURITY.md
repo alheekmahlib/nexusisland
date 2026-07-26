@@ -56,6 +56,31 @@ injection from `hdiutil`-parsed mount points or release URLs.
 **Residual risk:** none of this helps if the maintainer's Developer ID key is
 compromised. Revoke and re-issue in that case.
 
+### Update source — Cloudflare R2 (not GitHub Releases)
+
+Update metadata and the DMG itself are hosted on Cloudflare R2 behind a
+custom domain, not on GitHub Releases. GitHub is blocked in some regions
+where users need to receive updates; R2 has global edge availability and free
+egress.
+
+The app fetches a small `manifest.json`:
+
+```json
+{
+  "version": "1.2.0",
+  "downloadURL": "https://releases.example.com/NexusIsland-1.2.0.dmg",
+  "releaseNotes": ["..."],
+  "minimumOSVersion": "14.0",
+  "publishedAt": "2026-07-26T12:00:00Z"
+}
+```
+
+Security does **not** depend on R2 being trusted. Even if an attacker
+compromised the R2 bucket (or the custom domain) and swapped in a malicious
+DMG, the codesign + spctl + TeamID checks above would reject it — the
+attacker cannot sign with the maintainer's Developer ID. R2 is purely a
+delivery optimization.
+
 ## 4. Secret storage — Keychain
 
 OAuth access tokens, API keys, and API secrets for integrations (Linear,

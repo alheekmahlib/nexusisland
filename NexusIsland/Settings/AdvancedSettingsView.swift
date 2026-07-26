@@ -138,13 +138,12 @@ struct AdvancedSettingsView: View {
         switch updateChecker.checkState {
         case .checking:
             ProgressView().controlSize(.small)
-        case .updateAvailable(_, let releaseURL, let downloadURL):
+        case .updateAvailable(_, _, let downloadURL):
             Button(NSLocalizedString("Update", comment: "Button")) {
-                if let downloadURL {
-                    AutoUpdater.shared.start(downloadURL: downloadURL, releaseURL: releaseURL)
-                } else {
-                    NSWorkspace.shared.open(releaseURL)
-                }
+                // downloadURL is the direct DMG link on R2; both the in-app
+                // installer and the fallback use it now that we no longer
+                // have a separate GitHub release page.
+                AutoUpdater.shared.start(downloadURL: downloadURL, releaseURL: downloadURL)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.small)

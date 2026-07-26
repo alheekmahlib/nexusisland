@@ -5,7 +5,9 @@ import SwiftUI
 final class UpdateWindowController {
     private let window: NSWindow
 
-    init(version: String, releaseURL: URL, downloadURL: URL?) {
+    /// `downloadURL` is the direct link to the signed DMG on R2. It is also
+    /// used as the browser fallback if the in-app installer fails.
+    init(version: String, releaseNotes: [String], downloadURL: URL) {
         window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 300, height: 210),
             styleMask: [.titled, .fullSizeContentView],
@@ -30,7 +32,7 @@ final class UpdateWindowController {
 
         let rootView = UpdateDialogView(
             version: version,
-            releaseURL: releaseURL,
+            releaseNotes: releaseNotes,
             downloadURL: downloadURL,
             onDismiss: { [weak self] in self?.close() }
         )

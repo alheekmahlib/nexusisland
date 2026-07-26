@@ -3,8 +3,12 @@ import AppKit
 
 struct UpdateDialogView: View {
     let version: String
-    let releaseURL: URL
-    let downloadURL: URL?
+    /// Headline changes from the manifest, shown when the installer is idle so
+    /// the user knows what they're installing.
+    let releaseNotes: [String]
+    /// Direct link to the signed DMG on R2. Used for both the in-app
+    /// auto-install and the browser fallback if the installer fails.
+    let downloadURL: URL
     let onDismiss: () -> Void
 
     @ObservedObject private var updater = AutoUpdater.shared
@@ -53,9 +57,21 @@ struct UpdateDialogView: View {
     private var statusText: some View {
         switch updater.state {
         case .idle:
-            Text("Version \(version) is ready to install.")
-                .font(.system(size: 12))
-                .foregroundStyle(Color.white.opacity(0.45))
+            VStack(spacing: 4) {
+                Text("Version \(version) is ready to install.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color.white.opacity(0.45))
+                // Show up to 2 release-note bullets so the user has context
+                // without crowding the 210pt-tall dialog.
+                if !releaseNotes.isEmpty {
+                    Text(releaseNotes.prefix(2).joined(separator: "  •  "))
+                        .font(.system(size: 10))
+                        .foregroundStyle(Color.white.opacity(0.30))
+                        .multilineTextAlignment(.center)
+                        .frame(width: 240)
+                        .lineLimit(2)
+                }
+            }
         case .downloading(let progress):
             VStack(spacing: 6) {
                 ProgressView(value: progress)
@@ -102,12 +118,10 @@ struct UpdateDialogView: View {
                     }
 
                 Button {
-                    if let downloadURL {
-                        updater.start(downloadURL: downloadURL, releaseURL: releaseURL)
-                    } else {
-                        NSWorkspace.shared.open(releaseURL)
-                        onDismiss()
-                    }
+                    // Both the in-app installer and the fallback point at the
+                    // same R2 URL — there is no separate "release page" now
+                    // that we no longer use GitHub Releases.
+                    updater.start(downloadURL: downloadURL, releaseURL: downloadURL)
                 } label: {
                     Text("Update")
                         .font(.system(size: 13, weight: .semibold))
@@ -131,8 +145,8 @@ struct UpdateDialogView: View {
             EmptyView()
 
         case .failed:
-            Button("Open Release Page") {
-                NSWorkspace.shared.open(releaseURL)
+            Button("Download in Browser") {
+                NSWorkspace.shared.open(downloadURL)
                 onDismiss()
             }
             .buttonStyle(.plain)

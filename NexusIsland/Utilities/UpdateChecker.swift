@@ -1,10 +1,33 @@
 import Foundation
 
+/// Checks for app updates by fetching a small `manifest.json` hosted on
+/// Cloudflare R2 (behind a custom domain). We moved off the GitHub Releases
+/// API because GitHub is blocked in some regions where users need updates;
+/// R2 has global edge availability and free egress.
+///
+/// The manifest is a flat JSON file at the bucket root. Shape:
+///
+/// ```json
+/// {
+///   "version": "1.2.0",
+///   "downloadURL": "https://releases.example.com/NexusIsland-1.2.0.dmg",
+///   "releaseNotes": ["...", "..."],
+///   "minimumOSVersion": "14.0",
+///   "publishedAt": "2026-07-26T12:00:00Z"
+/// }
+/// ```
+///
+/// Security does NOT depend on R2 being trusted — `AutoUpdater` verifies the
+/// downloaded DMG's codesign + spctl + TeamID before installing, regardless
+/// of where the bytes came from. See `SECURITY.md` for the threat model.
 @MainActor
 final class UpdateChecker: ObservableObject {
     static let shared = UpdateChecker()
 
-    private static let apiURL = URL(string: "https://api.github.com/repos/shobhit99/nexusisland/releases/latest")!
+    /// EDIT THIS when you change the hosting domain. Must point at the
+    /// `manifest.json` file on your R2 custom domain.
+    private static let manifestURL = URL(string: "https://releases.yourdomain.com/manifest.json")!
+
     private static let lastCheckedKey = "updateChecker.lastCheckedAt"
     private static let dailyInterval: TimeInterval = 86400
 
@@ -12,7 +35,7 @@ final class UpdateChecker: ObservableObject {
         case idle
         case checking
         case upToDate
-        case updateAvailable(latestVersion: String, releaseURL: URL, downloadURL: URL?)
+        case updateAvailable(latestVersion: String, releaseNotes: [String], downloadURL: URL)
         case failed(String)
     }
 
@@ -45,34 +68,43 @@ final class UpdateChecker: ObservableObject {
         UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.lastCheckedKey)
 
         do {
-            var request = URLRequest(url: Self.apiURL)
-            request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
-            request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
+            // Bust edge cache so a just-published manifest is visible within
+            // the 24h check window. Cloudflare caches R2 responses, so without
+            // this a newly uploaded manifest could be invisible for up to the
+            // TTL set on the bucket.
+            var request = URLRequest(url: Self.manifestURL)
+            request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+            request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
 
-            let (data, _) = try await URLSession.shared.data(for: request)
-
-            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let tagName = json["tag_name"] as? String,
-                  let htmlURL = json["html_url"] as? String,
-                  let releaseURL = URL(string: htmlURL) else {
-                checkState = .failed("Invalid response from GitHub.")
+            let (data, response) = try await URLSession.shared.data(for: request)
+            if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
+                checkState = .failed("Update server returned \(http.statusCode).")
                 return
             }
 
-            let assets = json["assets"] as? [[String: Any]] ?? []
-            let dmgAsset = assets.first { ($0["name"] as? String)?.hasSuffix(".dmg") == true }
-            let downloadURL = (dmgAsset?["browser_download_url"] as? String).flatMap { URL(string: $0) }
+            guard let manifest = try? JSONDecoder().decode(UpdateManifest.self, from: data) else {
+                checkState = .failed("Could not read update manifest.")
+                return
+            }
+
+            guard let downloadURL = URL(string: manifest.downloadURL) else {
+                checkState = .failed("Update manifest has an invalid download URL.")
+                return
+            }
 
             let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
-            let latestVersion = tagName.hasPrefix("v") ? String(tagName.dropFirst()) : tagName
 
-            if isNewer(latestVersion, than: currentVersion) {
-                checkState = .updateAvailable(latestVersion: latestVersion, releaseURL: releaseURL, downloadURL: downloadURL)
+            if isNewer(manifest.version, than: currentVersion) {
+                checkState = .updateAvailable(
+                    latestVersion: manifest.version,
+                    releaseNotes: manifest.releaseNotes,
+                    downloadURL: downloadURL
+                )
             } else {
                 checkState = .upToDate
             }
         } catch {
-            checkState = .failed("Could not reach GitHub.")
+            checkState = .failed("Could not reach the update server.")
         }
     }
 
@@ -86,5 +118,34 @@ final class UpdateChecker: ObservableObject {
             if av < bv { return false }
         }
         return false
+    }
+}
+
+/// On-disk shape of `manifest.json` on the R2 bucket.
+private struct UpdateManifest: Decodable {
+    let version: String
+    let downloadURL: String
+    let releaseNotes: [String]
+    /// Optional: if present and the running OS is older than this, the update
+    /// is offered anyway but the user is warned. Reserved for future use.
+    let minimumOSVersion: String?
+    let publishedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case version
+        case downloadURL
+        case releaseNotes
+        case minimumOSVersion
+        case publishedAt
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        version = try c.decode(String.self, forKey: .version)
+        downloadURL = try c.decode(String.self, forKey: .downloadURL)
+        // releaseNotes is optional in the manifest; default to empty.
+        releaseNotes = (try? c.decode([String].self, forKey: .releaseNotes)) ?? []
+        minimumOSVersion = try? c.decode(String.self, forKey: .minimumOSVersion)
+        publishedAt = try? c.decode(String.self, forKey: .publishedAt)
     }
 }
