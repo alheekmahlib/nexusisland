@@ -368,10 +368,12 @@ final class NowPlayingManager: ObservableObject {
     }
 
     private func handleAdapterUpdate(_ update: NowPlayingUpdate) async {
-        // Ignore system-media updates while Quran is active — it never reaches
-        // the system session, so these updates belong to other apps and would
-        // overwrite the Quran snapshot.
-        if QuranManager.shared.playbackState != .idle {
+        // Ignore system-media updates while Quran is ACTIVELY playing — it
+        // never reaches the system session, so these updates belong to other
+        // apps and would overwrite the Quran snapshot. When Quran is merely
+        // paused (or idle/ended), let adapter updates through so the browser /
+        // Spotify can surface in the island while Quran waits to be resumed.
+        if QuranManager.shared.isPlaying {
             return
         }
 
@@ -488,6 +490,13 @@ final class NowPlayingManager: ObservableObject {
            let image = NSImage(data: artworkData) {
             albumArt = image
             currentArtworkURL = nil
+        } else if trackChanged {
+            // المسار تغيّر ولا توجد بيانات صورة جديدة: امحُ الصورة القديمة فوراً
+            // لتظهر placeholder بدل صورة المسار السابق، حتى يأتي الجلب الجديد.
+            // المتصفّحات والتطبيقات تُرسِل artworkData مرّة واحدة غالباً، لذا
+            // بدون هذا المحو تبقى أول صورة عالقة عبر المسارات.
+            albumArt = nil
+            currentArtworkURL = nil
         } else if resolvedTitle.isEmpty {
             albumArt = nil
             currentArtworkURL = nil
@@ -555,9 +564,12 @@ final class NowPlayingManager: ObservableObject {
     /// (e.g. QuranManager) can prompt a refresh when their state changes.
     func refreshPreferredSource() {
         // Quran playback is in-app only (AVPlayer, never reaches the system
-        // media session), so it must be checked before the adapter pipeline.
-        // Otherwise system media would always win and Quran would never show.
-        if QuranManager.shared.playbackState != .idle {
+        // media session), so while it is ACTIVELY playing it must be checked
+        // before the adapter pipeline — otherwise system media would always win
+        // and Quran would never show. When Quran is merely paused (or idle),
+        // fall through so the adapter/browser path can surface other media;
+        // resuming Quran immediately re-takes the top priority via the provider.
+        if QuranManager.shared.isPlaying {
             let currentSource = sourceName
             providerRefreshTask?.cancel()
             providerRefreshTask = Task { [weak self] in
@@ -567,8 +579,16 @@ final class NowPlayingManager: ObservableObject {
         }
 
         if adapterDidDeliverUpdate, !title.isEmpty {
-            providerStatus = isPlaying ? .playing(sourceName) : .paused(sourceName)
-            return
+            // بمجرّد أن يُرسِل الـ adapter تحديثاً، نعتمد عليه لتفاصيل التشغيل
+            // (الوقت/الحالة/العنوان). لكنه لا يجلب الصورة إلا حين تأتي artworkData،
+            // والمتصفّحات/التطبيقات تُرسِلها مرّة واحدة فقط. لذلك خلال نافذة قصيرة
+            // بعد تغيّر المسار، نسمح لـ refreshProviderSnapshots بإعادة جلب الصورة
+            // من المصدر المناسب (browser poster / Spotify artwork) قبل العودة
+            // للاعتماد على الـ adapter.
+            if Date().timeIntervalSince(recentTrackChangeDate) >= 5.0 {
+                providerStatus = isPlaying ? .playing(sourceName) : .paused(sourceName)
+                return
+            }
         }
 
         let currentSource = sourceName
@@ -616,10 +636,13 @@ final class NowPlayingManager: ObservableObject {
     private func scriptProviders(preferredSourceName: String) -> [any NowPlayingProvider] {
         var providers: [any NowPlayingProvider] = []
 
-        // Quran playback wins over every other source while active. The Quran
+        // Quran wins over every other source while ACTIVELY playing. The Quran
         // player is self-contained (AVPlayer), so it never reaches the system
         // media session — this is the only way to surface it in Now Playing.
-        if QuranManager.shared.playbackState != .idle {
+        // While merely paused it stays out of the list, letting browser/Spotify
+        // surface; the provider would return nil anyway, but skipping it avoids
+        // creating an inert provider instance each poll.
+        if QuranManager.shared.isPlaying {
             providers.append(QuranNowPlayingProvider())
         }
 
@@ -1014,7 +1037,13 @@ final class NowPlayingManager: ObservableObject {
 
         if snapshot.title != lastDetectedTitle {
             lastDetectedTitle = snapshot.title
-            if snapshot.providerID == "browser" {
+            if snapshot.providerID == "quran" {
+                // القرآن بلا صورة خاصة: استخدم أيقونة زرّ القرآن لتظهر مقصودة.
+                albumArt = NSImage(named: "QuranTabIcon")
+            } else {
+                // أي تغيّر مسار: امحُ الصورة القديمة فوراً لكي تظهر placeholder
+                // بدل صورة المسار السابق، حتى يأتي الجلب الجديد في fetchArtworkIfNeeded.
+                // سابقاً كان المحو مُقيَّداً بـ "browser" فقط، فبقيت الصورة عالقة لكل المصادر.
                 albumArt = nil
             }
             if snapshot.isPlaying, !stale {
@@ -1038,6 +1067,14 @@ final class NowPlayingManager: ObservableObject {
                 fetchRemoteArtwork(from: artworkURL)
             } else if snapshot.browserTabURL.contains("youtube.com") {
                 fetchYouTubeThumbnail(from: snapshot.browserTabURL)
+            }
+        case "quran":
+            // القرآن بلا صورة خاصة. استخدم أيقونة زرّ القرآن وأبقِها أثناء التشغيل.
+            // الحارس يمنع إعادة إنشاء الكائن كل دورة polling فلا وميض ولا إعادة
+            // حساب لون التوهّج.
+            let quranIcon = NSImage(named: "QuranTabIcon")
+            if albumArt !== quranIcon {
+                albumArt = quranIcon
             }
         default:
             break

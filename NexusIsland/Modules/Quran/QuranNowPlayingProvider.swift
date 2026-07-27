@@ -18,9 +18,12 @@ struct QuranNowPlayingProvider: NowPlayingProvider {
 
     func currentSnapshot() async -> NowPlayingSnapshot? {
         let manager = QuranManager.shared
-        // Hide from Now Playing entirely when nothing is loaded / idle, so the
-        // system media (Spotify, etc.) can take over again.
-        guard manager.playbackState != .idle else { return nil }
+        // Only surface Quran to Now Playing while it is ACTIVELY playing.
+        // When paused (or idle/ended/failed), hide so the system media
+        // (browser / Spotify / Apple Music) can take over the island again —
+        // matching how paused Spotify/Browser behave. Resuming Quran brings it
+        // right back to the top because it is the highest-priority provider.
+        guard manager.isPlaying else { return nil }
 
         let surah = manager.currentSurah
         let reciter = manager.currentReciter
