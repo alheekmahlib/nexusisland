@@ -172,12 +172,8 @@ struct MascotCatalogEntry: Identifiable {
 
 extension MascotTemplate {
     static let remoteTemplates: [MascotCatalogEntry] = [
-        MascotCatalogEntry(slug: "otto", name: "Otto", thumbnailURL: "https://assets.masko.ai/07d95e/otto-ef17/idle-needs-attention-e46716d4.png"),
         MascotCatalogEntry(slug: "masko", name: "Masko", thumbnailURL: "https://assets.masco.dev/68c972/sandsy-82ac/eat-kebab-in-a-couch-eat-kebab-in-a-couch-aa91e2c3.png"),
         MascotCatalogEntry(slug: "clippy", name: "Clippy", thumbnailURL: "https://assets.masko.ai/7fced6/clippy-0710/idle-thinking-156fa793.png"),
-        MascotCatalogEntry(slug: "rusty", name: "Rusty", thumbnailURL: "https://assets.masko.ai/7fced6/rusty-9777/idle-needs-attention-be94be34.png"),
-        MascotCatalogEntry(slug: "nugget", name: "Nugget", thumbnailURL: "https://assets.masko.ai/7fced6/nugget-752f/idle-a17d604d.png"),
-        MascotCatalogEntry(slug: "cupidon", name: "Cupidon", thumbnailURL: "https://assets.masko.ai/07d95e/cupidon-2724/idle-fb36b91b.png"),
         MascotCatalogEntry(slug: "madame-patate", name: "Madame Patate", thumbnailURL: "https://assets.masko.ai/07d95e/madame-patate-7e0d/idle-thinking-305df681.png"),
     ]
 

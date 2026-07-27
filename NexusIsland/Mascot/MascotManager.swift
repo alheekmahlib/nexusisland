@@ -6,7 +6,7 @@ import AVFoundation
 final class MascotManager: ObservableObject {
     static let shared = MascotManager()
 
-    @AppStorage("mascot.selected") var selectedSlug: String = "otto"
+    @AppStorage("mascot.selected") var selectedSlug: String = "masko"
     @AppStorage("mascot.showInPomodoro") var showInPomodoro: Bool = true
 
     @Published private(set) var template: MascotTemplate?
@@ -48,6 +48,14 @@ final class MascotManager: ObservableObject {
     }
 
     private init() {
+        // Migration: if the persisted selection references a mascot that's no
+        // longer in the catalog (e.g. removed "otto"/"rusty"/"nugget"/"cupidon"
+        // entries from a previous install), fall back to the default so the
+        // user isn't left pointing at a non-existent template.
+        let availableSlugs = Set(MascotTemplate.remoteTemplates.map(\.slug))
+        if !availableSlugs.contains(selectedSlug) {
+            selectedSlug = "masko"
+        }
         refreshDownloadedSlugs()
         Task {
             await loadTemplate(slug: selectedSlug)
@@ -91,8 +99,7 @@ final class MascotManager: ObservableObject {
     // MARK: - Download Management
 
     func isMascotDownloaded(_ slug: String) -> Bool {
-        if slug == "otto" { return true } // Bundled
-        return downloadedSlugs.contains(slug)
+        downloadedSlugs.contains(slug)
     }
 
     @discardableResult
@@ -116,7 +123,7 @@ final class MascotManager: ObservableObject {
     }
 
     private func refreshDownloadedSlugs() {
-        var slugs: Set<String> = ["otto"]
+        var slugs: Set<String> = []
         for entry in MascotTemplate.remoteTemplates {
             if loadCachedTemplate(slug: entry.slug) != nil {
                 slugs.insert(entry.slug)
@@ -130,15 +137,6 @@ final class MascotManager: ObservableObject {
     func loadTemplate(slug: String) async {
         isLoading = true
         loadError = nil
-
-        // Otto: try bundled first
-        if slug == "otto", let bundled = loadBundledTemplate() {
-            applyTemplate(bundled)
-            isLoading = false
-            // Preload videos in background
-            Task { await MascotVideoCache.shared.preloadLoopVideos(for: bundled) }
-            return
-        }
 
         // Try local cache
         if let cached = loadCachedTemplate(slug: slug) {
@@ -211,14 +209,6 @@ final class MascotManager: ObservableObject {
                 self.currentLoopVideoURL = localURL ?? hevcURL
             }
         }
-    }
-
-    // MARK: - Bundled Otto
-
-    private func loadBundledTemplate() -> MascotTemplate? {
-        guard let url = Bundle.main.url(forResource: "otto", withExtension: "json"),
-              let data = try? Data(contentsOf: url) else { return nil }
-        return try? JSONDecoder().decode(MascotTemplate.self, from: data)
     }
 
     // MARK: - Local Cache
