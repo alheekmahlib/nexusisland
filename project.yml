@@ -50,8 +50,8 @@ targets:
         CODE_SIGN_ENTITLEMENTS: NexusIsland/NexusIsland.entitlements
         PRODUCT_NAME: NexusIsland
         INFOPLIST_KEY_CFBundleDisplayName: Nexus Island
-        MARKETING_VERSION: "1.1.5"
-        CURRENT_PROJECT_VERSION: "5"
+        MARKETING_VERSION: "1.1.6"
+        CURRENT_PROJECT_VERSION: "6"
         COMBINE_HIDPI_IMAGES: true
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
@@ -71,8 +71,17 @@ targets:
           DEST="${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/BundledExtensions"
           mkdir -p "$DEST"
 
-          # Pre-bundle WhatsApp provider with esbuild so node_modules aren't needed at runtime
           WA_PROVIDER="${SRCROOT}/Extensions/whatsapp-web/provider"
+
+          # Install WhatsApp provider dependencies so esbuild can bundle them.
+          # node_modules is gitignored, so it must be restored on every build.
+          if [ -f "${WA_PROVIDER}/package.json" ] && [ ! -d "${WA_PROVIDER}/node_modules" ]; then
+            echo "Installing WhatsApp provider dependencies..."
+            (cd "${WA_PROVIDER}" && npm ci --no-audit --no-fund 2>/dev/null || npm install --no-audit --no-fund) \
+              && echo "npm: done" || echo "npm: failed (will use index.mjs)"
+          fi
+
+          # Pre-bundle WhatsApp provider with esbuild so node_modules aren't needed at runtime
           if [ -d "${WA_PROVIDER}/node_modules" ]; then
             echo "Bundling WhatsApp provider with esbuild..."
             npx --yes esbuild \
