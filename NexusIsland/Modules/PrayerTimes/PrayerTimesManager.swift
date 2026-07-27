@@ -62,6 +62,14 @@ struct PrayerSchedule: Equatable {
     let dateKey: String           // "dd-MM-yyyy" (matches Aladhan's path format)
     let times: [PrayerKind: Date] // today's Date for each prayer
     let hijriDate: String?        // "15 محرم 1448"
+    /// The timezone the API returned the times in (from `data.meta.timezone`).
+    /// The Date values in `times` are unambiguous instants constructed in THIS
+    /// timezone — never the device's. Traveling users (device tz ≠ location tz)
+    /// used to see every prayer shifted by the tz delta because the device tz
+    /// was used to interpret the wall-clock string. May be nil on legacy cache.
+    /// Default of `.current` keeps direct-construction call sites simple when the
+    /// timezone isn't relevant (e.g. ordering/progress unit tests).
+    var timeZone: TimeZone? = TimeZone.current
 
     /// Resolve the next upcoming prayer relative to `now`, plus the current
     /// one if we're inside its window. Returns nil if no data is loaded.
@@ -114,7 +122,7 @@ struct PrayerSchedule: Equatable {
         return min(1, max(0, elapsed / total))
     }
 
-    static let empty = PrayerSchedule(dateKey: "", times: [:], hijriDate: nil)
+    static let empty = PrayerSchedule(dateKey: "", times: [:], hijriDate: nil, timeZone: nil)
 }
 
 // MARK: - Calculation Method
@@ -202,6 +210,11 @@ final class PrayerTimesManager: NSObject, ObservableObject {
     private var hasFetchedFromLocation = false
     private var refreshToken: ModuleRefreshToken?
     private let defaults = UserDefaults.standard
+    /// Coordinates the currently-cached schedule was fetched for. Used by
+    /// `shouldRefetch` to detect when a fresh GPS fix points to a different
+    /// city than the one we already have timings for.
+    private var lastFetchedLatitude: Double?
+    private var lastFetchedLongitude: Double?
 
     // MARK: - Init
 
@@ -225,6 +238,10 @@ final class PrayerTimesManager: NSObject, ObservableObject {
     /// When auto-location is turned off, the manual coordinates take effect.
     func settingsDidChange() {
         schedule = .empty
+        // Clear cached coords so shouldRefetch() returns true for the new value
+        // (otherwise the same-day guard would suppress the reload).
+        lastFetchedLatitude = nil
+        lastFetchedLongitude = nil
         hasFetchedFromLocation = false
         if useAutoLocation {
             requestLocationAndFetch()
@@ -267,23 +284,59 @@ final class PrayerTimesManager: NSObject, ObservableObject {
 
     // MARK: - Fetching (Aladhan API)
 
+    /// Decide whether a new fetch is needed given the currently-cached state
+    /// and the coordinates we're about to fetch for. Pure (testable).
+    ///
+    /// The historical bug: `fetchTimings()` only checked `schedule.dateKey ==
+    /// today`, so once the seeded Riyadh default filled the cache, a later GPS
+    /// fix for a *different* city was silently ignored for the rest of the day.
+    /// Users outside Riyadh with auto-location enabled permanently saw Riyadh's
+    /// times. We now also refetch whenever the new coordinates differ from the
+    /// cached ones by more than a small jitter threshold (~100m).
+    static func shouldRefetch(
+        currentDateKey: String,
+        lastLatitude: Double?,
+        lastLongitude: Double?,
+        newLatitude: Double,
+        newLongitude: Double,
+        todayKey: String
+    ) -> Bool {
+        // No data yet, or a new day → always refetch.
+        if currentDateKey != todayKey { return true }
+
+        // Same day — only refetch if the location actually moved enough to
+        // change the prayer times. <0.01° is roughly 1 km; we treat anything
+        // under 0.001° (~100 m) as GPS jitter to avoid a refetch storm.
+        guard let lat = lastLatitude, let lng = lastLongitude else { return true }
+        let delta = max(abs(newLatitude - lat), abs(newLongitude - lng))
+        return delta > 0.001
+    }
+
     func fetchTimings() {
         guard !isLoading else { return }
-        // Debounce: don't refetch if we already have today's schedule.
         let key = Self.todayKey()
-        if schedule.dateKey == key { return }
+        // Refetch on a new day OR when the resolved coordinates have moved
+        // enough to change the times (e.g. the first real GPS fix after the
+        // Riyadh default). This is the fix for users outside Riyadh.
+        guard Self.shouldRefetch(
+            currentDateKey: schedule.dateKey,
+            lastLatitude: lastFetchedLatitude,
+            lastLongitude: lastFetchedLongitude,
+            newLatitude: resolvedLatitude,
+            newLongitude: resolvedLongitude,
+            todayKey: key
+        ) else { return }
 
         isLoading = true
         lastError = nil
 
-        // CORRECTNESS: previously no timezone was passed, so Aladhan returned
-        // times in the *location's* local timezone (for the requested lat/long)
-        // while `parseTime` then interpreted them in the device's
-        // `Calendar.current` timezone. A user who travels (device tz differs
-        // from the prayer location) would see every prayer shift by the tz
-        // delta. Passing `timezone=` makes the API return times already in the
-        // device tz, and pinning `comps.timeZone` in `parseTime` keeps the
-        // round-trip consistent.
+        // NOTE on timezone: Aladhan returns times in the *location's* local
+        // timezone regardless of this query param (verified against the live
+        // API — it ignores `timezone=`). We still send it for forward-
+        // compatibility, but the authoritative source of truth for which tz
+        // the wall-clock strings are in is `data.meta.timezone`, read back in
+        // `parse(payload:)` and applied in `parseTime(_:timeZone:)`. Never
+        // assume the device tz matches the prayer location.
         let tzIdentifier = TimeZone.current.identifier
         let urlString = "https://api.aladhan.com/v1/timings/\(key)?latitude=\(resolvedLatitude)&longitude=\(resolvedLongitude)&method=\(calcMethodRaw)&timezone=\(tzIdentifier)"
         guard let url = URL(string: urlString) else {
@@ -292,6 +345,8 @@ final class PrayerTimesManager: NSObject, ObservableObject {
             return
         }
 
+        let fetchedLat = resolvedLatitude
+        let fetchedLng = resolvedLongitude
         URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
             Task { @MainActor in
                 guard let self else { return }
@@ -308,6 +363,10 @@ final class PrayerTimesManager: NSObject, ObservableObject {
                     return
                 }
                 self.schedule = Self.parse(payload: payload, dateKey: key)
+                // Record which coordinates this schedule is valid for so a
+                // later coordinate change can be detected and force a refetch.
+                self.lastFetchedLatitude = fetchedLat
+                self.lastFetchedLongitude = fetchedLng
             }
         }.resume()
     }
@@ -317,11 +376,25 @@ final class PrayerTimesManager: NSObject, ObservableObject {
     /// Parse the Aladhan `data` object into a PrayerSchedule. Extracted so it
     /// can be unit-tested with fixture JSON.
     static func parse(payload: [String: Any], dateKey: String) -> PrayerSchedule {
+        // Resolve the timezone the API computed the times in. Aladhan always
+        // returns times in the *location's* local timezone (it ignores the
+        // `timezone=` query param we send — see CORRECTNESS note in fetchTimings).
+        // We must interpret the wall-clock strings in THAT timezone, otherwise a
+        // user whose device tz differs from the prayer location (e.g. a Riyadh
+        // user whose Mac is on Europe/London) sees every prayer shifted by the
+        // tz delta. Falling back to the device tz keeps legacy behavior intact.
+        var resolvedTZ: TimeZone = TimeZone.current
+        if let meta = payload["meta"] as? [String: Any],
+           let tzID = meta["timezone"] as? String,
+           let parsed = TimeZone(identifier: tzID) {
+            resolvedTZ = parsed
+        }
+
         let timings = payload["timings"] as? [String: Any] ?? [:]
         var times: [PrayerKind: Date] = [:]
         for kind in PrayerKind.allCases {
             if let raw = timings[kind.rawValue] as? String,
-               let date = Self.parseTime(raw) {
+               let date = Self.parseTime(raw, timeZone: resolvedTZ) {
                 times[kind] = date
             }
         }
@@ -339,7 +412,7 @@ final class PrayerTimesManager: NSObject, ObservableObject {
             hijri = composed.isEmpty ? nil : composed
         }
 
-        return PrayerSchedule(dateKey: dateKey, times: times, hijriDate: hijri)
+        return PrayerSchedule(dateKey: dateKey, times: times, hijriDate: hijri, timeZone: resolvedTZ)
     }
 
     /// Remove Arabic harakat/diacritics from a string for cleaner display.
@@ -352,23 +425,31 @@ final class PrayerTimesManager: NSObject, ObservableObject {
         return string.components(separatedBy: diacritics).joined()
     }
 
-    /// Convert Aladhan's "HH:MM (TZ)" or "HH:MM" to today's Date.
-    static func parseTime(_ raw: String) -> Date? {
+    /// Convert Aladhan's "HH:MM (TZ)" or "HH:MM" to today's Date, interpreted
+    /// in the timezone the API returned the time in (NOT the device timezone).
+    ///
+    /// The API returns wall-clock strings for the prayer's *location* (e.g.
+    /// "05:12" means 05:12 in Asia/Riyadh for a Riyadh request). To turn that
+    /// into an unambiguous instant we MUST build the DateComponents in that same
+    /// timezone; otherwise a user whose device is on a different tz would have
+    /// the string reinterpreted in their local tz, shifting every prayer.
+    static func parseTime(_ raw: String, timeZone: TimeZone) -> Date? {
         // Aladhan returns times like "05:12 (AST)" — strip the timezone suffix.
         let cleaned = raw.split(separator: " ").first.map(String.init) ?? raw
         let parts = cleaned.split(separator: ":")
         guard parts.count >= 2,
               let h = Int(parts[0]), let m = Int(parts[1]) else { return nil }
-        var comps = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        // Use a UTC-based calendar to derive today's y/m/d so the *date* portion
+        // is deterministic and not itself subject to device-tz boundary effects;
+        // the wall-clock HH:MM is then anchored to `timeZone`.
+        var dayCal = Calendar(identifier: .gregorian)
+        dayCal.timeZone = timeZone
+        var comps = dayCal.dateComponents([.year, .month, .day], from: Date())
         comps.hour = h
         comps.minute = m
         comps.second = 0
-        // Pin the timezone to the device tz so the date we construct lines up
-        // with what the API returned (we now pass `timezone=` in the request,
-        // so the two are guaranteed to agree). Without this the default
-        // `Calendar.current` would use whatever tz the calendar was created in.
-        comps.timeZone = TimeZone.current
-        return Calendar.current.date(from: comps)
+        comps.timeZone = timeZone
+        return dayCal.date(from: comps)
     }
 
     // MARK: - Helpers
@@ -471,11 +552,12 @@ extension PrayerTimesManager: CLLocationManagerDelegate {
                 }
             }
 
-            // Fetch once per fresh fix (avoids re-fetching on every location tick).
-            if !hasFetchedFromLocation {
-                hasFetchedFromLocation = true
-                fetchTimings()
-            }
+            // Always attempt a fetch on a fresh fix; `fetchTimings()` itself
+            // decides via `shouldRefetch` whether the new coordinates differ
+            // enough from the cached ones to warrant a network request. This
+            // is what makes auto-location actually switch the displayed times
+            // away from the seeded Riyadh default once the real fix arrives.
+            fetchTimings()
         }
     }
 

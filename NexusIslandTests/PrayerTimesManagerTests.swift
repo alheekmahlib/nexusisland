@@ -50,25 +50,51 @@ final class PrayerTimesManagerTests: XCTestCase {
     // MARK: - Time parsing
 
     func testParseTimePlain() {
-        let date = PrayerTimesManager.parseTime("05:12")
+        // parseTime now takes the timezone the API returned the time in, so it
+        // can construct an unambiguous instant regardless of the device tz.
+        let tz = TimeZone(identifier: "Asia/Riyadh")!
+        let date = PrayerTimesManager.parseTime("05:12", timeZone: tz)
         XCTAssertNotNil(date)
-        let comps = Calendar.current.dateComponents([.hour, .minute], from: date!)
+        // In Riyadh tz the wall-clock must read 05:12.
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = tz
+        let comps = cal.dateComponents([.hour, .minute], from: date!)
         XCTAssertEqual(comps.hour, 5)
         XCTAssertEqual(comps.minute, 12)
     }
 
     func testParseTimeStripsTimezone() {
         // Aladhan returns "05:12 (AST)" — the suffix must be ignored.
-        let date = PrayerTimesManager.parseTime("05:12 (AST)")
+        let tz = TimeZone(identifier: "Asia/Riyadh")!
+        let date = PrayerTimesManager.parseTime("05:12 (AST)", timeZone: tz)
         XCTAssertNotNil(date)
-        let comps = Calendar.current.dateComponents([.hour, .minute], from: date!)
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = tz
+        let comps = cal.dateComponents([.hour, .minute], from: date!)
         XCTAssertEqual(comps.hour, 5)
         XCTAssertEqual(comps.minute, 12)
     }
 
+    func testParseTimeRespectsLocationTimeZoneNotDevice() {
+        // Regression: a "05:12" returned by the API in the *location's* tz
+        // (Asia/Riyadh, UTC+3) must represent the SAME instant (02:12 UTC)
+        // regardless of the device's tz. Previously the device tz was used,
+        // so a user on Europe/London (UTC+0) would get 05:12 UTC = 08:12 Riyadh,
+        // i.e. every prayer shifted by the tz delta. Verify the instant is fixed.
+        let riyadh = TimeZone(identifier: "Asia/Riyadh")!
+        let date = PrayerTimesManager.parseTime("05:12", timeZone: riyadh)!
+        // 05:12 Asia/Riyadh (UTC+3) = 02:12 UTC.
+        let utcCal = Calendar(identifier: .gregorian)
+        var utcCalCopy = utcCal
+        utcCalCopy.timeZone = TimeZone(identifier: "UTC")!
+        let utcComps = utcCalCopy.dateComponents([.hour, .minute], from: date)
+        XCTAssertEqual(utcComps.hour, 2)
+        XCTAssertEqual(utcComps.minute, 12)
+    }
+
     func testParseTimeRejectsGarbage() {
-        XCTAssertNil(PrayerTimesManager.parseTime("not-a-time"))
-        XCTAssertNil(PrayerTimesManager.parseTime(""))
+        XCTAssertNil(PrayerTimesManager.parseTime("not-a-time", timeZone: .current))
+        XCTAssertNil(PrayerTimesManager.parseTime("", timeZone: .current))
     }
 
     // MARK: - Payload parsing
@@ -248,5 +274,91 @@ final class PrayerTimesManagerTests: XCTestCase {
         ]
         let schedule = PrayerTimesManager.parse(payload: payload, dateKey: "23-07-2026")
         XCTAssertEqual(schedule.hijriDate, "9 صفر 1448")
+    }
+
+    // MARK: - Timezone handling (regression: prayer times must follow the
+    // *location's* timezone, not the device timezone, for traveling users)
+
+    func testParsePayloadExtractsTimeZoneFromMeta() {
+        let payload: [String: Any] = [
+            "timings": ["Fajr": "05:00"],
+            "meta": ["timezone": "Asia/Riyadh"]
+        ]
+        let schedule = PrayerTimesManager.parse(payload: payload, dateKey: "23-07-2026")
+        XCTAssertEqual(schedule.timeZone?.identifier, "Asia/Riyadh")
+    }
+
+    func testParsePayloadFallsBackToDeviceTimeZoneWhenMetaMissing() {
+        let payload: [String: Any] = [
+            "timings": ["Fajr": "05:00"]
+        ]
+        let schedule = PrayerTimesManager.parse(payload: payload, dateKey: "23-07-2026")
+        XCTAssertEqual(schedule.timeZone, TimeZone.current)
+    }
+
+    func testParsePayloadConstructsTimesInLocationTimeZone() {
+        // Fajr 05:00 in Asia/Riyadh (UTC+3) → must equal 02:00 UTC.
+        let payload: [String: Any] = [
+            "timings": ["Fajr": "05:00"],
+            "meta": ["timezone": "Asia/Riyadh"]
+        ]
+        let schedule = PrayerTimesManager.parse(payload: payload, dateKey: "23-07-2026")
+        let fajr = schedule.times[.fajr]!
+        var utcCal = Calendar(identifier: .gregorian)
+        utcCal.timeZone = TimeZone(identifier: "UTC")!
+        let utcComps = utcCal.dateComponents([.hour, .minute], from: fajr)
+        XCTAssertEqual(utcComps.hour, 2, "Fajr 05:00 Riyadh should be 02:00 UTC")
+        XCTAssertEqual(utcComps.minute, 0)
+    }
+
+    // MARK: - Coord-drift refetch (regression: GPS fix must refresh stale Riyadh data)
+
+    func testNeedsRefetchForDifferentCoordinates() {
+        // After the first fetch lands at Riyadh (the seeded default), a GPS fix
+        // for Jeddah (21.5, 39.2) must force a new fetch even though the day
+        // hasn't changed. Without this, users outside Riyadh permanently see
+        // Riyadh's times whenever auto-location is enabled.
+        let riyadhKey = PrayerTimesManager.todayKey()
+        XCTAssertTrue(PrayerTimesManager.shouldRefetch(
+            currentDateKey: "",
+            lastLatitude: nil,
+            lastLongitude: nil,
+            newLatitude: 24.7136,
+            newLongitude: 46.6753,
+            todayKey: riyadhKey
+        ), "empty schedule → always refetch")
+
+        // Same day, same coords → no refetch (the normal debounce).
+        XCTAssertFalse(PrayerTimesManager.shouldRefetch(
+            currentDateKey: riyadhKey,
+            lastLatitude: 24.7136,
+            lastLongitude: 46.6753,
+            newLatitude: 24.7136,
+            newLongitude: 46.6753,
+            todayKey: riyadhKey
+        ))
+
+        // Same day, DIFFERENT coords (Riyadh → Jeddah) → MUST refetch.
+        XCTAssertTrue(PrayerTimesManager.shouldRefetch(
+            currentDateKey: riyadhKey,
+            lastLatitude: 24.7136,
+            lastLongitude: 46.6753,
+            newLatitude: 21.4812,
+            newLongitude: 39.2376,
+            todayKey: riyadhKey
+        ), "GPS gave a different city → must refresh, even same day")
+    }
+
+    func testNeedsRefetchIgnoresTinyCoordJitter() {
+        // Sub-100m GPS jitter (<0.001°) must NOT trigger a refetch storm.
+        let key = PrayerTimesManager.todayKey()
+        XCTAssertFalse(PrayerTimesManager.shouldRefetch(
+            currentDateKey: key,
+            lastLatitude: 24.7136,
+            lastLongitude: 46.6753,
+            newLatitude: 24.7137,
+            newLongitude: 46.6754,
+            todayKey: key
+        ))
     }
 }
