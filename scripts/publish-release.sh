@@ -54,8 +54,16 @@ cd "$ROOT"
 echo "==> Step 1/4: bump version to $VERSION in project.yml"
 # project.yml uses MARKETING_VERSION: "x.y.z" — replace it in place.
 sed -i.bak -E "s/MARKETING_VERSION: \".*\"/MARKETING_VERSION: \"$VERSION\"/" project.yml
-rm -f project.yml.bak
-echo "    Bumped. Remember to commit + push this change."
+# Also auto-increment CURRENT_PROJECT_VERSION (the integer build number) so
+# each release has a unique build, not a constant "1". Read the current
+# value, +1, and write it back. macOS uses this for "build still increases"
+# checks during notarization and for App Store / Sparkle-style update logic.
+CURRENT_BUILD=$(grep -E 'CURRENT_PROJECT_VERSION: "[0-9]+"' project.yml | grep -oE '[0-9]+' || echo "0")
+NEW_BUILD=$((CURRENT_BUILD + 1))
+sed -i.bak2 -E "s/CURRENT_PROJECT_VERSION: \"[0-9]+\"/CURRENT_PROJECT_VERSION: \"$NEW_BUILD\"/" project.yml
+rm -f project.yml.bak project.yml.bak2
+echo "    Bumped MARKETING_VERSION to $VERSION, CURRENT_PROJECT_VERSION to $NEW_BUILD."
+echo "    Remember to commit + push this change."
 
 echo "==> Step 2/4: build + sign + notarize (this takes 5-15 minutes)"
 sh scripts/build-and-release.sh

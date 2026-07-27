@@ -50,8 +50,8 @@ targets:
         CODE_SIGN_ENTITLEMENTS: NexusIsland/NexusIsland.entitlements
         PRODUCT_NAME: NexusIsland
         INFOPLIST_KEY_CFBundleDisplayName: Nexus Island
-        MARKETING_VERSION: "1.1.1"
-        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.1.3"
+        CURRENT_PROJECT_VERSION: "3"
         COMBINE_HIDPI_IMAGES: true
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"

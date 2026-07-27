@@ -933,6 +933,20 @@ final class ExtensionJSRuntime {
                 return
             }
             self.invokeJS("timer(\(timerID))") { callback.call(withArguments: []) }
+            // Repeating timers (e.g. Pomodoro's `tick()`) mutate JS-side state
+            // that the rendered views read from. Without bridging each fire back
+            // to the host, the countdown and progress bar only repaint when a
+            // button is pressed (handleAction). `scheduleImmediateRefresh` is
+            // already debounced (drops re-entrant calls until the queued work
+            // runs), so a 1s tick coalesces into one SwiftUI re-render. One-shot
+            // `setTimeout` calls are skipped — they're typically one-off
+            // effects (reveal/dismiss) that don't drive live UI.
+            if repeats {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.manager?.scheduleImmediateRefresh(extensionID: self.extensionID)
+                }
+            }
             if !repeats {
                 self.timers.removeValue(forKey: timerID)
                 timer.invalidate()
