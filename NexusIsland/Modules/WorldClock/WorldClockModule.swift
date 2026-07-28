@@ -75,14 +75,22 @@ final class WorldClockManager: ObservableObject {
 
     private var timer: Timer?
 
-    private init() {
-        startTicking()
-    }
+    private init() {}
 
-    private func startTicking() {
+    /// Start the 30s refresh tick. Idempotent — safe to call when already
+    /// running. Only runs while the World Clock module is enabled; the timer
+    /// is a continuous wake-up so it is stopped via `stopTicking()` when the
+    /// module is disabled to avoid needless background CPU.
+    func startTicking() {
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tickTrigger += 1 }
         }
+    }
+
+    func stopTicking() {
+        timer?.invalidate()
+        timer = nil
     }
 
     deinit { timer?.invalidate() }

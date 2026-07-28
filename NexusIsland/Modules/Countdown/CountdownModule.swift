@@ -37,12 +37,26 @@ final class CountdownManager: ObservableObject {
     private init() {
         loadEvents()
         seedDefaultsIfNeeded()
+    }
+
+    deinit { timer?.invalidate() }
+
+    /// Start the 60s refresh tick. Idempotent — safe to call when already
+    /// running. Only runs while the Countdown module is enabled; the timer
+    /// is a continuous wake-up so it is stopped via `stopTicking()` when the
+    /// module is disabled to avoid needless background CPU. Data loading and
+    /// default seeding still happen once at first access regardless.
+    func startTicking() {
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tickTrigger += 1 }
         }
     }
 
-    deinit { timer?.invalidate() }
+    func stopTicking() {
+        timer?.invalidate()
+        timer = nil
+    }
 
     // MARK: - Event management
 

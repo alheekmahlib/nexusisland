@@ -166,9 +166,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if state.devServersEnabled { _ = DevServerManager.shared }
         if state.gitStatsEnabled { _ = GitStatsManager.shared }
         if state.dockerEnabled { _ = DockerManager.shared }
-        if state.worldClockEnabled { _ = WorldClockManager.shared }
+        if state.worldClockEnabled { WorldClockManager.shared.startTicking() }
         if state.currencyEnabled { _ = CurrencyManager.shared }
-        if state.countdownEnabled { _ = CountdownManager.shared }
+        if state.countdownEnabled { CountdownManager.shared.startTicking() }
         if state.stocksEnabled { _ = StocksManager.shared }
         if state.remindersEnabled { _ = RemindersManager.shared }
         if state.clipboardEnabled { ClipboardManager.shared.startMonitoring() }

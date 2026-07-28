@@ -349,6 +349,9 @@ final class IslandWindowController {
                 for panel in self.panels.values {
                     panel.setVisibleInScreenRecordings(self.appState.showInScreenRecordings)
                 }
+                // React immediately to the "hide in fullscreen" toggle so the
+                // background poll timer only runs while the feature is on.
+                self.updateFullscreenPollTimer()
                 // Debounce the expensive reconciliation. A burst of settings
                 // writes (e.g. dragging a slider that hits @AppStorage) would
                 // otherwise trigger syncPanels(display:true) +
@@ -389,13 +392,32 @@ final class IslandWindowController {
 
         // Low-frequency safety net: some fullscreen transitions (e.g. the
         // native video player going fullscreen in-place) don't always fire
-        // a space change notification, so re-check every 2s while the
-        // controller is alive. The check is cheap (CGWindowListCopyWindowInfo
-        // with bounds only) and only runs as long as the app is up.
-        fullscreenPollTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
-            Task { @MainActor [weak self] in
-                self?.updateFullscreenVisibility()
+        // a space change notification, so re-check periodically while the
+        // feature is on. The check is cheap (CGWindowListCopyWindowInfo
+        // with bounds only), but to avoid a continuous CPU/IO wake-up for
+        // an opt-in feature, the timer is only scheduled while the user
+        // has enabled "hide in fullscreen" — see `updateFullscreenPollTimer()`.
+        updateFullscreenPollTimer()
+    }
+
+    /// Toggles the periodic fullscreen re-check on or off based on the
+    /// current value of `hideOnFullscreen`. Called at setup and again
+    /// whenever the setting changes (from `observeSettingsChanges`). When
+    /// the feature is disabled the timer is invalidated so no background
+    /// wake-ups occur.
+    func updateFullscreenPollTimer() {
+        let shouldPoll = appState.hideOnFullscreen
+
+        if shouldPoll {
+            guard fullscreenPollTimer == nil else { return }
+            fullscreenPollTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.updateFullscreenVisibility()
+                }
             }
+        } else {
+            fullscreenPollTimer?.invalidate()
+            fullscreenPollTimer = nil
         }
     }
 

@@ -377,7 +377,14 @@ final class NotificationManager: ObservableObject {
             // continuous CPU/IO drain. 30s halves the cost while still
             // surfacing new WhatsApp events within a reasonable window.
             policy: .interval(30, tolerance: 10),
-            enabled: { AppState.shared.notificationsEnabled }
+            // Only run the scan when (a) the Notifications module is enabled
+            // AND (b) the WhatsApp web extension is actually installed.
+            // Spawning `log show` for WhatsApp events when the extension
+            // isn't present is pure waste — there are no events to surface.
+            enabled: {
+                guard AppState.shared.notificationsEnabled else { return false }
+                return ExtensionManager.shared.installed.contains { $0.id == Self.whatsappExtensionID }
+            }
         ) { [weak self] in
             guard let self else { return }
 

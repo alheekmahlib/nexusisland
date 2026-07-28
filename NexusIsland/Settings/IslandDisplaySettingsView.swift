@@ -334,9 +334,13 @@ struct IslandDisplaySettingsView: View {
         case .devServers:     appState.devServersEnabled = isOn
         case .gitStats:       appState.gitStatsEnabled = isOn
         case .docker:         appState.dockerEnabled = isOn
-        case .worldClock:     appState.worldClockEnabled = isOn
+        case .worldClock:
+            appState.worldClockEnabled = isOn
+            if isOn { WorldClockManager.shared.startTicking() } else { WorldClockManager.shared.stopTicking() }
         case .currency:       appState.currencyEnabled = isOn
-        case .countdown:      appState.countdownEnabled = isOn
+        case .countdown:
+            appState.countdownEnabled = isOn
+            if isOn { CountdownManager.shared.startTicking() } else { CountdownManager.shared.stopTicking() }
         case .stocks:         appState.stocksEnabled = isOn
         case .reminders:      appState.remindersEnabled = isOn
         case .clipboard:
